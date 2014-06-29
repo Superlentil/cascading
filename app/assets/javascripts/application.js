@@ -15,4 +15,15 @@
 //= require turbolinks
 //= require underscore
 //= require backbone
-//= require_directory .
+//= require_tree .
+
+
+$(function() {
+  if (!Backbone.History.started) {
+    Backbone.history.start();
+  }
+  
+  $(document).off('page:load').on('page:load', function() {
+    Backbone.history.loadUrl();
+  });
+});
