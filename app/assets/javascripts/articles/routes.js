@@ -1,16 +1,19 @@
-// namespace "ns_articles"
-var ns_articles = ns_articles || {};
-
-
 // define the articles "Router"
-ns_articles.Router = Backbone.Router.extend({
+Article.Router = Backbone.Router.extend({
   routes: {
-    '': 'index'
+    '': 'index',
+    'articles': 'index',
+    'articles/new': 'new'
   },
   
   index: function() {
-    var indexView = new ns_articles.Index();
-    indexView.render();
+    var viewIndex = new Article.View.Index();
+    viewIndex.render();
+  },
+  
+  'new': function() {
+    var viewNew = new Article.View.New();
+    viewNew.render();
   }
 });
 

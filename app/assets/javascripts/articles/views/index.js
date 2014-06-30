@@ -1,9 +1,5 @@
-// namespace "ns_articles"
-var ns_articles = ns_articles || {};
-
-
 // define the view "Index"
-ns_articles.Index = Backbone.View.extend({
+Article.View.Index = Backbone.View.extend({
   el: 'body',
   
   template: JST["articles/templates/index"],

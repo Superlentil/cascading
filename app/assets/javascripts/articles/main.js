@@ -1,3 +1,4 @@
+//= require ./initializers
 //= require_tree ./models
 //= require_tree ./templates
 //= require_tree ./views
@@ -5,5 +6,5 @@
 
 
 $(function() {
-  new ns_articles.Router();
+  new Article.Router();
 });
