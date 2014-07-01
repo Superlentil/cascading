@@ -1,5 +1,5 @@
 //= require ./initializers
-//= require_tree ./models
+//= require ./model
 //= require_tree ./templates
 //= require_tree ./views
 //= require ./routes

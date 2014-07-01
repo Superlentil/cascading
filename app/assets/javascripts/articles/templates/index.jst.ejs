@@ -1,1 +1,12 @@
-<div><p>Hello World!</p></div>
+<a href="#/articles/new">New Article</a><br />
+<br />
+
+<% _.each(articles, function(article) { %>
+  <hr />
+  <div>
+    <h3><%= article.get("title") %></h3>
+    <strong>author: <%= article.get("author") %></strong><br />
+    <em>category: <%= article.get("category") %></em><br />
+    <p><%= article.get("content") %></p>
+  </div><br />
+<% }); %>
