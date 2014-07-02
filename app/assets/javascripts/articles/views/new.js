@@ -19,22 +19,26 @@ Article.View.New = Backbone.View.extend({
     
     $(function() {
       var article = new Article.Model();
-      article.save(
-        {
+      var editor = Article.Utility.Editor;
+      
+      article.set({
           "title": $("#article_title").val(),
           "author": $("#article_author").val(),
           "category": $("#article_category").val(),
-          "content": $("#article_content").val()
+          "content": editor.toJSON("text", $("#article_content").val())
+      });
+      
+      console.log(article);
+      console.log(article.toJSON());
+      
+      article.save(article.toJSON(), {
+        success: function(article) {
+          Backbone.history.navigate('', {trigger:true});
         },
-        {
-          success: function(article) {
-            Backbone.history.navigate('', {trigger:true});
-          },
-          error: function(article,response) {
-            console.log(response);
-          }
+        error: function(article,response) {
+          console.log(response);
         }
-      );
+      });
     });
   }
 });

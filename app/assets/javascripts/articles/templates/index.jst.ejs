@@ -1,12 +1,13 @@
 <a href="#/articles/new">New Article</a><br />
 <br />
 
+<% var editor = Article.Utility.Editor; %>
 <% _.each(articles, function(article) { %>
   <hr />
   <div>
     <h3><%= article.get("title") %></h3>
     <strong>author: <%= article.get("author") %></strong><br />
     <em>category: <%= article.get("category") %></em><br />
-    <p><%= article.get("content") %></p>
+    <%= editor.toHTML(article.get("content")) %>
   </div><br />
 <% }); %>
