@@ -6,6 +6,7 @@ class CreateArticles < ActiveRecord::Migration
       t.string :category
       t.text :content, limit: 2000000000
       t.integer :views
+      t.integer :like
       t.references :user, index: true
 
       t.timestamps

@@ -8,6 +8,6 @@
     <h3><%= article.get("title") %></h3>
     <strong>author: <%= article.get("author") %></strong><br />
     <em>category: <%= article.get("category") %></em><br />
-    <%= editor.toHTML(article.get("content")) %>
+    <%= editor.toContentHTML(article.get("content")) %>
   </div><br />
 <% }); %>
