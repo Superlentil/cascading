@@ -1,4 +1,4 @@
-Article.Utility.Editor = {
+Articles.Utilities.Editor = {
   toContentJSON: function() {
     var articleContent = [];
     $(".Article_Paragraph_Editor").each(function(index) {

@@ -1,5 +1,5 @@
 // define the articles "Router"
-Article.Router = Backbone.Router.extend({
+Articles.Router = Backbone.Router.extend({
   routes: {
     '': 'index',
     'articles': 'index',
@@ -7,12 +7,12 @@ Article.Router = Backbone.Router.extend({
   },
   
   index: function() {
-    var viewIndex = new Article.View.Index();
+    var viewIndex = new Articles.Views.Index();
     viewIndex.render();
   },
   
   'new': function() {
-    var viewNew = new Article.View.New();
+    var viewNew = new Articles.Views.New();
     viewNew.render();
   }
 });

@@ -2,9 +2,9 @@
 //= require ./model
 //= require_tree ./templates
 //= require_tree ./views
-//= require ./routes
+//= require ./router
 
 
 $(function() {
-  new Article.Router();
+  new Articles.Router();
 });

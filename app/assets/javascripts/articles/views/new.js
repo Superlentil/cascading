@@ -1,14 +1,18 @@
+//= require_tree ./editors
+
+
 // define the view "New"
-Article.View.New = Backbone.View.extend({
+Articles.Views.New = Backbone.View.extend({
   el: "body",
   
   
-  template: JST["articles/templates/new/new"],
+  template: JST["articles/templates/new"],
   
   
   render: function() {
     var that = this;
     that.$el.html(that.template());
+    return this;
   },
   
   
@@ -23,9 +27,12 @@ Article.View.New = Backbone.View.extend({
   addParagraph: function(event) {
     event.preventDefault();
     event.stopPropagation();
+    console.log(this);
+    
+    var viewTextEditor = new Articles.Views.Editors.TextEditor();
     
     $(function() {
-      $("#article_content").append(JST["articles/templates/new/text_editor"]);
+      $("#article_content").append(viewTextEditor.render().el);
     });
   },
   
@@ -47,8 +54,8 @@ Article.View.New = Backbone.View.extend({
     event.stopPropagation();
     
     $(function() {
-      var article = new Article.Model();
-      var editor = Article.Utility.Editor;
+      var article = new Articles.Model();
+      var editor = Articles.Utilities.Editor;
       
       article.set({
           "title": $("#article_title").val(),

@@ -1,12 +1,17 @@
-// namespace "Article"
-var Article = {};
+// namespace "Articles"
+var Articles = {};
+
 
 // MVC
-Article.Model = {};
-Article.Collection = {};
-Article.View = {};
-Article.Router = {};
-Article.RESTfulUrlRoot = "/articles";
+Articles.Model = {};
+Articles.Collection = {};
+
+Articles.Views = {};
+Articles.Views.Editors = {};
+
+Articles.Router = {};
+Articles.RESTfulUrlRoot = "/articles";
+
 
 // Utilities
-Article.Utility = {};
+Articles.Utilities = {};

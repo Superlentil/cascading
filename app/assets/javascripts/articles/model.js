@@ -1,4 +1,4 @@
-Article.Model = Backbone.Model.extend({
+Articles.Model = Backbone.Model.extend({
   defaults: {
     "title": "No Title",
     "author": "None",
@@ -6,11 +6,11 @@ Article.Model = Backbone.Model.extend({
     "content": "No Content"
   },
   
-  urlRoot: Article.RESTfulUrlRoot
+  urlRoot: Articles.RESTfulUrlRoot
 });
 
 
-Article.Collection = Backbone.Collection.extend({
-  model: Article.Model,
-  url: Article.RESTfulUrlRoot
+Articles.Collection = Backbone.Collection.extend({
+  model: Articles.Model,
+  url: Articles.RESTfulUrlRoot
 });

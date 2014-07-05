@@ -1,5 +1,5 @@
 // define the view "Index"
-Article.View.Index = Backbone.View.extend({
+Articles.Views.Index = Backbone.View.extend({
   el: 'body',
   
   template: JST["articles/templates/index"],
@@ -7,7 +7,7 @@ Article.View.Index = Backbone.View.extend({
   render: function() {
     var that = this;
     
-    var articles = new Article.Collection();
+    var articles = new Articles.Collection();
     articles.fetch({
       success: function(articles) {
         $(function() {
@@ -15,5 +15,7 @@ Article.View.Index = Backbone.View.extend({
         }); 
       }
     });
+    
+    return this;
   }
 });
