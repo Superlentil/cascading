@@ -12,6 +12,4 @@ Articles.Views.Editors = {};
 Articles.Router = {};
 Articles.RESTfulUrlRoot = "/articles";
 
-
-// Utilities
-Articles.Utilities = {};
+Articles.Helpers = {};

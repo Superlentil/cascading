@@ -1,6 +1,3 @@
-//= require_tree ./editors
-
-
 // define the view "New"
 Articles.Views.New = Backbone.View.extend({
   el: "body",
@@ -17,35 +14,34 @@ Articles.Views.New = Backbone.View.extend({
   
   
   events: {
-    "click #article_add_paragraph": "addParagraph",
-    "click .Move_Up_Button": "moveUpEditor",
-    "click .Move_Down_Button": "moveDownEditor",
+    "click #article_add_text": "addText",
+    "click #article_add_picture": "addPicture",
+ 
     "click #article_submit": "saveArticle"
   },
   
   
-  addParagraph: function(event) {
+  addText: function(event) {
     event.preventDefault();
     event.stopPropagation();
-    console.log(this);
     
-    var viewTextEditor = new Articles.Views.Editors.TextEditor();
+    var textEditor = new Articles.Views.Editors.TextEditor();
     
     $(function() {
-      $("#article_content").append(viewTextEditor.render().el);
+      $("#article_content").append(textEditor.render().el);
     });
   },
   
   
-  moveUpEditor: function(event) {
-    var editor = $(event.currentTarget).parent();
-    editor.prev("div.Article_Paragraph_Editor").before(editor);
-  },
-  
-  
-  moveDownEditor: function(event) {
-    var editor = $(event.currentTarget).parent();
-    editor.next("div.Article_Paragraph_Editor").after(editor);
+  addPicture: function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    var pictureEditor = new Articles.Views.Editors.PictureEditor();
+    
+    $(function() {
+      $("#article_content").append(pictureEditor.render().el);
+    });
   },
   
   
@@ -55,7 +51,7 @@ Articles.Views.New = Backbone.View.extend({
     
     $(function() {
       var article = new Articles.Model();
-      var editor = Articles.Utilities.Editor;
+      var editor = Articles.Helpers.Editor;
       
       article.set({
           "title": $("#article_title").val(),

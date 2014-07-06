@@ -1,7 +1,8 @@
-Articles.Utilities.Editor = {
+// define the helper "Editor" 
+Articles.Helpers.Editor = {
   toContentJSON: function() {
     var articleContent = [];
-    $(".Article_Paragraph_Editor").each(function(index) {
+    $(".Article_Editor").each(function(index) {
       var paragraph = $(this).children(".Paragraph");
       articleContent.push({
         "type": paragraph.data("type"),
