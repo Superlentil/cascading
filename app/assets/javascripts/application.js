@@ -15,7 +15,7 @@
 //= require turbolinks
 //= require underscore
 //= require backbone
-//= require articles/indexer
+//= require articles/_INDEXER_
 
 
 $(function() {
