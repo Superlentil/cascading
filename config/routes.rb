@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   resources :tiers
   resources :users
   resources :articles
+  resources :pictures
 
   # Example resource route with options:
   #   resources :products do

@@ -6,7 +6,7 @@ Articles.Helpers.Editor = {
       var paragraph = $(this).children(".Paragraph");
       articleContent.push({
         "type": paragraph.data("type"),
-        "source": paragraph.val()
+        "src": paragraph.val()
       });
     });
     return JSON.stringify(articleContent);
@@ -17,7 +17,7 @@ Articles.Helpers.Editor = {
     var articleContent = JSON.parse(articleContentJSON);
     var articleHtml = "<div>";
     $.each(articleContent, function(index, articleParagraph) {
-      articleHtml += "<p><em>" + articleParagraph.type + ":</em>" + articleParagraph.source + "</p>";
+      articleHtml += "<p><em>" + articleParagraph.type + ":</em>" + articleParagraph.src + "</p>";
     });
     articleHtml += "</div>";
     return articleHtml;

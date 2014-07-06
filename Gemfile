@@ -41,3 +41,4 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin]
 
 # gem used in this project
 gem 'ejs'
+gem 'paperclip', '> 4'

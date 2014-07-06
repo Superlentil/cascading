@@ -18,12 +18,12 @@
 //= require articles/_INDEXER_
 
 
-$(function() {
-  if (!Backbone.History.started) {
-    Backbone.history.start();
-  }
-  
-  $(document).off('page:load').on('page:load', function() {
-    Backbone.history.loadUrl();
-  });
-});
+// $(function() {
+  // if (!Backbone.History.started) {
+    // Backbone.history.start();
+  // }
+//   
+  // $(document).off('page:load').on('page:load', function() {
+    // Backbone.history.loadUrl();
+  // });
+// });
