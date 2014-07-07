@@ -1,4 +1,7 @@
 class PicturesController < ApplicationController
+  respond_to :json
+  
+  
   def index
     @picture = Picture.new
     @pictures = Picture.all
@@ -11,8 +14,7 @@ class PicturesController < ApplicationController
 
   def create
     @picture = Picture.create(pictureParams)
-    redirect_to pictures_path
-    return
+    respond_with @picture
   end
 
 
@@ -21,6 +23,9 @@ class PicturesController < ApplicationController
 
 
   def destroy
+    @picture = Picture.find(params[:id])
+    @picture.destroy
+    respond_with @picture
   end
 
   

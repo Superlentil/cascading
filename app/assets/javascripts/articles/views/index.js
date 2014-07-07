@@ -7,7 +7,7 @@ Articles.Views.Index = Backbone.View.extend({
   render: function() {
     var that = this;
     
-    var articles = new Articles.Collection();
+    var articles = new Articles.Collections.Article();
     articles.fetch({
       success: function(articles) {
         $(function() {

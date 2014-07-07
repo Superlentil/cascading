@@ -3,13 +3,12 @@ var Articles = {};
 
 
 // MVC
-Articles.Model = {};
-Articles.Collection = {};
+Articles.Models = {};
+Articles.Collections = {};
 
 Articles.Views = {};
 Articles.Views.Editors = {};
 
 Articles.Router = {};
-Articles.RESTfulUrlRoot = "/articles";
 
 Articles.Helpers = {};

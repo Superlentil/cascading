@@ -4,9 +4,16 @@ Articles.Helpers.Editor = {
     var articleContent = [];
     $(".Article_Editor").each(function(index) {
       var paragraph = $(this).children(".Paragraph");
+      var type = paragraph.data("type");
+      var src = "";
+      if (type === "text") {
+        src = paragraph.val();
+      } else if (type == "picture") {
+        src = paragraph.html();
+      }
       articleContent.push({
-        "type": paragraph.data("type"),
-        "src": paragraph.val()
+        "type": type,
+        "src": src
       });
     });
     return JSON.stringify(articleContent);

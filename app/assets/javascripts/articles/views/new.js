@@ -50,7 +50,7 @@ Articles.Views.New = Backbone.View.extend({
     event.stopPropagation();
     
     $(function() {
-      var article = new Articles.Model();
+      var article = new Articles.Models.Article();
       var editor = Articles.Helpers.Editor;
       
       article.set({
