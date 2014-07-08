@@ -4,16 +4,9 @@ Articles.Helpers.Editor = {
     var articleContent = [];
     $(".Article_Editor").each(function(index) {
       var paragraph = $(this).children(".Paragraph");
-      var type = paragraph.data("type");
-      var src = "";
-      if (type === "text") {
-        src = paragraph.val();
-      } else if (type == "picture") {
-        src = paragraph.html();
-      }
       articleContent.push({
-        "type": type,
-        "src": src
+        "type": paragraph.data("type"),
+        "src": paragraph.html()
       });
     });
     return JSON.stringify(articleContent);
@@ -24,7 +17,7 @@ Articles.Helpers.Editor = {
     var articleContent = JSON.parse(articleContentJSON);
     var articleHtml = "<div>";
     $.each(articleContent, function(index, articleParagraph) {
-      articleHtml += "<p><em>" + articleParagraph.type + ":</em>" + articleParagraph.src + "</p>";
+      articleHtml += "<pre>" + articleParagraph.src + "</pre>";
     });
     articleHtml += "</div>";
     return articleHtml;

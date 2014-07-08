@@ -1,5 +1,10 @@
 // define the view "New"
 Articles.Views.New = Backbone.View.extend({
+  initialize: function(article) {
+    this.model = article || new Articles.Models.Article();
+  },
+  
+  
   el: "body",
   
   
@@ -7,9 +12,30 @@ Articles.Views.New = Backbone.View.extend({
   
   
   render: function() {
-    var that = this;
-    that.$el.html(that.template());
+    this.$el.html(this.template());
     return this;
+  },
+  
+  
+  renderArticle: function(article) {
+    $(function() {
+      article = article || new Articles.Models.Article();
+      $("#article_title").val(article.title);
+      $("#article_author").val(article.author);
+      $("#article_category").val(article.category);
+      var articleContent = JSON.parse(article.content);
+      $("#article_content").empty();
+      _.each(articleContent, function(articleParagraph) {
+        if (articleParagraph.type === "text") {
+          var textEditor = new Articles.Views.Editors.TextEditor();
+          $("#article_content").append(textEditor.render(articleParagraph.src).el);
+        } else if (articleParagraph.type === "picture") {
+          var pictureEditor = new Articles.Views.Editors.PictureEditor();
+          $("#article_content").append(pictureEditor.render(articleParagraph.src).el);
+        }
+      });
+      this.model = article;
+    });
   },
   
   
@@ -17,7 +43,8 @@ Articles.Views.New = Backbone.View.extend({
     "click #article_add_text": "addText",
     "click #article_add_picture": "addPicture",
  
-    "click #article_submit": "saveArticle"
+    "click #article_save": "saveArticle",
+    "click #article_save_and_view": "saveAndViewArticle"
   },
   
   
@@ -45,12 +72,14 @@ Articles.Views.New = Backbone.View.extend({
   },
   
   
-  saveArticle: function(event) {   
+  saveArticle: function(event) {    
     event.preventDefault();
     event.stopPropagation();
     
+    var that = this;
+    
     $(function() {
-      var article = new Articles.Models.Article();
+      var article = that.model;
       var editor = Articles.Helpers.Editor;
       
       article.set({
@@ -62,12 +91,18 @@ Articles.Views.New = Backbone.View.extend({
             
       article.save(article.toJSON(), {
         success: function(article) {
-          Backbone.history.navigate('', {trigger:true});
+          that.render();
+          that.renderArticle(article.attributes);
         },
         error: function(article,response) {
           console.log(response);
         }
       });
     });
+  },
+  
+  
+  viewArticle: function(event) {
+    
   }
 });

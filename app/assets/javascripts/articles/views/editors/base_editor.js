@@ -6,14 +6,16 @@ Articles.Views.Editors.BaseEditor = Backbone.View.extend({
   className: "Article_Editor",
   
   
-  render: function() {
-    var that = this;
-    that.$el.html(that.template());
-    $(function() {
-      that.$el.children(".Move_Up_Button").on("click", that.moveUpEditor);
-      that.$el.children(".Move_Down_Button").on("click", that.moveDownEditor);
-    });
-    return that;
+  render: function(content) {
+    content = content || "";
+    this.$el.html(this.template({"content": content}));
+    return this;
+  },
+  
+  
+  events: {
+    "click .Move_Up_Button": "moveUpEditor",
+    "click .Move_Down_Button": "moveDownEditor"
   },
 
 

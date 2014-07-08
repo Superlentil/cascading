@@ -22,6 +22,10 @@ class ArticlesController < ApplicationController
 
 
   def update
+    @article = Article.find(articleParams[:id])
+    @article.update(articleParams)
+    respond_with @article
+    return
   end
 
 
@@ -35,6 +39,6 @@ class ArticlesController < ApplicationController
 
 private
   def articleParams
-    params.require(:article).permit(:title, :author, :content, :category)
+    params.require(:article).permit(:title, :author, :content, :category, :id, :views, :like, :user_id, :created_at, :updated_at)
   end
 end

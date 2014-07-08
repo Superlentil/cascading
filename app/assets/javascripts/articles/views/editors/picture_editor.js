@@ -3,18 +3,20 @@ Articles.Views.Editors.PictureEditor = Articles.Views.Editors.BaseEditor.extend(
   template: JST["articles/templates/editors/picture_editor"],
   
   
-  events: {
-    "change :file": "onFileChange",
-    "click .Submit_Button": "onSubmit"
+  events: function() {
+    return _.extend({}, Articles.Views.Editors.BaseEditor.prototype.events, {
+      "change :file": "onFileChange",
+      "click .Submit_Button": "onSubmit"
+    });
   },
   
   
   onFileChange: function() {
     $(function() {
-      var file = $(":file").get(0).files[0];
-      var name = file.name;
-      var size = file.size;
-      var type = file.type;
+      // var file = $(":file").get(0).files[0];
+      // var name = file.name;
+      // var size = file.size;
+      // var type = file.type;
     });
   },
   
