@@ -10,6 +10,9 @@ class ArticlesController < ApplicationController
   
 
   def show
+    @article = Article.find(params[:id])
+    respond_with @article
+    return
   end
 
 
@@ -22,7 +25,7 @@ class ArticlesController < ApplicationController
 
 
   def update
-    @article = Article.find(articleParams[:id])
+    @article = Article.find(params[:id])
     @article.update(articleParams)
     respond_with @article
     return

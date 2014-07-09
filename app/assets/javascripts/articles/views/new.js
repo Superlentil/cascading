@@ -102,7 +102,33 @@ Articles.Views.New = Backbone.View.extend({
   },
   
   
-  viewArticle: function(event) {
+  saveAndViewArticle: function(event) {
+    event.preventDefault();
+    event.stopPropagation();
     
+    var that = this;
+    
+    $(function() {
+      var article = that.model;
+      var editor = Articles.Helpers.Editor;
+      
+      article.set({
+          "title": $("#article_title").val(),
+          "author": $("#article_author").val(),
+          "category": $("#article_category").val(),
+          "content": editor.toContentJSON()
+      });
+            
+      article.save(article.toJSON(), {
+        success: function(article) {
+          var url = "#/article/" + article.get("id");
+          console.log(url);
+          Backbone.history.navigate(url, {trigger: true});
+        },
+        error: function(article,response) {
+          console.log(response);
+        }
+      });
+    });    
   }
 });
