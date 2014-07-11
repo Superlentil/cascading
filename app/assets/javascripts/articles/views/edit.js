@@ -1,14 +1,9 @@
-// define the view "New"
-Articles.Views.New = Backbone.View.extend({
-  initialize: function(article) {
-    this.model = article || new Articles.Models.Article();
-  },
-  
-  
+// define the view "Edit"
+Articles.Views.Edit = Backbone.View.extend({  
   el: "body",
   
   
-  template: JST["articles/templates/new"],
+  template: JST["articles/templates/edit"],
   
   
   render: function() {
@@ -18,12 +13,14 @@ Articles.Views.New = Backbone.View.extend({
   
   
   renderArticle: function(article) {
+    var that = this;
+    
     $(function() {
       article = article || new Articles.Models.Article();
-      $("#article_title").val(article.title);
-      $("#article_author").val(article.author);
-      $("#article_category").val(article.category);
-      var articleContent = JSON.parse(article.content);
+      $("#article_title").val(article.get("title"));
+      $("#article_author").val(article.get("author"));
+      $("#article_category").val(article.get("category"));
+      var articleContent = JSON.parse(article.get("content"));
       $("#article_content").empty();
       _.each(articleContent, function(articleParagraph) {
         if (articleParagraph.type === "text") {
@@ -34,7 +31,20 @@ Articles.Views.New = Backbone.View.extend({
           $("#article_content").append(pictureEditor.render(articleParagraph.src).el);
         }
       });
-      this.model = article;
+      that.model = article;
+    });
+  },
+  
+  
+  newArticle: function() {
+    var that = this;
+        
+    var article = new Articles.Models.Article();
+    article.save(article.toJSON(), {
+      success: function(savedArticle) {
+        that.render();
+        that.renderArticle(savedArticle);
+      }
     });
   },
   
@@ -92,7 +102,7 @@ Articles.Views.New = Backbone.View.extend({
       article.save(article.toJSON(), {
         success: function(article) {
           that.render();
-          that.renderArticle(article.attributes);
+          that.renderArticle(article);
         },
         error: function(article,response) {
           console.log(response);
@@ -122,7 +132,6 @@ Articles.Views.New = Backbone.View.extend({
       article.save(article.toJSON(), {
         success: function(article) {
           var url = "#/article/" + article.get("id");
-          console.log(url);
           Backbone.history.navigate(url, {trigger: true});
         },
         error: function(article,response) {

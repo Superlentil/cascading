@@ -14,7 +14,6 @@ Articles.Views.Show = Backbone.View.extend({
       article.fetch({
         success: function(fetchedArticle) {
           $(function() {
-            console.log(fetchedArticle);
             that.$el.html(that.template({article: fetchedArticle}));
           });
         }
