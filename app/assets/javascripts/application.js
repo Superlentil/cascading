@@ -15,6 +15,7 @@
 //= require turbolinks
 //= require underscore
 //= require backbone
+//= require jQuery_cookie
 //= require articles/_INDEXER_
 
 

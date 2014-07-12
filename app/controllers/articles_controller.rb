@@ -19,6 +19,12 @@ class ArticlesController < ApplicationController
   def create
     @article = Article.new(articleParams)
     @article.save
+    session[:NAME] = "Dingyu Zhou"
+    session[:SEX] = "male"
+    session[:BIRTH_YEAR] = 1986
+    cookies[:name] = "Dingyu Zhou"
+    cookies[:sex] = "male"
+    cookies[:birth_year] = 1986
     respond_with @article
     return
   end
