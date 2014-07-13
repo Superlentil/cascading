@@ -1,2 +1,4 @@
 //= require ./editors/_INDEXER_
-//= require_directory .
+//= require ./show
+//= require ./index
+//= require ./edit

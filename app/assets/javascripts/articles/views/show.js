@@ -1,6 +1,6 @@
 // define the view Show
 Articles.Views.Show = Backbone.View.extend({
-  el: "body",
+  el: "div#main_container",
   
   
   template: JST["articles/templates/show"],
@@ -14,7 +14,7 @@ Articles.Views.Show = Backbone.View.extend({
       article.fetch({
         success: function(fetchedArticle) {
           $(function() {
-            that.$el.html(that.template({article: fetchedArticle}));
+            that.$el.html(that.template({article: fetchedArticle, preview: options.preview}));
           });
         }
       });

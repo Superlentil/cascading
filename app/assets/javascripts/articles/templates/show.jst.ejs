@@ -1,5 +1,7 @@
-<a href="#">All Article</a><br />
-<br />
+<% if (!preview) { %>
+  <a href="#">All Article</a><br />
+  <br />
+<% } %>
 
 <% var editor = Articles.Helpers.Editor; %>
 <div>

@@ -6,8 +6,29 @@ Articles.Views.Editors.PictureEditor = Articles.Views.Editors.BaseEditor.extend(
   events: function() {
     return _.extend({}, Articles.Views.Editors.BaseEditor.prototype.events, {
       "change :file": "onFileChange",
-      "click .Submit_Button": "onSubmit"
+      "click .Upload_Button": "onUpload"
     });
+  },
+  
+  
+  removeEditor: function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    if (confirm("Are you sure to remove this picture?")) {
+      var pictureEditor = $(event.currentTarget).parent();
+      var oldPictureHtml = pictureEditor.children("div.Paragraph").children("img");
+      if (oldPictureHtml.length > 0) {
+        var oldPictureId = oldPictureHtml.data("pictureId");
+        var oldPicture = new Articles.Models.Picture({"id": oldPictureId});
+        oldPicture.destroy({
+          error: function() {
+            // @TODO: need some error handle behavior.
+          }
+        });
+      }
+      pictureEditor.remove();
+    }
   },
   
   
@@ -21,9 +42,11 @@ Articles.Views.Editors.PictureEditor = Articles.Views.Editors.BaseEditor.extend(
   },
   
   
-  onSubmit: function(event) {
+  onUpload: function(event) {
     event.preventDefault();
     event.stopPropagation();
+    
+    var that = this;
     var pictureUploader = $(event.currentTarget).prev("input:file");
     var contentContainer = pictureUploader.prev("div.Paragraph");
     
@@ -57,6 +80,9 @@ Articles.Views.Editors.PictureEditor = Articles.Views.Editors.BaseEditor.extend(
         success: function(picture) {
           contentContainer.empty();
           contentContainer.append("<img src='" + picture.medium_url + "' alt='Uploaded Picture' data-picture-id = '" + picture.id + "' />");
+          if (that.parentView) {
+            that.parentView.save();
+          }
         },
         
         error: function(jqXHR, textStatus, errorThrown) {},
