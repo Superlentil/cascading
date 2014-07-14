@@ -1,14 +1,15 @@
 // define the view "BaseEditor", which will be inherited by other editors with some special functionality, for example "TextEditor" and "PictureEditor".
 Articles.Views.Editors.BaseEditor = Backbone.View.extend({
-  tagName: "div",
-  className: "Article_Editor",
-  
-  
   initialize: function(options) {
     if (options) {
       this.parentView = options.parentView;
+      this.articleId = options.articleId;
     }
   },
+  
+  
+  tagName: "div",
+  className: "Article_Editor",
   
   
   render: function(content) {

@@ -1,5 +1,5 @@
 // define the view "PictureEditor"
-Articles.Views.Editors.PictureEditor = Articles.Views.Editors.BaseEditor.extend({
+Articles.Views.Editors.PictureEditor = Articles.Views.Editors.BaseEditor.extend({ 
   template: JST["articles/templates/editors/picture_editor"],
   
   
@@ -17,16 +17,16 @@ Articles.Views.Editors.PictureEditor = Articles.Views.Editors.BaseEditor.extend(
     
     if (confirm("Are you sure to remove this picture?")) {
       var pictureEditor = $(event.currentTarget).parent();
-      var oldPictureHtml = pictureEditor.children("div.Paragraph").children("img");
-      if (oldPictureHtml.length > 0) {
-        var oldPictureId = oldPictureHtml.data("pictureId");
-        var oldPicture = new Articles.Models.Picture({"id": oldPictureId});
-        oldPicture.destroy({
-          error: function() {
-            // @TODO: need some error handle behavior.
-          }
-        });
-      }
+      // var oldPictureHtml = pictureEditor.children("div.Paragraph").children("img");
+      // if (oldPictureHtml.length > 0) {
+        // var oldPictureId = oldPictureHtml.data("pictureId");
+        // var oldPicture = new Articles.Models.Picture({"id": oldPictureId});
+        // oldPicture.destroy({
+          // error: function() {
+            // // @TODO: need some error handle behavior.
+          // }
+        // });
+      // }
       pictureEditor.remove();
     }
   },
@@ -52,6 +52,7 @@ Articles.Views.Editors.PictureEditor = Articles.Views.Editors.BaseEditor.extend(
     
     $(function() {
       var formData = new FormData();
+      formData.append("picture[article_id]", that.articleId);
       formData.append("picture[src]", pictureUploader.get(0).files[0]);
       
       var picture = new Articles.Models.Picture();
@@ -67,22 +68,27 @@ Articles.Views.Editors.PictureEditor = Articles.Views.Editors.BaseEditor.extend(
         },
         
         beforeSend: function() {
-          var oldPictureHtml = contentContainer.children("img");
-          if (oldPictureHtml.length > 0) {
-            var oldPictureId = oldPictureHtml.data("pictureId");
-            var oldPicture = new Articles.Models.Picture({"id": oldPictureId});
-            oldPicture.destroy();
-          }
+          // var oldPictureHtml = contentContainer.children("img");
+          // if (oldPictureHtml.length > 0) {
+            // var oldPictureId = oldPictureHtml.data("pictureId");
+            // var oldPicture = new Articles.Models.Picture({"id": oldPictureId});
+            // oldPicture.destroy();
+          // }
           contentContainer.empty();
           contentContainer.append("<progress></progress>");
         },
         
         success: function(picture) {
           contentContainer.empty();
-          contentContainer.append("<img src='" + picture.medium_url + "' alt='Uploaded Picture' data-picture-id = '" + picture.id + "' />");
-          if (that.parentView) {
-            that.parentView.save();
-          }
+          contentContainer.append("<img src='" + picture.medium_url
+            + "' alt='Uploaded Picture' data-picture-id='" + picture.id
+            + "' data-thumb-url='" + picture.thumb_url
+            + "' data-original-url='" + picture.original_url
+            + "' />"
+          );
+          // if (that.parentView) {
+            // that.parentView.save();
+          // }
         },
         
         error: function(jqXHR, textStatus, errorThrown) {},

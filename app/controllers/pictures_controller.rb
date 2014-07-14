@@ -32,6 +32,6 @@ class PicturesController < ApplicationController
   
 private
   def pictureParams
-    params.require(:picture).permit(:src)
+    params.require(:picture).permit(:src, :article_id)
   end
 end
