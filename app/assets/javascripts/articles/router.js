@@ -4,7 +4,8 @@ Articles.Router = Backbone.Router.extend({
     '': 'index',
     'articles': 'index',
     'articles/new': 'new',
-    'article/:id': 'show'
+    'article/:id': 'show',
+    'article/:id/edit': 'edit'
   },
 
   

@@ -1,0 +1,17 @@
+<div>
+  <input type="file" id="cover_picture" />
+  <input type="button" id="upload_button" value="upload" />
+</div>
+
+<div><h2>OR</h2></div>
+
+<div>
+  <% _.each(pictures, function(picture) { %>
+    <img src="<%= picture.url %>" data-picture-id="<%= picture.id %>" />
+  <% }); %>
+</div>
+
+<div>
+  <input type="button" id="confirm_button" value="confirm" />
+  <input type="button" id="cancel_button" value="cancel" />
+</div>

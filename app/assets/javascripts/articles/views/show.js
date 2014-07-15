@@ -14,12 +14,27 @@ Articles.Views.Show = Backbone.View.extend({
       article.fetch({
         success: function(fetchedArticle) {
           $(function() {
-            that.$el.html(that.template({article: fetchedArticle, preview: options.preview}));
+            that.$el.html(that.template({article: fetchedArticle, contentJsonToHtml: that.contentJsonToHtml, preview: options.preview}));
           });
         }
       });
     }
     
     return that;
+  },
+  
+  
+  contentJsonToHtml: function(articleContent) {
+    var contentObj = JSON.parse(articleContent);
+    var contentHtml = "<div>";
+    _.each(contentObj, function(paragraph) {
+      if (paragraph.type === "text") {
+        contentHtml += "<pre>" + paragraph.src + "</pre>";
+      } else if (paragraph.type === "picture") {
+        contentHtml += "<pre><img src='" + paragraph.url + "' /></pre>";
+      }
+    });
+    contentHtml += "</div>";
+    return contentHtml;
   }
 });

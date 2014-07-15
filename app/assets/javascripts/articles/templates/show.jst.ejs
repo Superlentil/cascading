@@ -3,10 +3,9 @@
   <br />
 <% } %>
 
-<% var editor = Articles.Helpers.Editor; %>
 <div>
   <h3><%= article.get("title") %></h3>
   <strong>author: <%= article.get("author") %></strong><br />
   <em>category: <%= article.get("category") %></em><br />
-  <%= editor.toContentHTML(article.get("content")) %>
+  <%= contentJsonToHtml(article.get("content")) %>
 </div>
