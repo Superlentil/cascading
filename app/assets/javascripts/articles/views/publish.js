@@ -126,7 +126,7 @@ Articles.Views.Publish = Backbone.View.extend({
     that.coverPictureId = picture.data("pictureId");
     that.mode = "choose";
     $(".Article_Picture").css({"margin-bottom": "1em", "border": "0px none"});
-    picture.css({"border": "0px outset gray"}).animate({
+    picture.css({"border": "0px outset pink"}).animate({
       "margin-bottom": "0",
       "border-width": "5px"
     });
