@@ -13,7 +13,6 @@ Articles.Views.Editors.BaseEditor = Backbone.View.extend({
   
   
   render: function(content) {
-    content = content || "";
     this.$el.html(this.template({"content": content}));
     return this;
   },

@@ -28,8 +28,12 @@ class ArticlesController < ApplicationController
     @article = Article.find(params[:id])
     ActiveRecord::Base.transaction do
       if articleParams[:published]
+        if articleParams[:cover_picture_id].to_i < 0
+          articleIds = Article.where(:category => articleParams[:category]).limit(10000).pluck(:id)
+          article = Article.find(articleIds.sample)
+        end
         @article.update(articleParams)
-        publishPreparation(articleParams)
+        deleteNotUsedPictures(articleParams)
       else
         @article.update(articleParams)
       end
@@ -53,7 +57,7 @@ private
   end
   
   
-  def publishPreparation(articleParams)
+  def deleteNotUsedPictures(articleParams)
     pictureId = []
     articleContent = ActiveSupport::JSON.decode(articleParams[:content])
     articleContent.each do |paragraph|

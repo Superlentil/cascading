@@ -21,12 +21,14 @@ Articles.Views.Edit = Backbone.View.extend({
     var articleContent = JSON.parse(article.get("content"));
     $("#article_content").empty();
     _.each(articleContent, function(articleParagraph) {
-      if (articleParagraph.type === "text") {
-        var textEditor = new Articles.Views.Editors.TextEditor();
-        $("#article_content").append(textEditor.render(articleParagraph.src).el);
-      } else if (articleParagraph.type === "picture") {
-        var pictureEditor = new Articles.Views.Editors.PictureEditor();
-        $("#article_content").append(pictureEditor.render(articleParagraph.src).el);
+      if (articleParagraph.src) {
+        if (articleParagraph.type === "text") {
+          var textEditor = new Articles.Views.Editors.TextEditor();
+          $("#article_content").append(textEditor.render(articleParagraph.src).el);
+        } else if (articleParagraph.type === "picture") {
+          var pictureEditor = new Articles.Views.Editors.PictureEditor();
+          $("#article_content").append(pictureEditor.render(articleParagraph.src).el);
+        }
       }
     });
     that.model = article;    
@@ -42,6 +44,18 @@ Articles.Views.Edit = Backbone.View.extend({
     article.save(article.toJSON(), {
       success: function(savedArticle) {
         that.render(savedArticle);
+      }
+    });
+  },
+  
+  
+  editArticle: function(id) {
+    var that = this;
+    
+    var article = new Articles.Models.Article({id: id});
+    article.fetch({
+      success: function(fetchedArticle) {
+        that.render(fetchedArticle);
       }
     });
   },
@@ -99,8 +113,9 @@ Articles.Views.Edit = Backbone.View.extend({
         }
         else if (type === "picture") {
           var img = paragraph.children("img");
-          paragraphJSON.id = img.data("pictureId");
-          paragraphJSON.url = img.attr("src");
+          paragraphJSON.src = {};
+          paragraphJSON.src.id = img.data("pictureId");
+          paragraphJSON.src.url = img.attr("src");
         }
         articleContent.push(paragraphJSON);
       } else {
@@ -186,7 +201,6 @@ Articles.Views.Edit = Backbone.View.extend({
     
     $(function() {
       var article = that.getArticleForSave();
-      article.set("published", true);
       article.save(article.toJSON(), {
         success: function(savedArticle) {
           var viewPublish = new Articles.Views.Publish({article: savedArticle});

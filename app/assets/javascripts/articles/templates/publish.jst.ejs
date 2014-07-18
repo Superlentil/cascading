@@ -1,17 +1,25 @@
-<div>
-  <input type="file" id="cover_picture" />
-  <input type="button" id="upload_button" value="upload" />
+<% if (pictures.length > 0) { %>
+  <div id="choose_cover_picture_container">
+    <h3>Choose a picture in the article as a cover picture:</h3>
+    <% _.each(pictures, function(picture) { %>
+      <img src="<%= picture.url %>" class="Article_Picture" data-picture-id="<%= picture.id %>" style="margin-bottom: 1em; border:0px none;" />
+    <% }); %>
+  </div>
+  
+  <div><h2>OR</h2></div>
+<% } %>
+
+<div id="upload_cover_picture_container">
+  <h3>Upload a new picture as a cover picture:</h3>
+  <div id="upload_preview"></div>
+  <input type="file" id="new_cover_picture" />
+  <input type="button" id="upload_picture_button" value="upload" />
 </div>
 
-<div><h2>OR</h2></div>
-
-<div>
-  <% _.each(pictures, function(picture) { %>
-    <img src="<%= picture.url %>" data-picture-id="<%= picture.id %>" />
-  <% }); %>
-</div>
+<br /><br />
 
 <div>
   <input type="button" id="confirm_button" value="confirm" />
   <input type="button" id="cancel_button" value="cancel" />
+  <input type="button" id="skip_button" value="skip (not recommend)" />
 </div>

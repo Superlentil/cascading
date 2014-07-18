@@ -16,5 +16,6 @@ class CreateArticles < ActiveRecord::Migration
     end
     
     add_index :articles, :published
+    add_index :articles, :category
   end
 end

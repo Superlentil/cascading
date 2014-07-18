@@ -1,7 +1,7 @@
 // define the view "PictureEditor"
 Articles.Views.Editors.PictureEditor = Articles.Views.Editors.BaseEditor.extend({ 
   template: JST["articles/templates/editors/picture_editor"],
-  
+
   
   events: function() {
     return _.extend({}, Articles.Views.Editors.BaseEditor.prototype.events, {
@@ -78,12 +78,10 @@ Articles.Views.Editors.PictureEditor = Articles.Views.Editors.BaseEditor.extend(
           contentContainer.append("<progress></progress>");
         },
         
-        success: function(picture) {
+        success: function(savedPicture) {
           contentContainer.empty();
-          contentContainer.append("<img src='" + picture.medium_url
-            + "' alt='Uploaded Picture' data-picture-id='" + picture.id
-            + "' data-thumb-url='" + picture.thumb_url
-            + "' data-original-url='" + picture.original_url
+          contentContainer.append("<img src='" + savedPicture.medium_url
+            + "' alt='Uploaded Picture' data-picture-id='" + savedPicture.id
             + "' />"
           );
           // if (that.parentView) {

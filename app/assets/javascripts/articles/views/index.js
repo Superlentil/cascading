@@ -29,7 +29,7 @@ Articles.Views.Index = Backbone.View.extend({
       if (paragraph.type === "text") {
         contentHtml += "<pre>" + paragraph.src + "</pre>";
       } else if (paragraph.type === "picture") {
-        contentHtml += "<pre><img src='" + paragraph.url + "' /></pre>";
+        contentHtml += "<pre><img src='" + paragraph.src.url + "' /></pre>";
       }
     });
     contentHtml += "</div>";

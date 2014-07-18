@@ -32,6 +32,12 @@ Articles.Router = Backbone.Router.extend({
   show: function(id) {
     var viewShow = new Articles.Views.Show();
     viewShow.render({id: id});
+  },
+  
+  
+  edit: function(id) {
+    var viewEdit = new Articles.Views.Edit();
+    viewEdit.editArticle(id);
   }
 });
 

@@ -13,9 +13,7 @@ Articles.Views.Show = Backbone.View.extend({
       var article = new Articles.Models.Article({id: options.id});
       article.fetch({
         success: function(fetchedArticle) {
-          $(function() {
-            that.$el.html(that.template({article: fetchedArticle, contentJsonToHtml: that.contentJsonToHtml, preview: options.preview}));
-          });
+          that.$el.html(that.template({article: fetchedArticle, contentJsonToHtml: that.contentJsonToHtml, preview: options.preview}));
         }
       });
     }
@@ -31,7 +29,7 @@ Articles.Views.Show = Backbone.View.extend({
       if (paragraph.type === "text") {
         contentHtml += "<pre>" + paragraph.src + "</pre>";
       } else if (paragraph.type === "picture") {
-        contentHtml += "<pre><img src='" + paragraph.url + "' /></pre>";
+        contentHtml += "<pre><img src='" + paragraph.src.url + "' /></pre>";
       }
     });
     contentHtml += "</div>";

@@ -1,4 +1,8 @@
-<div class="Paragraph" data-type="picture"><%= content %></div>
+<div class="Paragraph" data-type="picture">
+  <% if (content) { %>
+    <img src="<%= content.url %>" data-picture-id="<%= content.id %>" />
+  <% } %>
+</div>
 <input class="Upload_Picture" name="file" type="file" />
 <input type="button" class="Upload_Button" value="Upload" />
 <button class="Move_Up_Button">Up</button>
