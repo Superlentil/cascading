@@ -95,7 +95,7 @@ Articles.Views.Edit = Backbone.View.extend({
   },
   
   
-  prepareArticleForSave: function() {
+  getArticle: function() {    
     var articleContent = [];
     $(".Article_Editor").each(function(index) {
       var editor = $(this);
@@ -123,11 +123,6 @@ Articles.Views.Edit = Backbone.View.extend({
             }
           };
           articleContent.push(paragraphJSON);
-        } else {
-          var uploadPictureInput = editor.children(".Upload_Picture");
-          if (uploadPictureInput.length > 0 && uploadPictureInput.val() !== "") {
-            editor.children(".Upload_Button").trigger("click");
-          }
         }
       }
     });
@@ -144,119 +139,103 @@ Articles.Views.Edit = Backbone.View.extend({
   },
   
   
-  allPicturesUploaded: function() {
+  uploadAllPictures: function() {
     $(".Article_Editor").each(function(index) {
       var editor = $(this);
       var paragraph = editor.children(".Paragraph");
       var type = paragraph.data("type");
-      var allUploaded = true;
 
       if (type === "picture") {
         var img = paragraph.children("img");
-        if (img.length == 0) {
-          allUploaded = false;
+        if (img.length === 0) {
+          var uploadPictureInput = editor.children(".Upload_Picture");
+          if (uploadPictureInput.length > 0 && uploadPictureInput.val() !== "") {
+            editor.children(".Upload_Button").trigger("click");
+          }
         }
       }
-      
-      return allUploaded;
     });
   },
   
   
-  save: function(event) {
+  allPicturesUploaded: function() {
+    var allUploaded = true;
+    $(".Article_Editor").each(function(index) {
+      var editor = $(this);
+      var paragraph = editor.children(".Paragraph");
+      var type = paragraph.data("type");
+
+      if (type === "picture") {
+        var img = paragraph.children("img");
+        if (img.length === 0) {
+          allUploaded = false;
+        }
+      }
+    });
+    return allUploaded;
+  },
+  
+  
+  save: function(event, callback) {
     if (event) {
       event.preventDefault();
       event.stopPropagation();
     }
     
     var that = this;
+    that.uploadAllPictures();
     
-    $(function() {
-      var article = that.prepareArticleForSave();
-      
-      var timeoutAction = setTimeout(function() {
-        if (that.allPicturesUploaded()) {
-          clearTimeout(timeoutAction);
-          
-          article.save(article.toJSON(), {
-            success: function(savedArticle) {
-              // @TODO: add success behavior.
-            },
-            error: function(unsavedArticle,response) {
-              alert("Save failed!");
-              that.render(unsavedArticle);
+    function waitingForUpload() {
+      if (that.allPicturesUploaded()) {
+        var article = that.getArticle();
+        article.save(article.toJSON(), {
+          success: function(savedArticle) {
+            if (callback) {
+              callback(savedArticle);
             }
-          });
-        }
-      }, 200);
+          },
+          error: function(unsavedArticle,response) {
+            alert("Save failed!");
+            that.render(unsavedArticle);
+          }
+        });
+      } else {
+        setTimeout(waitingForUpload, 500);
+      }
+    }
+    
+    waitingForUpload();
+  },
+  
+  
+  preview: function(savedArticle) {
+    var viewShow = new Articles.Views.Show({el: "div#popup_container"});
+    viewShow.render({id: savedArticle.get("id"), preview: true});
+    var popupContainer = $("#popup_container");
+    var editArea = $("#article_edit_area");
+    popupContainer.fadeIn("slow");
+    editArea.css({"opacity": "0.3"});
+    
+    editArea.on("click", function() {
+      editArea.off("click");
+      popupContainer.fadeOut("slow");
+      editArea.css({"opacity": "1.0"});
     });
   },
   
   
   saveAndPreview: function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    
-    var that = this;
-    
-    $(function() {
-      var article = that.prepareArticleForSave();
-      
-      var timeoutAction = setTimeout(
-        function() {
-          console.log("out");
-          if (that.allPicturesUploaded()) {
-            console.log("in");
-            
-            article.save(article.toJSON(), {
-              success: function(savedArticle) {
-                var viewShow = new Articles.Views.Show({el: "div#popup_container"});
-                viewShow.render({id: savedArticle.get("id"), preview: true});
-                var popupContainer = $("#popup_container");
-                var editArea = $("#article_edit_area");
-                popupContainer.fadeIn("slow");
-                editArea.css({"opacity": "0.3"});
-                
-                editArea.on("click", function() {
-                  editArea.off("click");
-                  popupContainer.fadeOut("slow");
-                  editArea.css({"opacity": "1.0"});
-                });
-              },
-              error: function(unsavedArticle,response) {
-                alert("Save failed!");
-                that.render(unsavedArticle);
-              }
-            });
-            
-            clearTimeout(timeoutAction);
-          }
-        },
-        1000
-      );
-    });
+    this.save(event, this.preview);
+  },
+  
+  
+  publish: function(savedArticle) {
+    var viewPublish = new Articles.Views.Publish({article: savedArticle});
+    viewPublish.render();
   },
   
   
   saveAndPublish: function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    
-    var that = this;
-    
-    $(function() {
-      var article = that.prepareArticleForSave();
-      console.log(article);
-      article.save(article.toJSON(), {
-        success: function(savedArticle) {
-          var viewPublish = new Articles.Views.Publish({article: savedArticle});
-          viewPublish.render();
-        },
-        error: function(unsavedArticle,response) {
-          alert("Save failed!");
-          that.render(unsavedArticle);
-        }
-      });
-    });
-  },
+    this.save(event, this.publish);
+  }
 });

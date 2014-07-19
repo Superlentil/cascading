@@ -5,7 +5,7 @@ Articles.Views.Editors.PictureEditor = Articles.Views.Editors.BaseEditor.extend(
   
   events: function() {
     return _.extend({}, Articles.Views.Editors.BaseEditor.prototype.events, {
-      "change :file": "onFileChange",
+      "change .Upload_Picture": "onFileChange",
       "click .Upload_Button": "onUpload"
     });
   },
@@ -17,28 +17,17 @@ Articles.Views.Editors.PictureEditor = Articles.Views.Editors.BaseEditor.extend(
     
     if (confirm("Are you sure to remove this picture?")) {
       var pictureEditor = $(event.currentTarget).parent();
-      // var oldPictureHtml = pictureEditor.children("div.Paragraph").children("img");
-      // if (oldPictureHtml.length > 0) {
-        // var oldPictureId = oldPictureHtml.data("pictureId");
-        // var oldPicture = new Articles.Models.Picture({"id": oldPictureId});
-        // oldPicture.destroy({
-          // error: function() {
-            // // @TODO: need some error handle behavior.
-          // }
-        // });
-      // }
       pictureEditor.remove();
     }
   },
   
   
-  onFileChange: function() {
-    $(function() {
-      // var file = $(":file").get(0).files[0];
-      // var name = file.name;
-      // var size = file.size;
-      // var type = file.type;
-    });
+  onFileChange: function(event) {
+    // var file = $(":file").get(0).files[0];
+    // var name = file.name;
+    // var size = file.size;
+    // var type = file.type;
+    $(event.currentTarget).prev("div.Paragraph").empty();
   },
   
   
@@ -47,7 +36,7 @@ Articles.Views.Editors.PictureEditor = Articles.Views.Editors.BaseEditor.extend(
     event.stopPropagation();
     
     var that = this;
-    var pictureUploader = $(event.currentTarget).prev("input:file");
+    var pictureUploader = $(event.currentTarget).prev("input.Upload_Picture");
     var contentContainer = pictureUploader.prev("div.Paragraph");
     
     $(function() {
@@ -68,12 +57,6 @@ Articles.Views.Editors.PictureEditor = Articles.Views.Editors.BaseEditor.extend(
         },
         
         beforeSend: function() {
-          // var oldPictureHtml = contentContainer.children("img");
-          // if (oldPictureHtml.length > 0) {
-            // var oldPictureId = oldPictureHtml.data("pictureId");
-            // var oldPicture = new Articles.Models.Picture({"id": oldPictureId});
-            // oldPicture.destroy();
-          // }
           contentContainer.empty();
           contentContainer.append("<progress></progress>");
         },
@@ -84,9 +67,6 @@ Articles.Views.Editors.PictureEditor = Articles.Views.Editors.BaseEditor.extend(
             + "' alt='Uploaded Picture' data-picture-id='" + savedPicture.id
             + "' />"
           );
-          // if (that.parentView) {
-            // that.parentView.save();
-          // }
         },
         
         error: function(jqXHR, textStatus, errorThrown) {},
