@@ -7,6 +7,12 @@ Articles.Router = Backbone.Router.extend({
     'article/:id': 'show',
     'article/:id/edit': 'edit'
   },
+  
+  
+  execute: function(callback, args) {
+    $(window).off("scroll");
+    if (callback) callback.apply(this, args);
+  },
 
   
   index: function() {

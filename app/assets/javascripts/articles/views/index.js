@@ -1,5 +1,11 @@
 // define the view "Index"
 Articles.Views.Index = Backbone.View.extend({
+  initialize: function() {
+    _.bindAll(this, 'handleScroll');
+    $(window).on("scroll", this.handleScroll);
+  },
+  
+  
   el: "div#main_container",
   
   
@@ -53,5 +59,13 @@ Articles.Views.Index = Backbone.View.extend({
         Backbone.history.loadUrl("");
       }
     });
+  },
+  
+  
+  handleScroll: function(event) {
+    var thisWindow = $(window);
+    if (thisWindow.scrollTop() + thisWindow.height() + 500 > $(document).height()) {
+      alert("To the bottom!!!!!!");
+    }
   }
 });
