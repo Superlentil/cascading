@@ -29,10 +29,35 @@ Articles.Views.Show = Backbone.View.extend({
       if (paragraph.type === "text") {
         contentHtml += "<pre>" + paragraph.src + "</pre>";
       } else if (paragraph.type === "picture") {
-        contentHtml += "<pre><img src='" + paragraph.src.url + "' /></pre>";
+        contentHtml += "<pre><img src='" + paragraph.src.url + "' class='Article_Picture' /></pre>";
       }
     });
     contentHtml += "</div>";
     return contentHtml;
+  },
+  
+  
+  events: {
+    "click .Article_Picture": "showOriginalPicture"
+  },
+  
+  
+  showOriginalPicture: function(event) {
+    event.preventDefault();
+    
+    var popupContainer = $("#popup_container");
+    if (popupContainer.length > 0) {
+      var picture = $(event.currentTarget);
+      var articleContainer = $("#article_content_container");
+      popupContainer.html("<img src='" + picture.attr("src").replace("/medium/", "/original/") + "' />");
+      popupContainer.fadeIn("slow");
+      articleContainer.css({"opacity": "0.3"});
+      
+      articleContainer.on("click", function() {
+        articleContainer.off("click");
+        popupContainer.fadeOut("slow");
+        articleContainer.css({"opacity": "1.0"});
+      });
+    }    
   }
 });

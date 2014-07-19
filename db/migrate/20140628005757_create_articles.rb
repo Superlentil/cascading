@@ -2,7 +2,7 @@ class CreateArticles < ActiveRecord::Migration
   def change
     create_table :articles do |t|
       t.string :cover_picture_url, default: ""
-      t.integer :cover_picture_id, default: nil
+      t.integer :cover_picture_id, default: -1
       t.string :title, default: ""
       t.string :author, default: ""
       t.string :category, default: ""

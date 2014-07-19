@@ -10,9 +10,6 @@ Articles.Views.Edit = Backbone.View.extend({
     var that = this;
 
     that.$el.html(that.template());
-    $("button#article_save_and_publish").one("click", function(event) {
-      that.saveAndPublish(event);   // publish event handler
-    });
     
     article = article || new Articles.Models.Article();
     $("#article_title").val(article.get("title"));
@@ -66,7 +63,8 @@ Articles.Views.Edit = Backbone.View.extend({
     "click #article_add_picture": "addPicture",
  
     "click #article_save": "save",
-    "click #article_save_and_preview": "saveAndPreview"
+    "click #article_save_and_preview": "saveAndPreview",
+    "click #article_save_and_publish": "saveAndPublish"
   },
   
   
@@ -97,31 +95,37 @@ Articles.Views.Edit = Backbone.View.extend({
   },
   
   
-  getArticleForSave: function() {
+  prepareArticleForSave: function() {
     var articleContent = [];
     $(".Article_Editor").each(function(index) {
       var editor = $(this);
       var paragraph = editor.children(".Paragraph");
       var type = paragraph.data("type");
-      var src = paragraph.html();
-      if (src !== "") {
-        var paragraphJSON = {
-          "type": type
-        };
-        if (type === "text") {
-          paragraphJSON.src = src;
+
+      if (type === "text") {
+        var src = paragraph.html();
+        if (src !== "") {
+          var paragraphJSON = {
+            "type": type,
+            "src": src
+          };
+          articleContent.push(paragraphJSON);
         }
-        else if (type === "picture") {
-          var img = paragraph.children("img");
-          paragraphJSON.src = {};
-          paragraphJSON.src.id = img.data("pictureId");
-          paragraphJSON.src.url = img.attr("src");
-        }
-        articleContent.push(paragraphJSON);
-      } else {
-        if (type === "picture") {   // upload unsaved pictures.
+      }
+      else if (type === "picture") {
+        var img = paragraph.children("img");
+        if (img.length > 0) {
+          var paragraphJSON = {
+            "type": type,
+            "src": {
+              "id": img.data("pictureId"),
+              "url": img.attr("src")
+            }
+          };
+          articleContent.push(paragraphJSON);
+        } else {
           var uploadPictureInput = editor.children(".Upload_Picture");
-          if (uploadPictureInput.val() !== "") {
+          if (uploadPictureInput.length > 0 && uploadPictureInput.val() !== "") {
             editor.children(".Upload_Button").trigger("click");
           }
         }
@@ -138,7 +142,26 @@ Articles.Views.Edit = Backbone.View.extend({
     
     return this.model;
   },
-   
+  
+  
+  allPicturesUploaded: function() {
+    $(".Article_Editor").each(function(index) {
+      var editor = $(this);
+      var paragraph = editor.children(".Paragraph");
+      var type = paragraph.data("type");
+      var allUploaded = true;
+
+      if (type === "picture") {
+        var img = paragraph.children("img");
+        if (img.length == 0) {
+          allUploaded = false;
+        }
+      }
+      
+      return allUploaded;
+    });
+  },
+  
   
   save: function(event) {
     if (event) {
@@ -149,16 +172,23 @@ Articles.Views.Edit = Backbone.View.extend({
     var that = this;
     
     $(function() {
-      var article = that.getArticleForSave();
-      article.save(article.toJSON(), {
-        success: function(savedArticle) {
-          // @TODO: add success behavior.
-        },
-        error: function(unsavedArticle,response) {
-          alert("Save failed!");
-          that.render(unsavedArticle);
+      var article = that.prepareArticleForSave();
+      
+      var timeoutAction = setTimeout(function() {
+        if (that.allPicturesUploaded()) {
+          clearTimeout(timeoutAction);
+          
+          article.save(article.toJSON(), {
+            success: function(savedArticle) {
+              // @TODO: add success behavior.
+            },
+            error: function(unsavedArticle,response) {
+              alert("Save failed!");
+              that.render(unsavedArticle);
+            }
+          });
         }
-      });
+      }, 200);
     });
   },
   
@@ -170,26 +200,41 @@ Articles.Views.Edit = Backbone.View.extend({
     var that = this;
     
     $(function() {
-      var article = that.getArticleForSave();
-      article.save(article.toJSON(), {
-        success: function(savedArticle) {
-          var viewShow = new Articles.Views.Show({el: "div#popup_container"});
-          viewShow.render({id: savedArticle.get("id"), preview: true});
-          $("#popup_container").fadeIn("slow");
-          $("#article_edit_area").css({"opacity": "0.3"});
-          
-          $("#article_edit_area").on("click", function() {
-            $("#article_edit_area").off("click");
-            $("#popup_container").fadeOut("slow");
-            $("#article_edit_area").css({"opacity": "1.0"});
-          });
+      var article = that.prepareArticleForSave();
+      
+      var timeoutAction = setTimeout(
+        function() {
+          console.log("out");
+          if (that.allPicturesUploaded()) {
+            console.log("in");
+            
+            article.save(article.toJSON(), {
+              success: function(savedArticle) {
+                var viewShow = new Articles.Views.Show({el: "div#popup_container"});
+                viewShow.render({id: savedArticle.get("id"), preview: true});
+                var popupContainer = $("#popup_container");
+                var editArea = $("#article_edit_area");
+                popupContainer.fadeIn("slow");
+                editArea.css({"opacity": "0.3"});
+                
+                editArea.on("click", function() {
+                  editArea.off("click");
+                  popupContainer.fadeOut("slow");
+                  editArea.css({"opacity": "1.0"});
+                });
+              },
+              error: function(unsavedArticle,response) {
+                alert("Save failed!");
+                that.render(unsavedArticle);
+              }
+            });
+            
+            clearTimeout(timeoutAction);
+          }
         },
-        error: function(unsavedArticle,response) {
-          alert("Save failed!");
-          that.render(unsavedArticle);
-        }
-      });
-    });    
+        1000
+      );
+    });
   },
   
   
@@ -200,120 +245,12 @@ Articles.Views.Edit = Backbone.View.extend({
     var that = this;
     
     $(function() {
-      var article = that.getArticleForSave();
+      var article = that.prepareArticleForSave();
+      console.log(article);
       article.save(article.toJSON(), {
         success: function(savedArticle) {
           var viewPublish = new Articles.Views.Publish({article: savedArticle});
           viewPublish.render();
-          
-          
-          
-          
-          // var thumbPictures = [];
-          // $(".Article_Editor").each(function(index) {
-            // var paragraph = $(this).children(".Paragraph");
-            // var type = paragraph.data("type");
-            // var src = paragraph.html();
-            // if (src !== "" && type === "picture") {
-              // thumbPictures.push({
-                // "id": paragraph.children("img").data("pictureId"),
-                // "url": paragraph.children("img").data("thumbUrl")
-              // });
-            // }
-          // });
-//           
-          // $("#popup_container").empty();
-          // _.each(thumbPictures, function(pic) {
-            // var thumbPic = $("<img></img>");
-            // thumbPic.attr("src", pic.url);
-            // thumbPic.data("pictureId", pic.id);
-            // thumbPic.one("click", function(event) {
-              // event.preventDefault();
-              // event.stopPropagation();
-              // savedArticle.set("cover_picture_url", thumbPic.attr("src"));
-              // savedArticle.set("cover_picture_id", thumbPic.data("pictureId"));
-              // savedArticle.save(savedArticle.toJSON());
-              // $("#article_edit_area").off("click");
-              // $("#popup_container").fadeOut("slow");
-              // $("#article_edit_area").css({"opacity": "1.0"});
-            // });
-            // $("#popup_container").append(thumbPic);
-          // });
-          // var link = $("<a>choose a different picture as the cover</a>");
-          // link.one("click", function() {
-            // var coverPreview = $("<div id='cover_preview'></div>");
-            // var pictureUploader = $("<input id='cover_picture' type='file' />");
-            // var submit = $("<input type='button' id='cover_submit' value='Upload' />");
-// 
-            // $("#popup_container").empty();
-            // $("#popup_container").append(coverPreview);
-            // $("#popup_container").append(pictureUploader);
-            // $("#popup_container").append(submit);
-// 
-            // submit.one("click", function(event) {
-              // event.preventDefault();
-              // event.stopPropagation();
-//               
-              // $(function() {
-                // var formData = new FormData();
-                // formData.append("picture[article_id]", that.model.get("id"));
-                // formData.append("picture[src]", pictureUploader.get(0).files[0]);
-//                 
-                // var picture = new Articles.Models.Picture();
-//                 
-                // picture.save(formData, {
-                  // progress: function(event) {
-                    // if (event.lengthComputable) {
-                      // $('progress').attr({
-                        // value: event.loaded,
-                        // max: event.total
-                      // });
-                    // }
-                  // },
-//                   
-                  // beforeSend: function() {
-                    // // var oldPictureHtml = contentContainer.children("img");
-                    // // if (oldPictureHtml.length > 0) {
-                      // // var oldPictureId = oldPictureHtml.data("pictureId");
-                      // // var oldPicture = new Articles.Models.Picture({"id": oldPictureId});
-                      // // oldPicture.destroy();
-                    // // }
-                    // coverPreview.append("<progress></progress>");
-                  // },
-//                   
-                  // success: function(picture) {
-                    // coverPreview.empty();
-                    // coverPreview.append("<img src='" + picture.thumb_url + "' />");
-                    // coverPreview.append("<h4>Successfully Changed the Cover Picture!</h4>");
-                    // var article = that.model;
-                      // article.set("cover_picture_url", picture.thumb_url);
-                      // article.set("cover_picture_id", picture.id);
-                      // article.save(article.toJSON());
-                  // },
-//                   
-                  // error: function(jqXHR, textStatus, errorThrown) {},
-//                   
-                  // complete: function(jqXHR, textStatus ) {}
-                // });
-              // });
-            // });
-          // });
-// 
-          // $("#popup_container").append(link);
-          // $("#popup_container").fadeIn("slow");
-          // $("#article_edit_area").css({"opacity": "0.3"});
-//           
-          // $("#article_edit_area").on("click", function() {
-            // $("#article_edit_area").off("click");
-            // $("#popup_container").fadeOut("slow");
-            // $("#article_edit_area").css({"opacity": "1.0"});
-          // });
-          
-          
-          
-          
-          
-          
         },
         error: function(unsavedArticle,response) {
           alert("Save failed!");

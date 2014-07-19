@@ -22,18 +22,23 @@ Articles.Views.Publish = Backbone.View.extend({
   render: function() {
     var that = this;
     
-    var allPictures = this.getAllPictures();
-    this.$el.html(this.template({pictures: allPictures}));
-    $("#confirm_button").on("click", function() {
+    var allContentPictures = this.getAllContentPictures();
+    this.$el.html(this.template({
+      coverPictureId: this.article.get("cover_picture_id"),
+      coverPictureUrl: this.article.get("cover_picture_url"),
+      contentPictures: allContentPictures
+    }));
+    
+    $("#confirm_button").one("click", function() {
       that.publish({"hasCoverPicture": true});
     });
-    $("#skip_button").on("click", function() {
+    $("#skip_button").one("click", function() {
       that.publish();
     });
   },
   
   
-  getAllPictures: function() {
+  getAllContentPictures: function() {
     var pictures = [];
     articleContent = JSON.parse(this.article.get("content"));
     _.each(articleContent, function(paragraph) {
@@ -83,7 +88,8 @@ Articles.Views.Publish = Backbone.View.extend({
     "click #upload_cover_picture_container": "uploadCoverPictureMode",
 
     "click .Article_Picture": "chooseCover",    
-    "click #upload_picture_button": "uploadCover"
+    "click #upload_picture_button": "uploadCover",
+    "click #cancel_button": "cancelPublish"
   },
   
   
@@ -175,5 +181,10 @@ Articles.Views.Publish = Backbone.View.extend({
       
       complete: function(jqXHR, textStatus ) {}
     });
+  },
+  
+  
+  cancelPublish: function() {
+    Backbone.history.loadUrl("article/" + this.article.get("id") + "/edit");
   }
 });

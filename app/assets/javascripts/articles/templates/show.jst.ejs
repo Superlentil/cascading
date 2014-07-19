@@ -1,9 +1,12 @@
 <% if (!preview) { %>
-  <a href="#">All Article</a><br />
-  <br />
+  <div id="popup_container" class="popup_box"></div>
+    
+  <div id="article_content_container">
+    <a href="#">All Article</a><br />
+    <br />
+<% } else { %>
+  <div id="article_content_container">
 <% } %>
-
-<div>
   <h3><%= article.get("title") %></h3>
   <strong>author: <%= article.get("author") %></strong><br />
   <em>category: <%= article.get("category") %></em><br />

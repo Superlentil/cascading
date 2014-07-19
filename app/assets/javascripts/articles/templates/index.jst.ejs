@@ -4,7 +4,10 @@
 <% _.each(articles, function(article) { %>
   <hr />
   <div>
-    <h3><%= article.get("title") %></h3>
+    <h3><a href="#/article/<%= article.get("id") %>"><%= article.get("title") %></a></h3>
+    <img src="<%= article.get("cover_picture_url") %>" title="Cover Picture" /><br />
+    <a href="#/article/<%= article.get("id") %>/edit">edit</a>
+    <a href="#" class="Delete_Article" data-article-id="<%= article.get("id") %>">delete</a><br />
     <strong>author: <%= article.get("author") %></strong><br />
     <em>category: <%= article.get("category") %></em><br />
     <%= contentJsonToHtml(article.get("content")) %>

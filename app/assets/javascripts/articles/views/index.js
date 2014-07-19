@@ -12,9 +12,11 @@ Articles.Views.Index = Backbone.View.extend({
     var articles = new Articles.Collections.Article();
     articles.fetch({
       success: function(articles) {
-        $(function() {
-          that.$el.html(that.template({articles: articles.models, contentJsonToHtml: that.contentJsonToHtml}));
-        }); 
+        that.$el.html(that.template({articles: articles.models, contentJsonToHtml: that.contentJsonToHtml}));
+        
+        $(".Delete_Article").one("click", function(event) {
+          that.deleteArticle(event);
+        });
       }
     });
     
@@ -34,5 +36,22 @@ Articles.Views.Index = Backbone.View.extend({
     });
     contentHtml += "</div>";
     return contentHtml;
+  },
+  
+  
+  deleteArticle: function(event) {
+    event.preventDefault();
+    
+    var id = $(event.currentTarget).data("articleId");
+    var article = new Articles.Models.Article({id: id});
+    article.destroy({
+      success: function() {
+        Backbone.history.loadUrl("");
+      },
+      error: function() {
+        alert("Delete article failed. Please try it again. Thanks!");
+        Backbone.history.loadUrl("");
+      }
+    });
   }
 });

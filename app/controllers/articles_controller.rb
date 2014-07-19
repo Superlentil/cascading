@@ -62,7 +62,7 @@ private
   
   def articlePictureIds(articleContent, articleCoverPictureId = INVALID_ARTICLE_COVER_PICTURE_ID)
     pictureIds = [].to_set
-    if articleCoverPictureId != INVALID_ARTICLE_COVER_PICTURE_ID
+    if !articleCoverPictureId.nil? && articleCoverPictureId != INVALID_ARTICLE_COVER_PICTURE_ID
       pictureIds.add(articleCoverPictureId)
     end
     articleContent = ActiveSupport::JSON.decode(articleContent)
@@ -99,13 +99,15 @@ private
       if articleIds.length > 0
         article = Article.select("cover_picture_id, content").find(articleIds.sample)
         pictureIds = articlePictureIds(article.content, article.cover_picture_id)
-        samplePicture = Picture.find(pictureIds.sample)
-        coverPicture = Picture.new
-        coverPicture.src = samplePicture.src
-        coverPicture.article_id = inputParams[:id]
-        if coverPicture.save
-          inputParams[:cover_picture_id] = coverPicture.id
-          inputParams[:cover_picture_url] = coverPicture.src.url(:thumb)
+        if pictureIds.length > 0
+          samplePicture = Picture.find(pictureIds.sample)
+          coverPicture = Picture.new
+          coverPicture.src = samplePicture.src
+          coverPicture.article_id = inputParams[:id]
+          if coverPicture.save
+            inputParams[:cover_picture_id] = coverPicture.id
+            inputParams[:cover_picture_url] = coverPicture.src.url(:thumb)
+          end
         end
       end
     else
