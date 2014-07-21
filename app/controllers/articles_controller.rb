@@ -3,7 +3,15 @@ class ArticlesController < ApplicationController
   
   
   def index
-    @articles = Article.all
+    batch = params[:batch]
+    if batch.nil?
+      batch = 0
+    else
+      batch = batch.to_i
+    end
+    articlesPerBatch = 7
+    puts batch, articlesPerBatch, batch * articlesPerBatch
+    @articles = Article.select("id, cover_picture_url, cover_picture_id, title, author, category").limit(articlesPerBatch).offset(batch * articlesPerBatch)
     respond_with @articles
     return
   end

@@ -4,6 +4,9 @@
   <div id="article_content_container">
     <a href="#">All Article</a><br />
     <br />
+    <img src="<%= article.get("cover_picture_url") %>" title="Cover Picture" /><br />
+    <a href="#/article/<%= article.get("id") %>/edit">edit</a>
+    <a href="#" class="Delete_Article" data-article-id="<%= article.get("id") %>">delete</a><br />
 <% } else { %>
   <div id="article_content_container">
 <% } %>

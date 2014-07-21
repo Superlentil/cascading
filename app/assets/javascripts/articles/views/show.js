@@ -14,11 +14,32 @@ Articles.Views.Show = Backbone.View.extend({
       article.fetch({
         success: function(fetchedArticle) {
           that.$el.html(that.template({article: fetchedArticle, contentJsonToHtml: that.contentJsonToHtml, preview: options.preview}));
+          
+          $(".Delete_Article").one("click", function(event) {
+            that.deleteArticle(event);
+          });
         }
       });
     }
-    
+       
     return that;
+  },
+  
+  
+  deleteArticle: function(event) {
+    event.preventDefault();
+    
+    var id = $(event.currentTarget).data("articleId");
+    var article = new Articles.Models.Article({id: id});
+    article.destroy({
+      success: function() {
+        Backbone.history.navigate("", {trigger: true});
+      },
+      error: function() {
+        alert("Delete article failed. Please try it again. Thanks!");
+        Backbone.history.navigate("", {trigger: true});
+      }
+    });
   },
   
   

@@ -7,7 +7,8 @@ Articles.Models = {};
 Articles.Collections = {};
 
 Articles.Views = {};
-Articles.Views.Editors = {};
+Articles.Views.Editors = {};      // Paragraph Editors
+Articles.Views.Index = {};      // Index Page
 
 Articles.Router = {};
 

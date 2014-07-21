@@ -16,7 +16,7 @@ Articles.Router = Backbone.Router.extend({
 
   
   index: function() {
-    var viewIndex = new Articles.Views.Index();
+    var viewIndex = new Articles.Views.Index.Main();
     viewIndex.render();
   },
 
