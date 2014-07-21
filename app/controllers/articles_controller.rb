@@ -10,7 +10,6 @@ class ArticlesController < ApplicationController
       batch = batch.to_i
     end
     articlesPerBatch = 7
-    puts batch, articlesPerBatch, batch * articlesPerBatch
     @articles = Article.select("id, cover_picture_url, cover_picture_id, title, author, category").limit(articlesPerBatch).offset(batch * articlesPerBatch)
     respond_with @articles
     return
@@ -115,6 +114,9 @@ private
           if coverPicture.save
             inputParams[:cover_picture_id] = coverPicture.id
             inputParams[:cover_picture_url] = coverPicture.src.url(:thumb)
+            
+            geometry = Paperclip::Geometry.from_file(coverPicture.src.path(:thumb))
+            puts "--------------------------", "Width:", geometry.width, "Height:", geometry.height, "--------------------------"
           end
         end
       end
@@ -122,6 +124,9 @@ private
       coverPicture = Picture.find(pictureIds.sample)
       inputParams[:cover_picture_id] = coverPicture.id
       inputParams[:cover_picture_url] = coverPicture.src.url(:thumb)
+      
+      geometry = Paperclip::Geometry.from_file(coverPicture.src.path(:thumb))
+      puts "--------------------------", "Width:", geometry.width, "Height:", geometry.height, "--------------------------"
     end
   end
   
