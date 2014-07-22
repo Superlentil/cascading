@@ -1,17 +1,2 @@
 <h1>Pictures#index</h1>
 <p>Find me in app/views/pictures/index.html.erb</p>
-
-<div><h3>Test Picture Upload:</h3></div>
-<%= form_for @picture, :html => { :multipart => true } do |form| %>
-  <%= form.file_field :src %>
-  <%= form.submit %>
-<% end %>
-
-
-<% @pictures.each do |picture| %>
-  <div>
-    <hr />
-    <p>No. <%= picture.id %></p>
-    <p><%= image_tag picture.src.url(:medium) %></p>
-  </div>
-<% end %>

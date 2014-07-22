@@ -12,8 +12,10 @@ Articles.Views.Index.Main = Backbone.View.extend({
     this.hPosition = [0, 0, 0, 0];
     this.vPosition = [0, 240, 480, 720];
     this.minHorizontalIndex = 0;
-    this.cascadeContainerHeight = 0;
+
     this.batch = 0;
+    this.readyToLoad = true;
+    this.moreToLoad = true;
   },
   
   
@@ -63,14 +65,18 @@ Articles.Views.Index.Main = Backbone.View.extend({
           var hCoordinate = that.hPosition[that.minHorizontalIndex];
           var vCoordinate = that.vPosition[that.minHorizontalIndex];
           cascadeContainer.append(viewArticleCover.render(hCoordinate, vCoordinate).$el);
-          var newHorizontalCoordinate = hCoordinate + viewArticleCover.$el.height() + 5;
+          var coverHeight = viewArticleCover.$el.children("div.article_information").height() + article.get("cover_picture_height") + 20;
+          var newHorizontalCoordinate = hCoordinate + coverHeight + 10;
           that.insertNewCoordinate(newHorizontalCoordinate, vCoordinate);
-          if (newHorizontalCoordinate > that.cascadeContainerHeight) {
-            that.cascadeContainerHeight = newHorizontalCoordinate;
-            cascadeContainer.css({"height": that.cascadeContainerHeight + "px"});
+          if (newHorizontalCoordinate > cascadeContainer.height()) {
+            cascadeContainer.css({"height": newHorizontalCoordinate + "px"});
           }
         });
         ++that.batch;
+        that.readyToLoad = true;
+        if (fetchedArticles.length < 2) {
+          that.moreToLoad = false;
+        }
       }
     });
   },
@@ -79,7 +85,10 @@ Articles.Views.Index.Main = Backbone.View.extend({
   handleScroll: function(event) {
     var thisWindow = $(window);
     if (thisWindow.scrollTop() + thisWindow.height() + 500 > $(document).height()) {
-      this.loadArticles();
+      if (this.readyToLoad && this.moreToLoad) {
+        this.readyToLoad = false;
+        this.loadArticles();
+      }
     }
   },
   

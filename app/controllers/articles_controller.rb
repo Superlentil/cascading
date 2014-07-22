@@ -9,8 +9,8 @@ class ArticlesController < ApplicationController
     else
       batch = batch.to_i
     end
-    articlesPerBatch = 7
-    @articles = Article.select("id, cover_picture_url, cover_picture_id, title, author, category").limit(articlesPerBatch).offset(batch * articlesPerBatch)
+    articlesPerBatch = 2
+    @articles = Article.select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, author, category").limit(articlesPerBatch).offset(batch * articlesPerBatch)
     respond_with @articles
     return
   end
@@ -39,6 +39,9 @@ class ArticlesController < ApplicationController
         if inputParams[:cover_picture_id].to_i < 0
           assignCoverPicture(inputParams)
         end
+        coverPicturePath = Picture.find(inputParams[:cover_picture_id]).src.path(:thumb)
+        geometry = Paperclip::Geometry.from_file(coverPicturePath)
+        inputParams[:cover_picture_height] = geometry.height.to_i
         @article.update(inputParams)
         deleteNotUsedPictures(inputParams)
       else
@@ -114,9 +117,6 @@ private
           if coverPicture.save
             inputParams[:cover_picture_id] = coverPicture.id
             inputParams[:cover_picture_url] = coverPicture.src.url(:thumb)
-            
-            geometry = Paperclip::Geometry.from_file(coverPicture.src.path(:thumb))
-            puts "--------------------------", "Width:", geometry.width, "Height:", geometry.height, "--------------------------"
           end
         end
       end
@@ -124,9 +124,6 @@ private
       coverPicture = Picture.find(pictureIds.sample)
       inputParams[:cover_picture_id] = coverPicture.id
       inputParams[:cover_picture_url] = coverPicture.src.url(:thumb)
-      
-      geometry = Paperclip::Geometry.from_file(coverPicture.src.path(:thumb))
-      puts "--------------------------", "Width:", geometry.width, "Height:", geometry.height, "--------------------------"
     end
   end
   

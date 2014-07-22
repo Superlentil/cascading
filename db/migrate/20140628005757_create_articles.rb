@@ -3,6 +3,7 @@ class CreateArticles < ActiveRecord::Migration
     create_table :articles do |t|
       t.string :cover_picture_url, default: ""
       t.integer :cover_picture_id, default: -1
+      t.integer :cover_picture_height, default: 0
       t.string :title, default: ""
       t.string :author, default: ""
       t.string :category, default: ""
