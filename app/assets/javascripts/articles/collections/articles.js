@@ -1,23 +1,15 @@
 Articles.Collections.Articles = Backbone.Collection.extend({
-  initialize: function() {
-    this.batch = 0;
-  },
-  
-  
   model: Articles.Models.Article,
   
   
   url: function() {
-    return "/articles/?" + $.param({batch: this.batch});
+    return "/articles/?" + $.param({batch: this.batch, articles_per_batch: this.articlesPerBatch});
   },
   
   
-  fetchBatch: function(batch, options) {
-    if (batch) {
-      this.batch = batch;
-    } else {
-      this.batch = 0;
-    }
+  fetchBatch: function(batch, articlesPerBatch, options) {
+    this.batch = batch;
+    this.articlesPerBatch = articlesPerBatch;
     
     this.fetch(options);
   }

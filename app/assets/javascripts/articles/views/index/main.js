@@ -5,13 +5,14 @@ Articles.Views.Index.Main = Backbone.View.extend({
     $(window).on("scroll", this.handleScroll);
     
     this.resetCascadeContainer();
+    this.articlesPerBatch = 7;
   },
   
   
   resetCascadeContainer: function() {
-    this.hPosition = [0, 0, 0, 0];
+    this.hPosition = [0.0, 0.0, 0.0, 0.0];
     this.vPosition = [0, 240, 480, 720];
-    this.minHorizontalIndex = 0;
+    this.minHorizontalIndex = 0.0;
 
     this.batch = 0;
     this.readyToLoad = true;
@@ -34,7 +35,7 @@ Articles.Views.Index.Main = Backbone.View.extend({
   
   
   getMinHorizontalIndex: function() {
-    this.minHorizontalIndex = 0;
+    this.minHorizontalIndex = 0.0;
     var min = this.hPosition[0];
     for (var index = 1; index < 4; ++index) {
       if (min > this.hPosition[index]) {
@@ -52,33 +53,35 @@ Articles.Views.Index.Main = Backbone.View.extend({
   
   
   loadArticles: function() {
-    var that = this;
-    
-    var cascadeContainer = $("#cascade_container");
-    var articles = new Articles.Collections.Articles();
-    articles.fetchBatch(that.batch, {
-      success: function(fetchedResults) {
-        fetchedArticles = fetchedResults.models;
-        _.each(fetchedArticles, function(article) {
-          var viewArticleCover = new Articles.Views.Index.Cover({article: article});
-          that.getMinHorizontalIndex();
-          var hCoordinate = that.hPosition[that.minHorizontalIndex];
-          var vCoordinate = that.vPosition[that.minHorizontalIndex];
-          cascadeContainer.append(viewArticleCover.render(hCoordinate, vCoordinate).$el);
-          var coverHeight = viewArticleCover.$el.children("div.article_information").height() + article.get("cover_picture_height") + 20;
-          var newHorizontalCoordinate = hCoordinate + coverHeight + 10;
-          that.insertNewCoordinate(newHorizontalCoordinate, vCoordinate);
-          if (newHorizontalCoordinate > cascadeContainer.height()) {
-            cascadeContainer.css({"height": newHorizontalCoordinate + "px"});
+    if (this.moreToLoad) {
+      var that = this;
+      
+      var cascadeContainer = $("#cascade_container");
+      var articles = new Articles.Collections.Articles();
+      articles.fetchBatch(that.batch, that.articlesPerBatch, {
+        success: function(fetchedResults) {
+          fetchedArticles = fetchedResults.models;
+          _.each(fetchedArticles, function(article) {
+            var viewArticleCover = new Articles.Views.Index.Cover({article: article});
+            that.getMinHorizontalIndex();
+            var hCoordinate = that.hPosition[that.minHorizontalIndex];
+            var vCoordinate = that.vPosition[that.minHorizontalIndex];
+            cascadeContainer.append(viewArticleCover.render(hCoordinate, vCoordinate).$el);
+            var coverHeight = viewArticleCover.$el.children("div.article_information").height() + article.get("cover_picture_height") + 20.0;
+            var newHorizontalCoordinate = 5.0 + hCoordinate + coverHeight;
+            that.insertNewCoordinate(newHorizontalCoordinate, vCoordinate);
+            if (newHorizontalCoordinate > cascadeContainer.height()) {
+              cascadeContainer.css({"height": newHorizontalCoordinate + "px"});
+            }
+          });
+          ++that.batch;
+          that.readyToLoad = true;
+          if (fetchedArticles.length < that.articlesPerBatch) {
+            that.moreToLoad = false;
           }
-        });
-        ++that.batch;
-        that.readyToLoad = true;
-        if (fetchedArticles.length < 2) {
-          that.moreToLoad = false;
         }
-      }
-    });
+      });
+    }
   },
    
   

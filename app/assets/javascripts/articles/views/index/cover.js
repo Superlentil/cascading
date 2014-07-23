@@ -14,7 +14,7 @@ Articles.Views.Index.Cover = Backbone.View.extend({
   
   render: function(hCoordinate, vCoordinate) {
     this.$el.html(this.template({article: this.article}));
-    this.$el.css({"width": "213px", "margin": "0", "padding": "10px", "border": "1px solid", "position": "absolute", "top": hCoordinate + "px", "left": vCoordinate + "px"});
+    this.$el.css({"width": "215px", "margin": "0", "padding": "10px", "background-color": "#ebfffd", "position": "absolute", "top": hCoordinate + "px", "left": vCoordinate + "px"});
     return this;
   },
   
