@@ -6,7 +6,7 @@ class ArticlesController < ApplicationController
     batch = params[:batch].to_i
     articlesPerBatch = params[:articles_per_batch].to_i
     
-    @articles = Article.select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, author, category").limit(articlesPerBatch).offset(batch * articlesPerBatch)
+    @articles = Article.select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, author, category").limit(articlesPerBatch).offset(batch * articlesPerBatch).order(id: :desc)
     respond_with @articles
     return
   end

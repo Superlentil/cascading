@@ -17,9 +17,12 @@
 //= require backbone
 //= require jquery_cookie
 //= require articles/_INDEXER_
+//= require router
 
 
 $(function() {
+  new Router();
+  
   if (!Backbone.History.started) {
     Backbone.history.start();
   }

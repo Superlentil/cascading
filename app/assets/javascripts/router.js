@@ -1,11 +1,18 @@
 // define the articles "Router"
-Articles.Router = Backbone.Router.extend({
-  routes: {
-    '': 'index',
-    'articles': 'index',
-    'articles/new': 'new',
-    'article/:id': 'show',
-    'article/:id/edit': 'edit'
+Router = Backbone.Router.extend({
+  routes: {  
+    "": "allArticles",
+    "article/:id": "showArticle",
+    
+    "users": "allUsers",
+    "users/new": "newUser",
+    "user/:id": "showUser",
+    "user/:id/edit": "editUser",
+    "user/:id/articles": "allUserArticles",
+    "user/:id/articles/new": "newArticle",
+    "user/:userId/article/:articleId/edit": "editArticle",
+    
+    "*others": "allArticles"
   },
   
   
@@ -15,9 +22,15 @@ Articles.Router = Backbone.Router.extend({
   },
 
   
-  index: function() {
+  allArticles: function() {
     var viewIndex = new Articles.Views.Index.Main();
     viewIndex.render();
+  },
+  
+  
+  showArticle: function(id) {
+    var viewShow = new Articles.Views.Show();
+    viewShow.render({id: id});
   },
 
   
@@ -33,13 +46,7 @@ Articles.Router = Backbone.Router.extend({
       this.navigate('', {trigger: true});
     }
   },
-  
-  
-  show: function(id) {
-    var viewShow = new Articles.Views.Show();
-    viewShow.render({id: id});
-  },
-  
+   
   
   edit: function(id) {
     var viewEdit = new Articles.Views.Edit();
