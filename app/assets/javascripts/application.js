@@ -16,11 +16,6 @@
 //= require underscore
 //= require backbone
 //= require jquery_cookie
-<<<<<<< HEAD
-//= require global_constants
-//= require articles/_INDEXER_
-//= require users/_INDEXER_
-=======
 
 //= require global_constants
 //= require initializer
@@ -28,7 +23,6 @@
 //= require collections/_INDEXER_
 //= require templates/_INDEXER_
 //= require views/_INDEXER_
->>>>>>> tmp
 //= require router
 
 
