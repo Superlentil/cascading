@@ -10,13 +10,13 @@ class CreateArticles < ActiveRecord::Migration
       t.text :content, limit: 2000000000
       t.integer :views, default: 0
       t.integer :like, default: 0
-      t.boolean :published, default: false
+      t.integer :status, default: GlobalConstants::ArticleStatus::DRAFT
       t.references :user, index: true
 
       t.timestamps
     end
     
-    add_index :articles, :published
+    add_index :articles, :status
     add_index :articles, :category
   end
 end

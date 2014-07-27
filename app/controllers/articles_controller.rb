@@ -31,7 +31,7 @@ class ArticlesController < ApplicationController
     @article = Article.find(params[:id])
     inputParams = articleParams
     ActiveRecord::Base.transaction do
-      if inputParams[:published]
+      if inputParams[:status] && inputParams[:status].to_i != GlobalConstants::ArticleStatus::DRAFT
         if inputParams[:cover_picture_id].to_i < 0
           assignCoverPicture(inputParams)
         end
@@ -62,7 +62,7 @@ private
 
 
   def articleParams
-    params.require(:article).permit(:cover_picture_url, :cover_picture_id, :title, :author, :content, :category, :id, :views, :like, :published, :user_id, :created_at, :updated_at)
+    params.require(:article).permit(:cover_picture_url, :cover_picture_id, :title, :author, :content, :category, :id, :views, :like, :status, :user_id, :created_at, :updated_at)
   end
   
   
