@@ -9,7 +9,7 @@ Articles.Views.Index.Cover = Backbone.View.extend({
   className: "Article_Cover",
   
   
-  template: JST["articles/templates/index/cover"],
+  template: JST["templates/articles/index/cover"],
   
   
   render: function(hCoordinate, vCoordinate) {

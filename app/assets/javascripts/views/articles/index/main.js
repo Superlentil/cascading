@@ -23,7 +23,7 @@ Articles.Views.Index.Main = Backbone.View.extend({
   el: "div#main_container",
   
   
-  template: JST["articles/templates/index/main"],
+  template: JST["templates/articles/index/main"],
   
   
   render: function() {
