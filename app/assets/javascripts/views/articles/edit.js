@@ -3,7 +3,7 @@ Articles.Views.Edit = Backbone.View.extend({
   el: "div#main_container",
   
   
-  template: JST["articles/templates/edit"],
+  template: JST["templates/articles/edit"],
   
   
   render: function(article) {

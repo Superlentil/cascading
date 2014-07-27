@@ -3,7 +3,7 @@ Articles.Views.Show = Backbone.View.extend({
   el: "div#main_container",
   
   
-  template: JST["articles/templates/show"],
+  template: JST["templates/articles/show"],
   
   
   render: function(options) {

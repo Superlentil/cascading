@@ -16,7 +16,7 @@ Articles.Views.Publish = Backbone.View.extend({
   el: "div#main_container",
   
   
-  template: JST["articles/templates/publish"],
+  template: JST["templates/articles/publish"],
   
   
   render: function() {
