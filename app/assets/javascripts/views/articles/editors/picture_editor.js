@@ -1,10 +1,10 @@
 // define the view "PictureEditor"
-Articles.Views.Editors.PictureEditor = Articles.Views.Editors.BaseEditor.extend({ 
+Views.Articles.Editors.PictureEditor = Views.Articles.Editors.BaseEditor.extend({ 
   template: JST["templates/articles/editors/picture_editor"],
 
   
   events: function() {
-    return _.extend({}, Articles.Views.Editors.BaseEditor.prototype.events, {
+    return _.extend({}, Views.Articles.Editors.BaseEditor.prototype.events, {
       "change .Upload_Picture": "onFileChange",
       "click .Upload_Button": "onUpload"
     });
@@ -44,7 +44,7 @@ Articles.Views.Editors.PictureEditor = Articles.Views.Editors.BaseEditor.extend(
       formData.append("picture[article_id]", that.articleId);
       formData.append("picture[src]", pictureUploader.get(0).files[0]);
       
-      var picture = new Articles.Models.Picture();
+      var picture = new Models.Articles.Picture();
       
       picture.save(formData, {
         progress: function(event) {

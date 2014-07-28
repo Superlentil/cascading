@@ -23,7 +23,7 @@ Router = Backbone.Router.extend({
 
   
   articles: function() {
-    var viewIndex = new Articles.Views.Index.Main();
+    var viewIndex = new Views.Articles.Index.Main();
     viewIndex.render();
   },
   
@@ -32,7 +32,7 @@ Router = Backbone.Router.extend({
     var now = $.now();
     var lastNewArticleTime = parseInt($.cookie("last_new_article_timestamp")) || 0;
     if (now - lastNewArticleTime > 100) {   // Prevent loading the "new" page too frequently.
-      var viewEdit = new Articles.Views.Edit();
+      var viewEdit = new Views.Articles.Edit();
       viewEdit.newArticle();
       $.cookie('last_new_article_timestamp', now, {expires: 1});
     } else {
@@ -43,13 +43,13 @@ Router = Backbone.Router.extend({
   
   
   showArticle: function(id) {
-    var viewShow = new Articles.Views.Show();
+    var viewShow = new Views.Articles.Show();
     viewShow.render({id: id});
   },
   
   
   editArticle: function(id) {
-    var viewEdit = new Articles.Views.Edit();
+    var viewEdit = new Views.Articles.Edit();
     viewEdit.editArticle(id);
   },
   

@@ -1,4 +1,4 @@
 // define the view "TextEditor"
-Articles.Views.Editors.TextEditor = Articles.Views.Editors.BaseEditor.extend({
+Views.Articles.Editors.TextEditor = Views.Articles.Editors.BaseEditor.extend({
   template: JST["templates/articles/editors/text_editor"]
 });

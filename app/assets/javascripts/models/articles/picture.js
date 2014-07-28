@@ -1,5 +1,5 @@
 // define the model "Picture"
-Articles.Models.Picture = Backbone.Model.extend({
+Models.Articles.Picture = Backbone.Model.extend({
   urlRoot: "pictures",
   
   

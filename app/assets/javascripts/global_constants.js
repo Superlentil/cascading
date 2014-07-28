@@ -1,3 +1,8 @@
+var Models = {};
+var Collections = {};
+var Views = {};
+
+
 var GlobalConstants = {
   ArticleStatus: {   // If this enumeration needs to be modified, please modify the corresponding one in the "Ruby on Rails" code together.
     DRAFT: 0,

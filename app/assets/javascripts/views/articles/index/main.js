@@ -1,5 +1,5 @@
 // define the view "Index.Main"
-Articles.Views.Index.Main = Backbone.View.extend({
+Views.Articles.Index.Main = Backbone.View.extend({
   initialize: function() {
     _.bindAll(this, 'handleScroll');
     $(window).on("scroll", this.handleScroll);
@@ -57,12 +57,12 @@ Articles.Views.Index.Main = Backbone.View.extend({
       var that = this;
       
       var cascadeContainer = $("#cascade_container");
-      var articles = new Articles.Collections.Articles();
+      var articles = new Collections.Articles();
       articles.fetchBatch(that.batch, that.articlesPerBatch, {
         success: function(fetchedResults) {
           fetchedArticles = fetchedResults.models;
           _.each(fetchedArticles, function(article) {
-            var viewArticleCover = new Articles.Views.Index.Cover({article: article});
+            var viewArticleCover = new Views.Articles.Index.Cover({article: article});
             that.getMinHorizontalIndex();
             var hCoordinate = that.hPosition[that.minHorizontalIndex];
             var vCoordinate = that.vPosition[that.minHorizontalIndex];

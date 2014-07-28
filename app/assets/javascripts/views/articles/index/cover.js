@@ -1,5 +1,5 @@
 // define the view "Index.Cover"
-Articles.Views.Index.Cover = Backbone.View.extend({
+Views.Articles.Index.Cover = Backbone.View.extend({
   initialize: function(options) {
     this.article = options.article;
   },

@@ -1,5 +1,5 @@
 // define the view "Edit"
-Articles.Views.Edit = Backbone.View.extend({  
+Views.Articles.Edit = Backbone.View.extend({  
   el: "div#main_container",
   
   
@@ -11,7 +11,7 @@ Articles.Views.Edit = Backbone.View.extend({
 
     that.$el.html(that.template());
     
-    article = article || new Articles.Models.Article();
+    article = article || new Models.Articles.Article();
     $("#article_title").val(article.get("title"));
     $("#article_author").val(article.get("author"));
     $("#article_category").val(article.get("category"));
@@ -20,10 +20,10 @@ Articles.Views.Edit = Backbone.View.extend({
     _.each(articleContent, function(articleParagraph) {
       if (articleParagraph.src) {
         if (articleParagraph.type === "text") {
-          var textEditor = new Articles.Views.Editors.TextEditor();
+          var textEditor = new Views.Articles.Editors.TextEditor();
           $("#article_content").append(textEditor.render(articleParagraph.src).el);
         } else if (articleParagraph.type === "picture") {
-          var pictureEditor = new Articles.Views.Editors.PictureEditor();
+          var pictureEditor = new Views.Articles.Editors.PictureEditor();
           $("#article_content").append(pictureEditor.render(articleParagraph.src).el);
         }
       }
@@ -37,7 +37,7 @@ Articles.Views.Edit = Backbone.View.extend({
   newArticle: function() {
     var that = this;
         
-    var article = new Articles.Models.Article();
+    var article = new Models.Articles.Article();
     article.save(article.toJSON(), {
       success: function(savedArticle) {
         that.render(savedArticle);
@@ -49,7 +49,7 @@ Articles.Views.Edit = Backbone.View.extend({
   editArticle: function(id) {
     var that = this;
     
-    var article = new Articles.Models.Article({id: id});
+    var article = new Models.Articles.Article({id: id});
     article.fetch({
       success: function(fetchedArticle) {
         that.render(fetchedArticle);
@@ -72,7 +72,7 @@ Articles.Views.Edit = Backbone.View.extend({
     event.preventDefault();
     event.stopPropagation();
     
-    var textEditor = new Articles.Views.Editors.TextEditor();
+    var textEditor = new Views.Articles.Editors.TextEditor();
     
     $(function() {
       $("#article_content").append(textEditor.render().el);
@@ -84,7 +84,7 @@ Articles.Views.Edit = Backbone.View.extend({
     event.preventDefault();
     event.stopPropagation();
     
-    var pictureEditor = new Articles.Views.Editors.PictureEditor({
+    var pictureEditor = new Views.Articles.Editors.PictureEditor({
       parentView: this,
       articleId: this.model.get("id")
     });
@@ -209,7 +209,7 @@ Articles.Views.Edit = Backbone.View.extend({
   
   
   preview: function(savedArticle) {
-    var viewShow = new Articles.Views.Show({el: "div#popup_container"});
+    var viewShow = new Views.Articles.Show({el: "div#popup_container"});
     viewShow.render({id: savedArticle.get("id"), preview: true});
     var popupContainer = $("#popup_container");
     var editArea = $("#article_edit_area");
@@ -230,7 +230,7 @@ Articles.Views.Edit = Backbone.View.extend({
   
   
   publish: function(savedArticle) {
-    var viewPublish = new Articles.Views.Publish({article: savedArticle});
+    var viewPublish = new Views.Articles.Publish({article: savedArticle});
     viewPublish.render();
   },
   

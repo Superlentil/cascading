@@ -1,5 +1,5 @@
 // define the view Show
-Articles.Views.Show = Backbone.View.extend({
+Views.Articles.Show = Backbone.View.extend({
   el: "div#main_container",
   
   
@@ -10,7 +10,7 @@ Articles.Views.Show = Backbone.View.extend({
     var that = this;
     
     if (options.id) {
-      var article = new Articles.Models.Article({id: options.id});
+      var article = new Models.Articles.Article({id: options.id});
       article.fetch({
         success: function(fetchedArticle) {
           that.$el.html(that.template({article: fetchedArticle, contentJsonToHtml: that.contentJsonToHtml, preview: options.preview}));
@@ -30,7 +30,7 @@ Articles.Views.Show = Backbone.View.extend({
     event.preventDefault();
     
     var id = $(event.currentTarget).data("articleId");
-    var article = new Articles.Models.Article({id: id});
+    var article = new Models.Articles.Article({id: id});
     article.destroy({
       success: function() {
         Backbone.history.navigate("", {trigger: true});

@@ -1,5 +1,5 @@
 // define the view "publish"
-Articles.Views.Publish = Backbone.View.extend({
+Views.Articles.Publish = Backbone.View.extend({
   initialize: function(options) {
     this.article = options.article;
     this.mode = "unknown";
@@ -147,7 +147,7 @@ Articles.Views.Publish = Backbone.View.extend({
     formData.append("picture[article_id]", that.article.get("id"));
     formData.append("picture[src]", $("#new_cover_picture").get(0).files[0]);
     
-    var picture = new Articles.Models.Picture();
+    var picture = new Models.Articles.Picture();
     var progressBar = $("<progress></progress>");
     var uploadPreviewContainer = $("#upload_preview");
     
