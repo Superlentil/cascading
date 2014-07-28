@@ -1,0 +1,3 @@
+Models.Users = {};
+
+Views.Users = {};

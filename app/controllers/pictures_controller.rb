@@ -2,16 +2,6 @@ class PicturesController < ApplicationController
   respond_to :json
   
   
-  def index
-    @picture = Picture.new
-    @pictures = Picture.all
-  end
-
-
-  def show
-  end
-
-
   def create
     @picture = Picture.create(pictureParams)
     respond_with @picture

@@ -4,6 +4,7 @@ class CreateUsers < ActiveRecord::Migration
       t.string :email
       t.string :password_hash
       t.string :nickname
+      t.attachment :avatar
       t.references :tier, index: true
 
       t.timestamps

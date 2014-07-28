@@ -65,8 +65,15 @@ Router = Backbone.Router.extend({
   },
   
   
-  showUser: function() {
-    
+  newUser: function() {
+    var viewNew = new Views.Users.New();
+    viewNew.render();
+  },
+  
+  
+  showUser: function(id) {
+    var viewShow = new Views.Users.Show();
+    viewShow.render({id: id});
   },
   
   
