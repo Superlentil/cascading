@@ -18,6 +18,12 @@ Router = Backbone.Router.extend({
   
   execute: function(callback, args) {
     $(window).off("scroll");
+    
+    var layoutHeader = new Views.Layouts.Header();
+    var layoutFooter = new Views.Layouts.Footer();
+    layoutHeader.render();
+    layoutFooter.render();
+    
     if (callback) callback.apply(this, args);
   },
 

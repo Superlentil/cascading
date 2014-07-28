@@ -1,4 +1,4 @@
-Collections.Articles = Backbone.Collection.extend({
+Collections.Articles.Articles = Backbone.Collection.extend({
   model: Models.Articles.Article,
   
   

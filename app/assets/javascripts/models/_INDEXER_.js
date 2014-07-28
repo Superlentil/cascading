@@ -1,2 +1,2 @@
 //= require ./articles/_INDEXER_
-//= require_directory .
+//= require ./layouts/_INDEXER_

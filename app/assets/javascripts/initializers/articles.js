@@ -1,4 +1,3 @@
-// MVC
 Models.Articles = {};
 Collections.Articles = {};
 

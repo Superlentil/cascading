@@ -1,3 +1,4 @@
+// MVC structure
 var Models = {};
 var Collections = {};
 var Views = {};

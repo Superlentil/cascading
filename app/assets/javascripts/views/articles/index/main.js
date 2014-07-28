@@ -57,7 +57,7 @@ Views.Articles.Index.Main = Backbone.View.extend({
       var that = this;
       
       var cascadeContainer = $("#cascade_container");
-      var articles = new Collections.Articles();
+      var articles = new Collections.Articles.Articles();
       articles.fetchBatch(that.batch, that.articlesPerBatch, {
         success: function(fetchedResults) {
           fetchedArticles = fetchedResults.models;
