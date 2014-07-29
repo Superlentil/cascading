@@ -38,13 +38,7 @@ Views.Articles.Edit = Backbone.View.extend({
     var that = this;
         
     var article = new Models.Articles.Article();
-    article.save("article", {
-      "title": "",
-      "author": "",
-      "category": "",
-      "content": "{}",
-      "status": GlobalConstants.ArticleStatus.DRAFT
-    }, {
+    article.save(article.toJSON(), {
       success: function(savedArticle) {
         that.render(savedArticle);
       }
@@ -194,7 +188,7 @@ Views.Articles.Edit = Backbone.View.extend({
     function waitingForUpload() {
       if (that.allPicturesUploaded()) {
         var article = that.getArticle();
-        article.save("article", article.attributes, {
+        article.save(article.toJSON(), {
           success: function(savedArticle) {
             if (callback) {
               callback(savedArticle);

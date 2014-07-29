@@ -69,7 +69,7 @@ Views.Articles.Publish = Backbone.View.extend({
       article.set("status", GlobalConstants.ArticleStatus.PUBLIC_PUBLISHED);
       article.set("cover_picture_id", this.coverPictureId);
       article.set("cover_picture_url", this.coverPictureUrl);
-      article.save("article", article.attributes, {
+      article.save(article.toJSON(), {
         success: function(savedArticle) {
           Backbone.history.navigate("article/" + savedArticle.get("id"), {trigger: true});
         },
