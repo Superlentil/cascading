@@ -3,4 +3,8 @@
   <p><img src="<%= user.get("avatar_url") %>" /></p>
   <p>UserID: <%= user.get("id") %></p>
   <p>Email: <%= user.get("email") %></p>
+  
+  <br /> <hr /> <br />
+  
+  <a href="#/user/<%= user.get("id") %>/articles/new">Write a New Article</a>
 </div>

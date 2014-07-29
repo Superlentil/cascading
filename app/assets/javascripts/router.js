@@ -2,7 +2,6 @@
 Router = Backbone.Router.extend({
   routes: {  
     "": "articles",
-    "articles/new": "newArticle",
     "article/:id": "showArticle",
     "article/:id/edit": "editArticle",
     
@@ -10,7 +9,9 @@ Router = Backbone.Router.extend({
     "users/new": "newUser",
     "user/:id": "showUser",
     "user/:id/edit": "editUser",
+    
     "user/:id/articles": "userArticles",
+    "user/:id/articles/new": "userNewArticle",
     
     "*others": "allArticles"
   },
@@ -33,21 +34,7 @@ Router = Backbone.Router.extend({
     viewIndex.render();
   },
   
-  
-  newArticle: function() {
-    var now = $.now();
-    var lastNewArticleTime = parseInt($.cookie("last_new_article_timestamp")) || 0;
-    if (now - lastNewArticleTime > 100) {   // Prevent loading the "new" page too frequently.
-      var viewEdit = new Views.Articles.Edit();
-      viewEdit.newArticle();
-      $.cookie('last_new_article_timestamp', now, {expires: 1});
-    } else {
-      // @TODO: need a better action for too frequent "new" page load.
-      this.loadUrl('');
-    }
-  },
-  
-  
+   
   showArticle: function(id) {
     var viewShow = new Views.Articles.Show();
     viewShow.render({id: id});
@@ -84,5 +71,19 @@ Router = Backbone.Router.extend({
   
   userArticles: function() {
     
+  },
+  
+  
+  userNewArticle: function() {
+    var now = $.now();
+    var lastNewArticleTime = parseInt($.cookie("last_new_article_timestamp")) || 0;
+    if (now - lastNewArticleTime > 100) {   // Prevent loading the "new" page too frequently.
+      var viewEdit = new Views.Articles.Edit();
+      viewEdit.newArticle();
+      $.cookie('last_new_article_timestamp', now, {expires: 1});
+    } else {
+      // @TODO: need a better action for too frequent "new" page load.
+      this.loadUrl('');
+    }
   }
 });

@@ -1,0 +1,13 @@
+{
+  <% if !session[:user_id].nil? %>
+    "user_id": <%= session[:user_id] %>,
+  <% end %>
+
+  <% if !session[:user_nickname].nil? %>
+    "user_nickname": "<%= session[:user_nickname] %>",
+  <% end %>
+  
+  <% if !session[:user_avatar_url].nil? %>
+    "user_avatar_url": "<%= session[:user_avatar_url] %>"
+  <% end %>
+}
