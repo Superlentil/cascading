@@ -1,11 +1,19 @@
 <div>
   <h3>This is header!</h3>
-  <div>
-    Email: <input id="login_email_input" type="text" />
-    Password: <input id="login_password_input" type="password" />
-    <input id="login_submit_button" type="button" value="login" />
-    <a href="#/users/new">sign up</a>
-  </div>
+  <% if ($.cookie("user_id")) { %>
+    <div>
+      Welcome <em><a href="#/user/<%= $.cookie("user_id") %>"><%= $.cookie("user_nickname") %></a></em>
+      <img src="<%= $.cookie("user_avatar_url") %>" />
+      <a id="log_out_button" href="#">log out</a>
+    </div>
+  <% } else { %>
+    <div>
+      Email: <input id="login_email_input" type="text" />
+      Password: <input id="login_password_input" type="password" />
+      <input id="login_submit_button" type="button" value="login" />
+      <a href="#/users/new">sign up</a>
+    </div>
+  <% } %>
   <hr />
 </div>
 

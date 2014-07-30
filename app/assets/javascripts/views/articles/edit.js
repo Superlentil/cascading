@@ -132,7 +132,7 @@ Views.Articles.Edit = Backbone.View.extend({
       "author": $("#article_author").val(),
       "category": $("#article_category").val(),
       "content": JSON.stringify(articleContent),
-      "status": GlobalConstants.ArticleStatus.DRAFT
+      "status": GlobalConstant.ArticleStatus.DRAFT
     });
     
     return this.model;

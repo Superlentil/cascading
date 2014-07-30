@@ -31,7 +31,7 @@ class ArticlesController < ApplicationController
     @article = Article.find(params[:id])
     inputParams = articleParams
     ActiveRecord::Base.transaction do
-      if inputParams[:status] && inputParams[:status].to_i != GlobalConstants::ArticleStatus::DRAFT
+      if inputParams[:status] && inputParams[:status].to_i != GlobalConstant::ArticleStatus::DRAFT
         if inputParams[:cover_picture_id].to_i < 0
           assignCoverPicture(inputParams)
         end

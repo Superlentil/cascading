@@ -26,6 +26,7 @@ Views.Users.New = Backbone.View.extend({
     formData.append("user[password]", $("#new_user_password_input").val());
     formData.append("user[nickname]", $("#new_user_nickname_input").val());
     formData.append("user[avatar]", $("#new_user_avatar_input").get(0).files[0]);
+    formData.append("user[tier]", GlobalConstant.UserTier.FREE_USER);
     
     var user = new Models.Users.User();
     

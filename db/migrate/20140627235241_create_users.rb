@@ -5,7 +5,7 @@ class CreateUsers < ActiveRecord::Migration
       t.string :password_hash
       t.string :nickname
       t.attachment :avatar
-      t.references :tier, index: true
+      t.integer :tier, default: GlobalConstant::UserTier::FREE_USER
 
       t.timestamps
     end
