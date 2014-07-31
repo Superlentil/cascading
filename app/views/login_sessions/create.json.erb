@@ -1,13 +1,11 @@
 {
-  <% if !session[:user_id].nil? %>
-    "user_id": <%= session[:user_id] %>,
-  <% end %>
-
-  <% if !session[:user_nickname].nil? %>
-    "user_nickname": "<%= session[:user_nickname] %>",
+  <% if !cookies[:user_id].nil? %>
+    "user_id": <%= cookies[:user_id] %>,
+    "user_nickname": "<%= cookies[:user_nickname] %>",
+    "user_avatar_url": "<%= cookies[:user_avatar_url] %>",
   <% end %>
   
-  <% if !session[:user_avatar_url].nil? %>
-    "user_avatar_url": "<%= session[:user_avatar_url] %>"
+  <% if !cookies[:user_login_status].nil? %>
+    "user_login_status": "<%= cookies[:user_login_status] %>"
   <% end %>
 }

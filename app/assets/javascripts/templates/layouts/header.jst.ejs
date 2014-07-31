@@ -13,6 +13,9 @@
       <input id="login_submit_button" type="button" value="login" />
       <a href="#/users/new">sign up</a>
     </div>
+    <% if ($.cookie("user_login_status")) { %>
+      <div><em><%= $.cookie("user_login_status") %></em></div>
+    <% } %>
   <% } %>
   <hr />
 </div>

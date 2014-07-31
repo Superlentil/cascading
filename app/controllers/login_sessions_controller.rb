@@ -1,24 +1,31 @@
 class LoginSessionsController < ApplicationController
+  include LoginSessionsHelper
+  
+  
   respond_to :json
   
   
   def create
     inputParams = loginParams
     
-    case inputParams[:type] when "sign in"
+    case inputParams[:type] when "log in"
       user = User.where(email: inputParams[:email]).first
       if user && user.password == inputParams[:password]
+        cookies[:user_id] = user.id
+        cookies[:user_nickname] = user.nickname
+        cookies[:user_avatar_url] = user.avatar.url(:thumb)
+        cookies[:user_login_status] = "success"
+        
         session[:user_id] = user.id
-        session[:user_nickname] = user.nickname
-        session[:user_avatar_url] = user.avatar.url(:thumb)
         session[:user_tier] = user.tier
+      else
+        cookies[:user_login_status] = "Username or password is not correct."
       end
-    when "sign out"
-      session.delete(:user_id)
-      session.delete(:user_nickname)
-      session.delete(:user_avatar_url)
-      session.delete(:user_tier)
+    when "log out"
+      clearLoginSession
     end
+    
+    return
   end
   
 

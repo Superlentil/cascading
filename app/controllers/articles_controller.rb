@@ -6,7 +6,9 @@ class ArticlesController < ApplicationController
     batch = params[:batch].to_i
     articlesPerBatch = params[:articles_per_batch].to_i
     
-    @articles = Article.select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, author, category").limit(articlesPerBatch).offset(batch * articlesPerBatch).order(id: :desc)
+    @articles = Article.where(status: GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED)
+      .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, author, category")
+      .limit(articlesPerBatch).offset(batch * articlesPerBatch).order(id: :desc)
     respond_with @articles
     return
   end
@@ -14,15 +16,20 @@ class ArticlesController < ApplicationController
 
   def show
     @article = Article.find(params[:id])
-    respond_with @article
+    if @article.status == GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED || correctLogin?(@article.user_id)
+      respond_with @article
+    end
     return
   end
 
 
   def create
-    @article = Article.new(articleParams)
-    @article.save
-    respond_with @article
+    inputParams = articleParams
+    if correctLogin?(inputParams[:user_id])
+      @article = Article.new(inputParams)
+      @article.save
+      respond_with @article
+    end
     return
   end
 
@@ -30,29 +37,33 @@ class ArticlesController < ApplicationController
   def update
     @article = Article.find(params[:id])
     inputParams = articleParams
-    ActiveRecord::Base.transaction do
-      if inputParams[:status] && inputParams[:status].to_i != GlobalConstant::ArticleStatus::DRAFT
-        if inputParams[:cover_picture_id].to_i < 0
-          assignCoverPicture(inputParams)
+    if correctLogin?(@article.user_id)
+      ActiveRecord::Base.transaction do
+        if inputParams[:status] && inputParams[:status].to_i != GlobalConstant::ArticleStatus::DRAFT
+          if inputParams[:cover_picture_id].to_i < 0
+            assignCoverPicture(inputParams)
+          end
+          coverPicturePath = Picture.find(inputParams[:cover_picture_id]).src.path(:thumb)
+          geometry = Paperclip::Geometry.from_file(coverPicturePath)
+          inputParams[:cover_picture_height] = geometry.height.to_i
+          @article.update(inputParams)
+          deleteNotUsedPictures(inputParams)
+        else
+          @article.update(inputParams)
         end
-        coverPicturePath = Picture.find(inputParams[:cover_picture_id]).src.path(:thumb)
-        geometry = Paperclip::Geometry.from_file(coverPicturePath)
-        inputParams[:cover_picture_height] = geometry.height.to_i
-        @article.update(inputParams)
-        deleteNotUsedPictures(inputParams)
-      else
-        @article.update(inputParams)
       end
+      respond_with @article
     end
-    respond_with @article
     return
   end
 
 
   def destroy
     @article = Article.find(params[:id])
-    @article.destroy
-    respond_with @article
+    if correctLogin?(@article.user_id)
+      @article.destroy
+      respond_with @article
+    end
     return
   end
 
@@ -63,6 +74,11 @@ private
 
   def articleParams
     params.require(:article).permit(:cover_picture_url, :cover_picture_id, :title, :author, :content, :category, :id, :views, :like, :status, :user_id, :created_at, :updated_at)
+  end
+  
+  
+  def correctLogin?(userId)
+    return session.has_key?(:user_id) && session[:user_id].to_i == userId.to_i
   end
   
   

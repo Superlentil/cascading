@@ -36,13 +36,22 @@ Views.Articles.Edit = Backbone.View.extend({
   
   newArticle: function() {
     var that = this;
-        
-    var article = new Models.Articles.Article();
-    article.save(article.toJSON(), {
-      success: function(savedArticle) {
-        that.render(savedArticle);
-      }
-    });
+      
+    if ($.cookie("user_id")) {  
+      var article = new Models.Articles.Article();
+      article.set({
+        "author": $.cookie("user_nickname"),
+        "user_id": $.cookie("user_id")
+      });
+      
+      article.save(article.toJSON(), {
+        success: function(savedArticle) {
+          that.render(savedArticle);
+        }
+      });
+    } else {
+      Backbone.history.navigate("", {trigger: true});
+    }
   },
   
   
@@ -129,7 +138,6 @@ Views.Articles.Edit = Backbone.View.extend({
     
     this.model.set({
       "title": $("#article_title").val(),
-      "author": $("#article_author").val(),
       "category": $("#article_category").val(),
       "content": JSON.stringify(articleContent),
       "status": GlobalConstant.ArticleStatus.DRAFT

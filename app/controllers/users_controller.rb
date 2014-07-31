@@ -1,10 +1,16 @@
 class UsersController < ApplicationController
+  include LoginSessionsHelper
+  
+  
   respond_to :json  
   
   
   def index
-    @users = User.all
-    respond_with @users
+    if administrator?
+      @users = User.all
+      respond_with @users
+    end
+    return
   end
 
 
@@ -38,4 +44,5 @@ private
   def userParams
     params.require(:user).permit(:email, :password, :nickname, :avatar)
   end
+
 end
