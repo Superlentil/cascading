@@ -6,6 +6,8 @@ Views.Articles.Index.Main = Backbone.View.extend({
     
     this.resetCascadeContainer();
     this.articlesPerBatch = 7;
+    
+    this.allSubviews = [];
   },
   
   
@@ -63,6 +65,7 @@ Views.Articles.Index.Main = Backbone.View.extend({
           fetchedArticles = fetchedResults.models;
           _.each(fetchedArticles, function(article) {
             var viewArticleCover = new Views.Articles.Index.Cover({article: article});
+            that.allSubviews.push(viewArticleCover);   // prevent view memory leak
             that.getMinHorizontalIndex();
             var hCoordinate = that.hPosition[that.minHorizontalIndex];
             var vCoordinate = that.vPosition[that.minHorizontalIndex];
@@ -98,5 +101,20 @@ Views.Articles.Index.Main = Backbone.View.extend({
   
   events: {
     "click #click_to_load": "loadArticles"
+  },
+  
+  
+  remove: function() {
+    var subview;
+    while (this.allSubviews.length > 0) {
+      subview = this.allSubviews.pop();
+      if (subview) {
+        subview.remove();
+      }
+    }
+    
+    $(window).off("scroll");
+    
+    Backbone.View.prototype.remove.call(this);
   }
 });

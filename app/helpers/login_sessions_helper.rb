@@ -1,5 +1,21 @@
 module LoginSessionsHelper
-  def clearLoginSession
+  def setUserLoginSession(user)
+    cookies[:user_id] = user.id
+    cookies[:user_nickname] = user.nickname
+    cookies[:user_avatar_url] = user.avatar.url(:thumb)
+    cookies[:user_login_status] = "success"
+    
+    session[:user_id] = user.id
+    session[:user_tier] = user.tier
+  end
+  
+  
+  def setUserLoginStatus(status)
+    cookies[:user_login_status] = status
+  end
+  
+  
+  def clearUserLoginSession
     cookies.delete(:user_id)
     cookies.delete(:user_nickname)
     cookies.delete(:user_avatar_url)

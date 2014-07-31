@@ -22,6 +22,7 @@ class UsersController < ApplicationController
 
   def create
     @user = User.create(userParams)
+    setUserLoginSession(@user)
     respond_with @user
   end
 

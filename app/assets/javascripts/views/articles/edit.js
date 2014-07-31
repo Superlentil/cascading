@@ -1,5 +1,12 @@
 // define the view "Edit"
-Views.Articles.Edit = Backbone.View.extend({  
+Views.Articles.Edit = Backbone.View.extend({
+  initialize: function() {
+    this.allSubviews = [];
+    _.bindAll(this, 'preview');
+    _.bindAll(this, 'publish');
+  },
+  
+  
   el: "div#main_container",
   
   
@@ -21,9 +28,14 @@ Views.Articles.Edit = Backbone.View.extend({
       if (articleParagraph.src) {
         if (articleParagraph.type === "text") {
           var textEditor = new Views.Articles.Editors.TextEditor();
+          that.allSubviews.push(textEditor);   // prevent view memory leak
           $("#article_content").append(textEditor.render(articleParagraph.src).el);
         } else if (articleParagraph.type === "picture") {
-          var pictureEditor = new Views.Articles.Editors.PictureEditor();
+          var pictureEditor = new Views.Articles.Editors.PictureEditor({
+            parentView: that,
+            articleId: article.get("id")
+          });
+          that.allSubviews.push(pictureEditor);   // prevent view memory leak
           $("#article_content").append(pictureEditor.render(articleParagraph.src).el);
         }
       }
@@ -79,9 +91,9 @@ Views.Articles.Edit = Backbone.View.extend({
   
   addText: function(event) {
     event.preventDefault();
-    event.stopPropagation();
     
     var textEditor = new Views.Articles.Editors.TextEditor();
+    this.allSubviews.push(textEditor);   // prevent view memory leak
     
     $(function() {
       $("#article_content").append(textEditor.render().el);
@@ -91,12 +103,12 @@ Views.Articles.Edit = Backbone.View.extend({
   
   addPicture: function(event) {
     event.preventDefault();
-    event.stopPropagation();
     
     var pictureEditor = new Views.Articles.Editors.PictureEditor({
       parentView: this,
       articleId: this.model.get("id")
     });
+    this.allSubviews.push(pictureEditor);   // prevent view memory leak
     
     $(function() {
       $("#article_content").append(pictureEditor.render().el);
@@ -218,6 +230,8 @@ Views.Articles.Edit = Backbone.View.extend({
   
   preview: function(savedArticle) {
     var viewShow = new Views.Articles.Show({el: "div#popup_container"});
+    this.allSubviews.push(viewShow);   // prevent view memory leak
+
     viewShow.render({id: savedArticle.get("id"), preview: true});
     var popupContainer = $("#popup_container");
     var editArea = $("#article_edit_area");
@@ -239,11 +253,28 @@ Views.Articles.Edit = Backbone.View.extend({
   
   publish: function(savedArticle) {
     var viewPublish = new Views.Articles.Publish({article: savedArticle});
+    this.allSubviews.push(viewPublish);   // prevent view memory leak
+    
     viewPublish.render();
   },
   
   
   saveAndPublish: function(event) {
     this.save(event, this.publish);
+  },
+  
+  
+  remove: function() {
+    var subview;
+    while (this.allSubviews.length > 0) {
+      subview = this.allSubviews.pop();
+      if (subview) {
+        subview.remove();
+      }
+    }
+    
+    $("#article_edit_area").off("click");
+    
+    Backbone.View.prototype.remove.call(this);
   }
 });

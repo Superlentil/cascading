@@ -23,7 +23,6 @@ Views.Layouts.Header = Backbone.View.extend({
     var loginSession = new Models.Layouts.LoginSession();
     loginSession.save("login_session", {"type": "log in", "email": $("#login_email_input").val(), "password": $("#login_password_input").val()}, {
       success: function() {
-        console.log("adfafsafds");
         Backbone.history.loadUrl();
       }
     });
@@ -36,7 +35,7 @@ Views.Layouts.Header = Backbone.View.extend({
     var loginSession = new Models.Layouts.LoginSession();
     loginSession.save("login_session", {"type": "log out"}, {
       success: function() {
-        Backbone.history.loadUrl();
+        Backbone.history.loadUrl("");
       }
     });
   }

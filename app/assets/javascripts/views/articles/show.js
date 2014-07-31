@@ -80,5 +80,13 @@ Views.Articles.Show = Backbone.View.extend({
         articleContainer.css({"opacity": "1.0"});
       });
     }    
+  },
+  
+  
+  remove: function() {
+    $(".Delete_Article").off("click");
+    $("#article_content_container").off("click");
+    
+    Backbone.View.prototype.remove.call(this);
   }
 });

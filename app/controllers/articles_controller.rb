@@ -73,7 +73,7 @@ private
 
 
   def articleParams
-    params.require(:article).permit(:cover_picture_url, :cover_picture_id, :title, :author, :content, :category, :id, :views, :like, :status, :user_id, :created_at, :updated_at)
+    params.require(:article).permit(:id, :cover_picture_id, :cover_picture_url, :cover_picture_height, :title, :author, :content, :category, :views, :like, :status, :user_id, :created_at, :updated_at)
   end
   
   

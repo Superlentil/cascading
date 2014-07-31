@@ -186,5 +186,13 @@ Views.Articles.Publish = Backbone.View.extend({
   
   cancelPublish: function() {
     Backbone.history.loadUrl("article/" + this.article.get("id") + "/edit");
+  },
+  
+  
+  remove: function() {
+    $("#confirm_button").one("click");
+    $("#skip_button").one("click");
+    
+    Backbone.View.prototype.remove.call(this);
   }
 });
