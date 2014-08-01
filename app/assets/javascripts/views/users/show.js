@@ -11,8 +11,12 @@ Views.Users.Show = Backbone.View.extend({
     if (options.id) {
       var user = new Models.Users.User({id: options.id});
       user.fetch({
-        success: function(fetchedUser) {
-          that.$el.html(that.template({user: fetchedUser}));
+        success: function(fetchedUser, response) {
+          if (response.id) {
+            that.$el.html(that.template({user: fetchedUser}));
+          } else {
+            Backbone.history.loadUrl("forbidden");
+          }
         }
       });
     }

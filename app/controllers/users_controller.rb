@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  include ApplicationHelper
   include LoginSessionsHelper
   
   
@@ -10,14 +11,19 @@ class UsersController < ApplicationController
       @users = User.all
       respond_with @users
     end
-    return
   end
 
 
   def show
-    if loginCorrectly?(params[:id])
+    if correctLoggedInUser?(params[:id])
       @user = User.find(params[:id])
       respond_with @user
+    else
+      if loggedIn?
+        setResponseMessage("warning", "You don't have the privilege to access the page.")
+      else
+        setResponseMessage("warning", "Please log in first and try to access the page again.")
+      end
     end
   end
 

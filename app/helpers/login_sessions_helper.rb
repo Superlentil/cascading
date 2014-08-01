@@ -31,7 +31,12 @@ module LoginSessionsHelper
   end
   
   
-  def loginCorrectly?(userId)
+  def loggedIn?
+    return session.has_key?(:user_id)
+  end
+  
+  
+  def correctLoggedInUser?(userId)
     return session.has_key?(:user_id) && session[:user_id].to_i == userId.to_i
   end
 end

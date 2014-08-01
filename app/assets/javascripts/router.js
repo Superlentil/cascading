@@ -1,6 +1,8 @@
 // define the articles "Router"
 Router = Backbone.Router.extend({
-  routes: {  
+  routes: {
+    "forbidden": "forbiddenAccess",
+    
     "": "articles",
     "articles/new": "newArticle",
     "article/:id": "showArticle",
@@ -20,31 +22,41 @@ Router = Backbone.Router.extend({
     var that = this;
     
     // console.log("router -> execute");
-    if (this.lastView) {
+    if (that.lastView) {
       that.lastView.remove();
     }
-    if (this.layoutHeader) {
+    if (that.layoutHeader) {
       that.layoutHeader.remove();
     }
-    if (this.layoutFooter) {
+    if (that.layoutMessage) {
+      that.layoutMessage.remove();
+    }
+    if (that.layoutFooter) {
       that.layoutFooter.remove();
     }
     
     $(function() {
       $("body").empty();
-      $("body").append("<div id='main_header'></div>");
-      $("body").append("<div id='main_container'></div>");
-      $("body").append("<div id='main_footer'></div>");
+      $("body").append("<div id='main_header'></div><div id='main_message' style='display:none;'></div><div id='main_container'></div><div id='main_footer'></div>");
       
       that.layoutHeader = new Views.Layouts.Header();
+      that.layoutMessage = new Views.Layouts.Message();
       that.layoutFooter = new Views.Layouts.Footer();
       that.layoutHeader.render();
+      that.layoutMessage.render();
       that.layoutFooter.render();
       
       if (callback) {
         that.lastView = callback.apply(that, args);
       }
     });
+  },
+  
+  
+  forbiddenAccess: function() {
+    var viewForbidden = new Views.Layouts.Forbidden();
+    viewForbidden.render();
+    return viewForbidden;
   },
 
   

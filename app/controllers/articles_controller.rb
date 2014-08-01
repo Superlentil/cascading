@@ -16,7 +16,7 @@ class ArticlesController < ApplicationController
 
   def show
     @article = Article.find(params[:id])
-    if @article.status == GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED || loginCorrectly?(@article.user_id)
+    if @article.status == GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED || correctLoggedInUser?(@article.user_id)
       respond_with @article
     end
     return
@@ -25,7 +25,7 @@ class ArticlesController < ApplicationController
 
   def create
     inputParams = articleParams
-    if loginCorrectly?(inputParams[:user_id])
+    if correctLoggedInUser?(inputParams[:user_id])
       @article = Article.new(inputParams)
       @article.save
       respond_with @article
@@ -37,7 +37,7 @@ class ArticlesController < ApplicationController
   def update
     @article = Article.find(params[:id])
     inputParams = articleParams
-    if loginCorrectly?(@article.user_id)
+    if correctLoggedInUser?(@article.user_id)
       ActiveRecord::Base.transaction do
         if inputParams[:status] && inputParams[:status].to_i != GlobalConstant::ArticleStatus::DRAFT
           if inputParams[:cover_picture_id].to_i < 0
@@ -60,7 +60,7 @@ class ArticlesController < ApplicationController
 
   def destroy
     @article = Article.find(params[:id])
-    if loginCorrectly?(@article.user_id)
+    if correctLoggedInUser?(@article.user_id)
       @article.destroy
       respond_with @article
     end
