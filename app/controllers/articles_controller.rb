@@ -1,4 +1,7 @@
 class ArticlesController < ApplicationController
+  include LoginSessionsHelper
+  
+  
   respond_to :json
   
   

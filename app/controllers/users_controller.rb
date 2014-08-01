@@ -38,6 +38,7 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
     @user.update(userParams)
+    setUserLoginSession(@user)
     respond_with @user
   end
 
@@ -45,6 +46,7 @@ class UsersController < ApplicationController
   def destroy
     @user = User.find(params[:id])
     @user.destroy
+    clearUserLoginSession
     respond_with @user
   end
   

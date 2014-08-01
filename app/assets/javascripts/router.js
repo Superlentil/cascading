@@ -115,8 +115,10 @@ Router = Backbone.Router.extend({
   },
   
   
-  editUser: function() {
-    
+  editUser: function(id) {
+    var viewEdit = new Views.Users.Edit();
+    viewEdit.render({id: id});
+    return viewEdit;
   },
   
   

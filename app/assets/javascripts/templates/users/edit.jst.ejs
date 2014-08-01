@@ -1,0 +1,9 @@
+<h3>Edit User</h3>
+<div>
+  Email: <input id="edit_user_email_input" type="text" value="<%= user.get("email") %>" /><br />
+  Nickname: <input id="edit_user_nickname_input" type="text" value="<%= user.get("nickname") %>" /><br />
+  Avatar: <img src="<%= user.get("avatar_url") %>" /><br />
+  <input id="edit_user_avatar_input" type="file" /><br />
+  <input id="edit_user_save_button" type="button" value="save" />
+  <input id="edit_user_cancel_button" type="button" value="cancel" />
+</div>

@@ -1,5 +1,6 @@
 var ModelHelper = {
-  multipartFormSubmit: function(formData, callbacks, url) {
+  multipartFormSubmit: function(formData, callbacks, method, url) {
+    method = method || "POST";
     url = url || ("/" + this.urlRoot || "");
     
     if (!callbacks) {
@@ -14,7 +15,7 @@ var ModelHelper = {
     
     $.ajax({
         url: url,  //Server script to process data
-        type: "POST",
+        type: method,
         dataType: "json",
         xhr: function() {  // Custom XMLHttpRequest
             var customizedXhr = $.ajaxSettings.xhr();

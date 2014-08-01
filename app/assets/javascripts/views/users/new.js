@@ -11,7 +11,7 @@ Views.Users.New = Backbone.View.extend({
   
   
   events: {
-    "click #new_user_submit_button": "onSave",
+    "click #new_user_save_button": "onSave",
     "click #new_user_cancel_button": "onCancel"
   },
   
