@@ -16,7 +16,7 @@ class ArticlesController < ApplicationController
 
   def show
     @article = Article.find(params[:id])
-    if @article.status == GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED || correctLogin?(@article.user_id)
+    if @article.status == GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED || loginCorrectly?(@article.user_id)
       respond_with @article
     end
     return
@@ -25,7 +25,7 @@ class ArticlesController < ApplicationController
 
   def create
     inputParams = articleParams
-    if correctLogin?(inputParams[:user_id])
+    if loginCorrectly?(inputParams[:user_id])
       @article = Article.new(inputParams)
       @article.save
       respond_with @article
@@ -37,7 +37,7 @@ class ArticlesController < ApplicationController
   def update
     @article = Article.find(params[:id])
     inputParams = articleParams
-    if correctLogin?(@article.user_id)
+    if loginCorrectly?(@article.user_id)
       ActiveRecord::Base.transaction do
         if inputParams[:status] && inputParams[:status].to_i != GlobalConstant::ArticleStatus::DRAFT
           if inputParams[:cover_picture_id].to_i < 0
@@ -60,7 +60,7 @@ class ArticlesController < ApplicationController
 
   def destroy
     @article = Article.find(params[:id])
-    if correctLogin?(@article.user_id)
+    if loginCorrectly?(@article.user_id)
       @article.destroy
       respond_with @article
     end
@@ -74,11 +74,6 @@ private
 
   def articleParams
     params.require(:article).permit(:id, :cover_picture_id, :cover_picture_url, :cover_picture_height, :title, :author, :content, :category, :views, :like, :status, :user_id, :created_at, :updated_at)
-  end
-  
-  
-  def correctLogin?(userId)
-    return session.has_key?(:user_id) && session[:user_id].to_i == userId.to_i
   end
   
   

@@ -29,4 +29,9 @@ module LoginSessionsHelper
   def administrator?
     return session.has_key?(:user_tier) && session[:user_tier].to_i == GlobalConstant::UserTier::ADMINISTRATOR
   end
+  
+  
+  def loginCorrectly?(userId)
+    return session.has_key?(:user_id) && session[:user_id].to_i == userId.to_i
+  end
 end
