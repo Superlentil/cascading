@@ -1,5 +1,10 @@
 // define the view Show
 Views.Articles.Show = Backbone.View.extend({
+  initialize: function() {
+    this.allSubviews = [];
+  },
+  
+  
   el: "div#main_container",
   
   
@@ -18,6 +23,10 @@ Views.Articles.Show = Backbone.View.extend({
           $(".Delete_Article").one("click", function(event) {
             that.deleteArticle(event);
           });
+          
+          var viewComment = new Views.Articles.Comment({articleId: options.id});
+          that.allSubviews.push(viewComment);
+          viewComment.render();
         }
       });
     }
@@ -86,6 +95,14 @@ Views.Articles.Show = Backbone.View.extend({
   remove: function() {
     $(".Delete_Article").off("click");
     $("#article_content_container").off("click");
+    
+    var subview;
+    while (this.allSubviews.length > 0) {
+      subview = this.allSubviews.pop();
+      if (subview) {
+        subview.remove();
+      }
+    }
     
     Backbone.View.prototype.remove.call(this);
   }

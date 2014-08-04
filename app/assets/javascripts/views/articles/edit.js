@@ -265,6 +265,8 @@ Views.Articles.Edit = Backbone.View.extend({
   
   
   remove: function() {
+    $("#article_edit_area").off("click");
+    
     var subview;
     while (this.allSubviews.length > 0) {
       subview = this.allSubviews.pop();
@@ -272,8 +274,6 @@ Views.Articles.Edit = Backbone.View.extend({
         subview.remove();
       }
     }
-    
-    $("#article_edit_area").off("click");
     
     Backbone.View.prototype.remove.call(this);
   }

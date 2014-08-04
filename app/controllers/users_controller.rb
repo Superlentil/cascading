@@ -10,6 +10,8 @@ class UsersController < ApplicationController
     if administrator?
       @users = User.all
       respond_with @users
+    else
+      setResponseMessage("warning", "You don't have the privilege to access the page.")
     end
   end
 
@@ -29,25 +31,35 @@ class UsersController < ApplicationController
 
 
   def create
-    @user = User.create(userParams)
-    setUserLoginSession(@user)
-    respond_with @user
+    @user = User.new(userParams)
+    if @user.save
+      setUserLoginSession(@user)
+      respond_with @user
+    else
+      setResponseMessage("error", "Fail to create user!")
+    end
   end
 
 
   def update
     @user = User.find(params[:id])
-    @user.update(userParams)
-    setUserLoginSession(@user)
-    respond_with @user
+    if @user.update(userParams)
+      setUserLoginSession(@user)
+      respond_with @user
+    else
+      setResponseMessage("error", "Fail to update user!")
+    end
   end
 
 
   def destroy
     @user = User.find(params[:id])
-    @user.destroy
-    clearUserLoginSession
-    respond_with @user
+    if @user.destroy
+      clearUserLoginSession
+      respond_with @user
+    else
+      setResponseMessage("error", "Fail to destroy user!")
+    end
   end
   
   

@@ -1,5 +1,12 @@
 {[
-  <% @users.each do |user| %>
-    <%= render partial: "user", locals: {user: user} %>,
+  <% unless @users.nil? %>
+    <% lastIndex = @users.length - 1 %>
+    <% @users.each do |user, index| %>
+      <% if index == lastIndex %>
+        <%= render partial: "user", locals: {user: user} %>
+      <% else %>
+        <%= render partial: "user", locals: {user: user} %>,
+      <% end %>
+    <% end %>
   <% end %>
 ]}

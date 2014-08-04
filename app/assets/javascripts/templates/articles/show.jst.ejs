@@ -15,3 +15,9 @@
   <em>category: <%= article.get("category") %></em><br />
   <%= contentJsonToHtml(article.get("content")) %>
 </div>
+
+
+<% if (!preview) { %>
+  <br /><br />
+  <div id="article_comments_container"></div>
+<% } %>

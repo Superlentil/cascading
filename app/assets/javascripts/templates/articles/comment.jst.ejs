@@ -1,0 +1,19 @@
+<div id="comments_list">
+<% if (comments) { %>
+  <% _.each(comments, function(comment) { %>
+    <div>
+      <img src="<%= comment.get("user_avatar_url") %>" />
+      <strong><em><%= comment.get("user_nickname") %></em></strong>:<br />
+      <p><%= comment.get("content") %></p>
+    </div> 
+  <% }); %>
+<% } %>
+</div>
+
+<% if ($.cookie("user_id")) { %>
+  <div>
+    <input id="comment_input" type="text" value="Your Comment ~" />
+    <input id="save_comment" type="button" value="Save" />
+    <input id="cancel_comment" type="button" value="Cancel" />
+  </div>
+<% } %>

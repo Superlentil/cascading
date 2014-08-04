@@ -1,5 +1,5 @@
 {
-  <% if !user.nil? %>
+  <% unless user.nil? %>
     "id": <%= user.id %>,
     "email": "<%= user.email %>",
     "nickname": "<%= user.nickname %>",

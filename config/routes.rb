@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   resources :users
   resources :articles
   resources :pictures
+  resources :comments
   resources :login_sessions, only: [:create]
 
   # Example resource route with options:
