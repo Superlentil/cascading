@@ -36,13 +36,26 @@ Router = Backbone.Router.extend({
     }
     
     $(function() {
-      $("body").empty();
-      $("body").append("<div id='main_header'></div><div id='main_message' style='display:none;'></div><div id='main_container'></div><div id='main_footer'></div>");
+      var htmlBody = $("body");
+      htmlBody.empty();
+      htmlBody.addClass("container");
       
+      var mainHeader = $("<nav id='main-header' class='navbar navbar-default navbar-fixed-top' role='navigation'></nav>");
+      htmlBody.append(mainHeader);
       that.layoutHeader = new Views.Layouts.Header();
+      that.layoutHeader.render();
+      
+      var paddingTopSize = mainHeader.height() + 10;
+      htmlBody.css("padding-top", paddingTopSize + "px");
+      
+      htmlBody.append([
+        "<div id='main_message' style='display:none;'></div>",
+        "<div id='main_container'></div>",
+        "<div id='main_footer'></div>"
+      ].join(""));
+      
       that.layoutMessage = new Views.Layouts.Message();
       that.layoutFooter = new Views.Layouts.Footer();
-      that.layoutHeader.render();
       that.layoutMessage.render();
       that.layoutFooter.render();
       

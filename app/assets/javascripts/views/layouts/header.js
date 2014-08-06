@@ -1,5 +1,5 @@
 Views.Layouts.Header = Backbone.View.extend({
-  el: "div#main_header",
+  el: "#main-header",
   
   
   template: JST["templates/layouts/header"],

@@ -1,5 +1,8 @@
-<div>
-  <h3>This is header!</h3>
+<div class="container">
+  <div class="navbar-header">
+    <strong><em><a class="navbar-brand" href="#">Haigy</a></em></strong>
+  </div>  
+
   <% if ($.cookie("user_id")) { %>
     <div>
       Welcome <em><a href="#/user/<%= $.cookie("user_id") %>"><%= $.cookie("user_nickname") %></a></em>
@@ -7,17 +10,24 @@
       <a id="log_out_button" href="#">log out</a>
     </div>
   <% } else { %>
-    <div>
-      Email: <input id="login_email_input" type="text" />
-      Password: <input id="login_password_input" type="password" />
-      <input id="login_submit_button" type="button" value="login" />
-      <a href="#/users/new">sign up</a>
-    </div>
+    <form class="navbar-form navbar-right" role="search">
+      <div class="form-group">
+        <input id="login_email_input" class="form-control" type="text" placeholder="Email">
+      </div>
+      <div class="form-group">
+        <input id="login_password_input" class="form-control" type="password" placeholder="Password">
+      </div>
+      <div class="form-group">
+        <input id="login_submit_button" class="form-control" type="button" value="Log In">
+      </div>
+      <small><em><a class="navbar-link" href="#/users/new">Sign Up</a></em></small>
+    </form>
+
+<!--
     <% if ($.cookie("user_login_status")) { %>
       <div><em><%= $.cookie("user_login_status") %></em></div>
     <% } %>
-  <% } %>
-  <hr />
-</div>
+-->
 
-<br /><br />
+  <% } %>
+</div>
