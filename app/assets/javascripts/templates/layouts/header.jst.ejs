@@ -1,5 +1,11 @@
 <div class="container">
   <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-header-collapse-container">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
     <strong><em><a class="navbar-brand" href="#">Haigy</a></em></strong>
   </div>  
 
@@ -10,18 +16,20 @@
       <a id="log_out_button" href="#">log out</a>
     </div>
   <% } else { %>
-    <form class="navbar-form navbar-right" role="search">
-      <div class="form-group">
-        <input id="login_email_input" class="form-control" type="text" placeholder="Email">
-      </div>
-      <div class="form-group">
-        <input id="login_password_input" class="form-control" type="password" placeholder="Password">
-      </div>
-      <div class="form-group">
-        <input id="login_submit_button" class="form-control" type="button" value="Log In">
-      </div>
-      <small><em><a class="navbar-link" href="#/users/new">Sign Up</a></em></small>
-    </form>
+    <div class="collapse navbar-collapse" id="main-header-collapse-container">
+      <form class="navbar-form navbar-right " role="search">
+        <div class="form-group">
+          <input id="login_email_input" class="form-control" type="text" placeholder="Email">
+        </div>
+        <div class="form-group">
+          <input id="login_password_input" class="form-control" type="password" placeholder="Password">
+        </div>
+        <div class="form-group">
+          <input id="login_submit_button" class="form-control" type="button" value="Log In">
+        </div>
+        <small><em><a class="navbar-link" href="#/users/new">Sign Up</a></em></small>
+      </form>
+    </div>
 
 <!--
     <% if ($.cookie("user_login_status")) { %>
