@@ -1,23 +1,27 @@
 <div class="container">
-  <div class="navbar-header">
-    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-header-collapse-container">
-      <span class="sr-only">Toggle navigation</span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-    </button>
-    <strong><em><a class="navbar-brand" href="#">Haigy</a></em></strong>
-  </div>  
-
   <% if ($.cookie("user_id")) { %>
-    <div>
-      Welcome <em><a href="#/user/<%= $.cookie("user_id") %>"><%= $.cookie("user_nickname") %></a></em>
-      <img src="<%= $.cookie("user_avatar_url") %>" />
-      <a id="log_out_button" href="#">log out</a>
+    <div class="navbar-header">
+      <strong><em><a class="navbar-brand" href="#">Haigy</a></em></strong>
+      <img class="avatar-img img-rounded navbar-toggle" src="<%= $.cookie("user_avatar_url") %>" data-toggle="collapse" data-target="#main-header-collapse-container">
+    </div>
+    
+    <div class="collapse navbar-collapse navbar-right" id="main-header-collapse-container">
+      <em>Welcome!</em> <!-- <em><a class="navbar-link" href="#/user/<%= $.cookie("user_id") %>"><%= $.cookie("user_nickname") %></a></em> -->
+      <img class="avatar-img img-rounded" src="<%= $.cookie("user_avatar_url") %>">
+      <!-- <a id="log_out_button" class="navbar-link" href="#">log out</a> -->
     </div>
   <% } else { %>
+    <div class="navbar-header">
+      <strong><em><a class="navbar-brand" href="#">Haigy</a></em></strong>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-header-collapse-container">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    
     <div class="collapse navbar-collapse" id="main-header-collapse-container">
-      <form class="navbar-form navbar-right " role="search">
+      <form class="navbar-form navbar-right" role="search">
         <div class="form-group">
           <input id="login_email_input" class="form-control" type="text" placeholder="Email">
         </div>
@@ -25,7 +29,7 @@
           <input id="login_password_input" class="form-control" type="password" placeholder="Password">
         </div>
         <div class="form-group">
-          <input id="login_submit_button" class="form-control" type="button" value="Log In">
+          <input id="login_submit_button" class="form-control btn btn-default" type="button" value="Log In">
         </div>
         <small><em><a class="navbar-link" href="#/users/new">Sign Up</a></em></small>
       </form>

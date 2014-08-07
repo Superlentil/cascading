@@ -1,3 +1,6 @@
+var slided = false;
+
+
 Views.Layouts.Header = Backbone.View.extend({
   el: "#main-header",
   
@@ -13,7 +16,8 @@ Views.Layouts.Header = Backbone.View.extend({
   
   events: {
     "click #login_submit_button": "onLogin",
-    "click #log_out_button": "onLogOut"
+    "click #log_out_button": "onLogOut",
+    "click .avatar-img": "openRightSideBar"
   },
   
   
@@ -38,5 +42,29 @@ Views.Layouts.Header = Backbone.View.extend({
         Backbone.history.loadUrl("");
       }
     });
+  },
+  
+  
+  openRightSideBar: function(event) {
+    event.preventDefault();
+
+    $("#main_container").css({
+      "background-color": "yellow",
+    });
+    
+    if (slided) {
+      slided = false;
+      $("#main_container").animate({
+        "width": "100%",
+        "margin-left": "0"
+      });
+    } else {
+      slided = true;
+      var width = - $("#main_container").width() * 0.7;
+      $("#main_container").animate({
+        "width": "100%",
+        "margin-left": width + "px"
+      });
+    }
   }
 });
