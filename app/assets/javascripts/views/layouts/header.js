@@ -2,7 +2,7 @@ var slided = false;
 
 
 Views.Layouts.Header = Backbone.View.extend({
-  el: "#main-header",
+  el: "#layouts-header",
   
   
   template: JST["templates/layouts/header"],
@@ -17,7 +17,8 @@ Views.Layouts.Header = Backbone.View.extend({
   events: {
     "click #login_submit_button": "onLogin",
     "click #log_out_button": "onLogOut",
-    "click .avatar-img": "openRightSideBar"
+    "click .avatar-img": "openRightSideBar",
+    "click .navbar-brand": "openLeftSideBar"
   },
   
   
@@ -45,26 +46,66 @@ Views.Layouts.Header = Backbone.View.extend({
   },
   
   
-  openRightSideBar: function(event) {
+  openLeftSideBar: function(event) {
     event.preventDefault();
-
-    $("#main_container").css({
-      "background-color": "yellow",
-    });
+    
+    $("#layouts-leftNav").css("z-index", GlobalConstant.Layout.SHOWN_NAV_Z_INDEX);
     
     if (slided) {
       slided = false;
-      $("#main_container").animate({
+      $("#layouts-header").animate({
+        "left": 0,
+        "width": "100%",
+      }, 400);
+      $("#layouts-navBlocker").animate({
         "width": "100%",
         "margin-left": "0"
+      }, 400, function() {
+        $("#layouts-leftNav").css("z-index", GlobalConstant.Layout.HIDDEN_NAV_Z_INDEX);
       });
     } else {
       slided = true;
-      var width = - $("#main_container").width() * 0.7;
-      $("#main_container").animate({
+      var slideDistance = $("#layouts-navBlocker").width() * 0.3;
+      $("#layouts-header").animate({
+        "left": slideDistance + "px",
+        "width": "100%"
+      }, 400);
+      $("#layouts-navBlocker").animate({
         "width": "100%",
-        "margin-left": width + "px"
+        "margin-left": slideDistance + "px"
+      }, 400);
+    }
+  },
+  
+  
+  openRightSideBar: function(event) {
+    event.preventDefault();
+    
+    $("#layouts-rightNav").css("z-index", GlobalConstant.Layout.SHOWN_NAV_Z_INDEX);
+    
+    if (slided) {
+      slided = false;
+      $("#layouts-header").animate({
+        "left": 0,
+        "width": "100%",
+      }, 400);
+      $("#layouts-navBlocker").animate({
+        "width": "100%",
+        "margin-left": "0"
+      }, 400, function() {
+        $("#layouts-rightNav").css("z-index", GlobalConstant.Layout.HIDDEN_NAV_Z_INDEX);
       });
+    } else {
+      slided = true;
+      var slideDistance = - $("#layouts-navBlocker").width() * 0.3;
+      $("#layouts-header").animate({
+        "left": slideDistance + "px",
+        "width": "100%"
+      }, 400);
+      $("#layouts-navBlocker").animate({
+        "width": "100%",
+        "margin-left": slideDistance + "px"
+      }, 400);
     }
   }
 });

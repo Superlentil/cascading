@@ -28,36 +28,51 @@ Router = Backbone.Router.extend({
     if (that.layoutHeader) {
       that.layoutHeader.remove();
     }
+    if (that.layoutLeftNav) {
+      that.layoutLeftNav.remove();
+    }
+    if (that.layoutRightNav) {
+      that.layoutRightNav.remove();
+    }
     if (that.layoutMessage) {
       that.layoutMessage.remove();
-    }
-    if (that.layoutFooter) {
-      that.layoutFooter.remove();
     }
     
     $(function() {
       var htmlBody = $("body");
       htmlBody.empty();
-      htmlBody.addClass("container");
+            
+      var minScreenHeightCss = "min-height: " + GlobalConstant.Screen.HEIGHT + "px";
+      var minScreenWidthCss = "min-width: " + GlobalConstant.Screen.WIDTH + "px";
       
-      var mainHeader = $("<nav id='main-header' class='navbar navbar-default navbar-fixed-top' role='navigation'></nav>");
-      htmlBody.append(mainHeader);
+      var mainContainer = $("<div id='layouts-navBlocker' style='z-index: " + GlobalConstant.Layout.NAV_BLOCKER_Z_INDEX + "'></div>");
+      htmlBody.append(mainContainer);
+      htmlBody.append([
+        "<div id='layouts-leftNav' style='z-index: " + GlobalConstant.Layout.HIDDEN_NAV_Z_INDEX + "'></div>",
+        "<div id='layouts-rightNav' style='z-index: " + GlobalConstant.Layout.HIDDEN_NAV_Z_INDEX + "'></div>"
+      ].join(""));
+      
+      var mainHeader = $("<nav id='layouts-header' class='navbar navbar-default navbar-fixed-top' role='navigation'></nav>");
+      mainContainer.append(mainHeader);
       that.layoutHeader = new Views.Layouts.Header();
       that.layoutHeader.render();
       
       var paddingTopSize = mainHeader.height() + 10;
-      htmlBody.css("padding-top", paddingTopSize + "px");
+      mainContainer.css("padding-top", paddingTopSize + "px");
       
-      htmlBody.append([
-        "<div id='main_message' style='display:none;'></div>",
-        "<div id='main_container'></div>",
-        "<div id='main_footer'></div>"
+      mainContainer.append([
+        "<div id='main_message' class='container' style='display:none;'></div>",
+        "<div id='main_container' class='container'></div>"
       ].join(""));
       
+      that.layoutLeftNav = new Views.Layouts.LeftNav();
+      that.layoutLeftNav.render();
+      
+      that.layoutRightNav = new Views.Layouts.RightNav();
+      that.layoutRightNav.render();
+      
       that.layoutMessage = new Views.Layouts.Message();
-      that.layoutFooter = new Views.Layouts.Footer();
       that.layoutMessage.render();
-      that.layoutFooter.render();
       
       if (callback) {
         that.lastView = callback.apply(that, args);

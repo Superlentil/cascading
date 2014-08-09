@@ -2,7 +2,7 @@
 Views.Articles.Index.Main = Backbone.View.extend({
   initialize: function() {
     _.bindAll(this, 'handleScroll');
-    $(window).on("scroll", this.handleScroll);
+    $("#layouts-navBlocker").on("scroll", this.handleScroll);
     
     this.resetCascadeContainer();
     this.articlesPerBatch = 7;
@@ -113,7 +113,7 @@ Views.Articles.Index.Main = Backbone.View.extend({
       }
     }
     
-    $(window).off("scroll");
+    $("#layouts-navBlocker").off("scroll");
     
     Backbone.View.prototype.remove.call(this);
   }
