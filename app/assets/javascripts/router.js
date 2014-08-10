@@ -1,4 +1,3 @@
-// define the articles "Router"
 Router = Backbone.Router.extend({
   routes: {
     "forbidden": "forbiddenAccess",
@@ -41,20 +40,17 @@ Router = Backbone.Router.extend({
     $(function() {
       var htmlBody = $("body");
       htmlBody.empty();
-            
-      var minScreenHeightCss = "min-height: " + GlobalConstant.Screen.HEIGHT + "px";
-      var minScreenWidthCss = "min-width: " + GlobalConstant.Screen.WIDTH + "px";
       
-      var mainContainer = $("<div id='layouts-navBlocker' style='z-index: " + GlobalConstant.Layout.NAV_BLOCKER_Z_INDEX + "'></div>");
+      var mainContainer = $("<div id='layout-canvas' style='z-index: " + GlobalConstant.Layout.NAV_BLOCKER_Z_INDEX + "'></div>");
       htmlBody.append(mainContainer);
       htmlBody.append([
-        "<div id='layouts-leftNav' style='z-index: " + GlobalConstant.Layout.HIDDEN_NAV_Z_INDEX + "'></div>",
-        "<div id='layouts-rightNav' style='z-index: " + GlobalConstant.Layout.HIDDEN_NAV_Z_INDEX + "'></div>"
+        "<div id='layout-leftNav' style='z-index: " + GlobalConstant.Layout.HIDDEN_NAV_Z_INDEX + "'></div>",
+        "<div id='layout-rightNav' style='z-index: " + GlobalConstant.Layout.HIDDEN_NAV_Z_INDEX + "'></div>"
       ].join(""));
       
-      var mainHeader = $("<nav id='layouts-header' class='navbar navbar-default navbar-fixed-top' role='navigation'></nav>");
+      var mainHeader = $("<nav id='layout-header' class='navbar navbar-default navbar-fixed-top' role='navigation'></nav>");
       mainContainer.append(mainHeader);
-      that.layoutHeader = new Views.Layouts.Header();
+      that.layoutHeader = new View.Layout.Header();
       that.layoutHeader.render();
       
       var paddingTopSize = mainHeader.height() + 10;
@@ -65,13 +61,13 @@ Router = Backbone.Router.extend({
         "<div id='main_container' class='container'></div>"
       ].join(""));
       
-      that.layoutLeftNav = new Views.Layouts.LeftNav();
+      that.layoutLeftNav = new View.Layout.LeftNav();
       that.layoutLeftNav.render();
       
-      that.layoutRightNav = new Views.Layouts.RightNav();
+      that.layoutRightNav = new View.Layout.RightNav();
       that.layoutRightNav.render();
       
-      that.layoutMessage = new Views.Layouts.Message();
+      that.layoutMessage = new View.Layout.Message();
       that.layoutMessage.render();
       
       if (callback) {
@@ -82,14 +78,14 @@ Router = Backbone.Router.extend({
   
   
   forbiddenAccess: function() {
-    var viewForbidden = new Views.Layouts.Forbidden();
+    var viewForbidden = new View.Layout.Forbidden();
     viewForbidden.render();
     return viewForbidden;
   },
 
   
   articles: function() {
-    var viewIndex = new Views.Articles.Index.Main();
+    var viewIndex = new View.Article.Index.Main();
     viewIndex.render();
     return viewIndex;
   },
@@ -99,7 +95,7 @@ Router = Backbone.Router.extend({
     var now = $.now();
     var lastNewArticleTime = parseInt($.cookie("last_new_article_timestamp")) || 0;
     if (now - lastNewArticleTime > 100) {   // Prevent loading the "new" page too frequently.
-      var viewEdit = new Views.Articles.Edit();
+      var viewEdit = new View.Article.Edit();
       viewEdit.newArticle();
       $.cookie('last_new_article_timestamp', now, {expires: 1});
       return viewEdit;
@@ -111,14 +107,14 @@ Router = Backbone.Router.extend({
   
    
   showArticle: function(id) {
-    var viewShow = new Views.Articles.Show();
+    var viewShow = new View.Article.Show();
     viewShow.render({id: id});
     return viewShow;
   },
   
   
   editArticle: function(id) {
-    var viewEdit = new Views.Articles.Edit();
+    var viewEdit = new View.Article.Edit();
     viewEdit.editArticle(id);
     return viewEdit;
   },
@@ -130,21 +126,21 @@ Router = Backbone.Router.extend({
   
   
   newUser: function() {
-    var viewNew = new Views.Users.New();
+    var viewNew = new View.User.New();
     viewNew.render();
     return viewNew;
   },
   
   
   showUser: function(id) {
-    var viewShow = new Views.Users.Show();
+    var viewShow = new View.User.Show();
     viewShow.render({id: id});
     return viewShow;
   },
   
   
   editUser: function(id) {
-    var viewEdit = new Views.Users.Edit();
+    var viewEdit = new View.User.Edit();
     viewEdit.render({id: id});
     return viewEdit;
   },

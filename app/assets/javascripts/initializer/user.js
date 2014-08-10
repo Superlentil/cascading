@@ -1,0 +1,3 @@
+Model.User = {};
+
+View.User = {};

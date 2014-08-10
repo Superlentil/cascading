@@ -1,3 +1,0 @@
-Models.Layouts = {};
-
-Views.Layouts = {};

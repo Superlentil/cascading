@@ -17,12 +17,12 @@
 //= require backbone
 //= require jquery_cookie
 
-//= require global_constants
-//= require initializers/_INDEXER_
-//= require models/_INDEXER_
-//= require collections/_INDEXER_
-//= require templates/_INDEXER_
-//= require views/_INDEXER_
+//= require global_constant
+//= require initializer/_INDEXER_
+//= require model/_INDEXER_
+//= require collection/_INDEXER_
+//= require template/_INDEXER_
+//= require view/_INDEXER_
 //= require router
 
 
