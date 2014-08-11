@@ -13,7 +13,7 @@ View.Article.Publish = Backbone.View.extend({
   },
   
   
-  el: "div#main_container",
+  el: "#layout-content",
   
   
   template: JST["template/article/publish"],
@@ -132,7 +132,7 @@ View.Article.Publish = Backbone.View.extend({
     that.coverPictureId = picture.data("pictureId");
     that.mode = "choose";
     $(".Article_Picture").css({"margin-bottom": "1em", "border": "0px none"});
-    picture.css({"border": "0px outset pink"}).animate({
+    picture.css({"border": "0px outset pink"}).velocity({
       "margin-bottom": "0",
       "border-width": "5px"
     });

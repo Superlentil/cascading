@@ -1,5 +1,5 @@
 View.Layout.Forbidden = Backbone.View.extend({
-  el: "div#main_container",
+  el: "#layout-content",
   
   
   template: JST["template/layout/forbidden"],

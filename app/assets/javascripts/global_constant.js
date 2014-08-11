@@ -14,8 +14,7 @@ var GlobalConstant = {
   
   Layout: {
     SHOWN_NAV_Z_INDEX: -998,
-    HIDDEN_NAV_Z_INDEX: -1000,
-    NAV_BLOCKER_Z_INDEX: -990,
+    HIDDEN_NAV_Z_INDEX: -1000
   },
   
   

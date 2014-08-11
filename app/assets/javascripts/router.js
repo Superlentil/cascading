@@ -20,7 +20,6 @@ Router = Backbone.Router.extend({
   execute: function(callback, args) {
     var that = this;
     
-    // console.log("router -> execute");
     if (that.lastView) {
       that.lastView.remove();
     }
@@ -41,24 +40,24 @@ Router = Backbone.Router.extend({
       var htmlBody = $("body");
       htmlBody.empty();
       
-      var mainContainer = $("<div id='layout-canvas' style='z-index: " + GlobalConstant.Layout.NAV_BLOCKER_Z_INDEX + "'></div>");
-      htmlBody.append(mainContainer);
+      var layoutCanvas = $("<div id='layout-canvas'></div>");
+      htmlBody.append(layoutCanvas);
       htmlBody.append([
         "<div id='layout-leftNav' style='z-index: " + GlobalConstant.Layout.HIDDEN_NAV_Z_INDEX + "'></div>",
         "<div id='layout-rightNav' style='z-index: " + GlobalConstant.Layout.HIDDEN_NAV_Z_INDEX + "'></div>"
       ].join(""));
       
       var mainHeader = $("<nav id='layout-header' class='navbar navbar-default navbar-fixed-top' role='navigation'></nav>");
-      mainContainer.append(mainHeader);
+      layoutCanvas.append(mainHeader);
       that.layoutHeader = new View.Layout.Header();
       that.layoutHeader.render();
       
       var paddingTopSize = mainHeader.height() + 10;
-      mainContainer.css("padding-top", paddingTopSize + "px");
+      layoutCanvas.css("padding-top", paddingTopSize + "px");
       
-      mainContainer.append([
-        "<div id='main_message' class='container' style='display:none;'></div>",
-        "<div id='main_container' class='container'></div>"
+      layoutCanvas.append([
+        "<div id='layout-message' class='container' style='display:none;'></div>",
+        "<div id='layout-content' class='container'></div>"
       ].join(""));
       
       that.layoutLeftNav = new View.Layout.LeftNav();

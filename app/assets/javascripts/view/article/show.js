@@ -5,7 +5,7 @@ View.Article.Show = Backbone.View.extend({
   },
   
   
-  el: "div#main_container",
+  el: "#layout-content",
   
   
   template: JST["template/article/show"],
