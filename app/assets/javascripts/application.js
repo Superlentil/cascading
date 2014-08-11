@@ -16,7 +16,6 @@
 //= require underscore
 //= require backbone
 //= require jquery_cookie
-//= require jquery_velocity
 
 //= require global_constant
 //= require initializer/_INDEXER_

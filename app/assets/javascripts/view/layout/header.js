@@ -53,11 +53,11 @@ View.Layout.Header = Backbone.View.extend({
     
     if (slided) {
       slided = false;
-      $("#layout-header").velocity({
+      $("#layout-header").animate({
         "left": 0,
         "width": "100%",
       }, 400);
-      $("#layout-canvas").velocity({
+      $("#layout-canvas").animate({
         "width": "100%",
         "margin-left": "0"
       }, 400, function() {
@@ -66,11 +66,11 @@ View.Layout.Header = Backbone.View.extend({
     } else {
       slided = true;
       var slideDistance = $("#layout-canvas").width() * 0.3;
-      $("#layout-header").velocity({
+      $("#layout-header").animate({
         "left": slideDistance + "px",
         "width": "100%"
       }, 400);
-      $("#layout-canvas").velocity({
+      $("#layout-canvas").animate({
         "width": "100%",
         "margin-left": slideDistance + "px"
       }, 400);
@@ -85,11 +85,11 @@ View.Layout.Header = Backbone.View.extend({
     
     if (slided) {
       slided = false;
-      $("#layout-header").velocity({
+      $("#layout-header").animate({
         "left": 0,
         "width": "100%",
       }, 400);
-      $("#layout-canvas").velocity({
+      $("#layout-canvas").animate({
         "width": "100%",
         "margin-left": "0"
       }, 400, function() {
@@ -98,11 +98,11 @@ View.Layout.Header = Backbone.View.extend({
     } else {
       slided = true;
       var slideDistance = - $("#layout-canvas").width() * 0.3;
-      $("#layout-header").velocity({
+      $("#layout-header").animate({
         "left": slideDistance + "px",
         "width": "100%"
       }, 400);
-      $("#layout-canvas").velocity({
+      $("#layout-canvas").animate({
         "width": "100%",
         "margin-left": slideDistance + "px"
       }, 400);
