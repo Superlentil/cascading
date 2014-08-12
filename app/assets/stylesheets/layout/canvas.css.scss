@@ -8,4 +8,15 @@
   background-color: #fff;
   
   overflow-y: scroll;
+  
+  transition: transform 400ms ease;
+}
+
+
+#layout-header {
+  -webkit-transform: translatez(1030);
+  -moz-transform: translatez(1030);
+  -ms-transform: translatez(1030);
+  -o-transform: translatez(1030);
+  transform: translatez(1030);
 }

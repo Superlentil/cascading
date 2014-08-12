@@ -48,32 +48,22 @@ View.Layout.Header = Backbone.View.extend({
   
   openLeftSideBar: function(event) {
     event.preventDefault();
-    
-    $("#layout-leftNav").css("z-index", GlobalConstant.Layout.SHOWN_NAV_Z_INDEX);
-    
+        
     if (slided) {
       slided = false;
-      $("#layout-header").animate({
-        "left": 0,
-        "width": "100%",
-      }, 400);
-      $("#layout-canvas").animate({
-        "width": "100%",
-        "margin-left": "0"
-      }, 400, function() {
+      $("#layout-header").transition({x: 0});
+      $("#layout-canvas").transition({x: 0}).queue(function() {
         $("#layout-leftNav").css("z-index", GlobalConstant.Layout.HIDDEN_NAV_Z_INDEX);
+        $(this).dequeue();
       });
     } else {
       slided = true;
       var slideDistance = $("#layout-canvas").width() * 0.3;
-      $("#layout-header").animate({
-        "left": slideDistance + "px",
-        "width": "100%"
-      }, 400);
-      $("#layout-canvas").animate({
-        "width": "100%",
-        "margin-left": slideDistance + "px"
-      }, 400);
+      $("#layout-leftNav").css("z-index", GlobalConstant.Layout.SHOWN_NAV_Z_INDEX).queue(function() {
+        $("#layout-header").transition({x: slideDistance});
+        $("#layout-canvas").transition({x: slideDistance});
+        $(this).dequeue();
+      });
     }
   },
   
