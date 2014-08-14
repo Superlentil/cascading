@@ -1,8 +1,6 @@
-var slided = false;
-
-
 View.Layout.Header = Backbone.View.extend({
-  el: "#layout-header",
+  tagName: "div",
+  className: "container",
   
   
   template: JST["template/layout/header"],
@@ -48,54 +46,60 @@ View.Layout.Header = Backbone.View.extend({
   
   openLeftSideBar: function(event) {
     event.preventDefault();
-        
-    if (slided) {
-      slided = false;
-      $("#layout-header").transition({x: 0});
-      $("#layout-canvas").transition({x: 0}).queue(function() {
-        $("#layout-leftNav").css("z-index", GlobalConstant.Layout.HIDDEN_NAV_Z_INDEX);
-        $(this).dequeue();
-      });
+    event.stopPropagation();
+    
+    var that = this;
+
+    if (GlobalVariable.Layout.leftNavOn) {
+      GlobalVariable.Layout.leftNavOn = false;
+      $("#layout-leftNav").transition({x: 0});
     } else {
-      slided = true;
-      var slideDistance = $("#layout-canvas").width() * 0.3;
-      $("#layout-leftNav").css("z-index", GlobalConstant.Layout.SHOWN_NAV_Z_INDEX).queue(function() {
-        $("#layout-header").transition({x: slideDistance});
-        $("#layout-canvas").transition({x: slideDistance});
-        $(this).dequeue();
-      });
+      if (GlobalVariable.Layout.rightNavOn) {
+        GlobalVariable.Layout.rightNavOn = false;
+        $("#layout-rightNav").transition({x: 0});
+      }
+      
+      GlobalVariable.Layout.leftNavOn = true;
+      $("#layout-leftNav").transition({x: GlobalVariable.Layout.leftNavWidth});
     }
   },
   
   
   openRightSideBar: function(event) {
     event.preventDefault();
+    event.stopPropagation();
     
-    $("#layout-rightNav").css("z-index", GlobalConstant.Layout.SHOWN_NAV_Z_INDEX);
-    
-    if (slided) {
-      slided = false;
-      $("#layout-header").animate({
-        "left": 0,
-        "width": "100%",
-      }, 400);
-      $("#layout-canvas").animate({
-        "width": "100%",
-        "margin-left": "0"
-      }, 400, function() {
-        $("#layout-rightNav").css("z-index", GlobalConstant.Layout.HIDDEN_NAV_Z_INDEX);
-      });
+    var that = this;
+            
+    if (GlobalVariable.Layout.rightNavOn) {
+      GlobalVariable.Layout.rightNavOn = false;
+      $("#layout-rightNav").transition({x: 0});
     } else {
-      slided = true;
-      var slideDistance = - $("#layout-canvas").width() * 0.3;
-      $("#layout-header").animate({
-        "left": slideDistance + "px",
-        "width": "100%"
-      }, 400);
-      $("#layout-canvas").animate({
-        "width": "100%",
-        "margin-left": slideDistance + "px"
-      }, 400);
+      if (GlobalVariable.Layout.leftNavOn) {
+        GlobalVariable.Layout.leftNavOn = false;
+        $("#layout-leftNav").transition({x: 0});
+      }
+      
+      GlobalVariable.Layout.rightNavOn = true;
+      $("#layout-rightNav").transition({x: -GlobalVariable.Layout.rightNavWidth});
+    }
+  },
+  
+  
+  clearNav: function(event) {
+    event.preventDefault();
+    
+    var that = this;
+    alert("aaaa");
+    
+    if (GlobalVariable.Layout.leftNavOn) {
+      GlobalVariable.Layout.leftNavOn = false;
+      $("#layout-leftNav").transition({x: 0});
+    }
+    
+    if (GlobalVariable.Layout.rightNavOn) {
+      GlobalVariable.Layout.rightNavOn = false;
+      $("#layout-rightNav").transition({x: 0});
     }
   }
 });

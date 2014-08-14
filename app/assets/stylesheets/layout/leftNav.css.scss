@@ -2,12 +2,12 @@
   position: fixed;
   top: 0;
   bottom: 0;
-  left: 0;
-  right: 0;
   
   background-color: red;
   
-  overflow-y: scroll;
+  z-index: 10000;
   
-  transition: transform 400ms ease;
+  overflow: auto;
+  
+  transition: transform 500ms ease;
 }

@@ -20,59 +20,32 @@ Router = Backbone.Router.extend({
   execute: function(callback, args) {
     var that = this;
     
-    if (that.lastView) {
-      that.lastView.remove();
-    }
-    if (that.layoutHeader) {
-      that.layoutHeader.remove();
-    }
-    if (that.layoutLeftNav) {
-      that.layoutLeftNav.remove();
-    }
-    if (that.layoutRightNav) {
-      that.layoutRightNav.remove();
-    }
-    if (that.layoutMessage) {
-      that.layoutMessage.remove();
-    }
+    that.garbageCollection();
     
     $(function() {
-      var htmlBody = $("body");
-      htmlBody.empty();
-      
-      var layoutCanvas = $("<div id='layout-canvas'></div>");
-      htmlBody.append(layoutCanvas);
-      htmlBody.append([
-        "<div id='layout-leftNav' style='z-index: " + GlobalConstant.Layout.HIDDEN_NAV_Z_INDEX + "'></div>",
-        "<div id='layout-rightNav' style='z-index: " + GlobalConstant.Layout.HIDDEN_NAV_Z_INDEX + "'></div>"
-      ].join(""));
-      
-      var mainHeader = $("<nav id='layout-header' class='navbar navbar-default navbar-fixed-top' role='navigation'></nav>");
-      layoutCanvas.append(mainHeader);
-      that.layoutHeader = new View.Layout.Header();
-      that.layoutHeader.render();
-      
-      var paddingTopSize = mainHeader.height() + 10;
-      layoutCanvas.css("padding-top", paddingTopSize + "px");
-      
-      layoutCanvas.append([
-        "<div id='layout-message' class='container' style='display:none;'></div>",
-        "<div id='layout-content' class='container'></div>"
-      ].join(""));
-      
-      that.layoutLeftNav = new View.Layout.LeftNav();
-      that.layoutLeftNav.render();
-      
-      that.layoutRightNav = new View.Layout.RightNav();
-      that.layoutRightNav.render();
-      
-      that.layoutMessage = new View.Layout.Message();
-      that.layoutMessage.render();
+      that.layout = that.renderLayout();
       
       if (callback) {
         that.lastView = callback.apply(that, args);
       }
     });
+  },
+  
+  
+  garbageCollection: function() {
+    if (this.lastView) {
+      this.lastView.remove();
+    }
+    
+    if (this.layout) {
+      this.layout.remove();
+    }
+  },
+  
+  
+  renderLayout: function() {
+    var viewLayout = new View.Layout.HtmlBody();
+    return viewLayout.render();
   },
   
   

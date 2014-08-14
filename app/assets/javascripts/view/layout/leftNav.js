@@ -1,5 +1,6 @@
 View.Layout.LeftNav = Backbone.View.extend({
-  el: "#layout-leftNav",
+  tagName: "div",
+  className: "col-xs-12",
   
   
   template: JST["template/layout/leftNav"],
@@ -7,5 +8,6 @@ View.Layout.LeftNav = Backbone.View.extend({
   
   render: function() {
     this.$el.html(this.template());
+    return this;
   }
 });

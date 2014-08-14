@@ -18,7 +18,7 @@
 //= require jquery_cookie
 //= require jquery_transit
 
-//= require global_constant
+//= require global_parameter
 //= require initializer/_INDEXER_
 //= require model/_INDEXER_
 //= require collection/_INDEXER_

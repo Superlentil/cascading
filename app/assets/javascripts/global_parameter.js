@@ -12,14 +12,19 @@ var GlobalConstant = {
   },
 
   
-  Layout: {
-    SHOWN_NAV_Z_INDEX: -998,
-    HIDDEN_NAV_Z_INDEX: -1000
-  },
-  
-  
   UserTier: {   // If this enumeration needs to be modified, please modify the corresponding one in the "Ruby on Rails" code together.
     ADMINISTRATOR: 0,
     FREE_USER: 1
+  }
+};
+
+
+var GlobalVariable = {
+  Layout: {
+    leftNavWidth: 300,
+    rightNavWidth: 300,
+    
+    leftNavOn: false,
+    rightNavOn: false
   }
 };
