@@ -44,7 +44,7 @@ Router = Backbone.Router.extend({
   
   
   renderLayout: function() {
-    var viewLayout = new View.Layout.HtmlBody();
+    var viewLayout = new View.Layout.Main();
     return viewLayout.render();
   },
   

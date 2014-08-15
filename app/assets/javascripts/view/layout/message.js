@@ -1,5 +1,5 @@
 View.Layout.Message = Backbone.View.extend({
-  el: "div#main_message",
+  el: "#layout-message",
   
   
   template: JST["template/layout/message"],
