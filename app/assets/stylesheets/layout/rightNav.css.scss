@@ -1,11 +1,11 @@
 #layout-rightNav {
   position: fixed;
   top: 0;
-  bottom: 0;
+  height: 100%;
   
   background-color: blue;
   
-  z-index: 10000;
+  z-index: 2000;
   
   overflow: auto;
   

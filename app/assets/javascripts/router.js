@@ -23,7 +23,10 @@ Router = Backbone.Router.extend({
     that.garbageCollection();
     
     $(function() {
-      that.layout = that.renderLayout();
+      that.layout = new View.Layout.Main();
+      var htmlBody = $("body");
+      htmlBody.empty();
+      htmlBody.append(that.layout.render().$el);
       
       if (callback) {
         that.lastView = callback.apply(that, args);
@@ -40,12 +43,6 @@ Router = Backbone.Router.extend({
     if (this.layout) {
       this.layout.remove();
     }
-  },
-  
-  
-  renderLayout: function() {
-    var viewLayout = new View.Layout.Main();
-    return viewLayout.render();
   },
   
   

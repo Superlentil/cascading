@@ -5,14 +5,15 @@ View.Layout.Main = Backbone.View.extend({
   },
   
   
-  el: "body",
+  tagName: "div",
+  id: "layout-main",
   
   
   render: function() {
     var that = this;
     
-    var htmlBody = that.$el;
-    htmlBody.empty();
+    var container = that.$el;
+    container.empty();
     
     var viewportWidth = $(window).width();
     var navWidth = viewportWidth * 0.618;
@@ -45,14 +46,14 @@ View.Layout.Main = Backbone.View.extend({
     that.viewHeader = new View.Layout.Header();
     header.append(that.viewHeader.render().$el);
     
-    htmlBody.append(leftNav);
-    htmlBody.append(rightNav);
+    container.append(leftNav);
+    container.append(rightNav);
     
     var mainBody = $("<div id='layout-mainBody'></div>");
     mainBody.append(header);
     mainBody.append("<div id='layout-message'></div><div id='layout-content' class='container'></div>");  
     
-    htmlBody.append(mainBody);
+    container.append(mainBody);
     
     that.viewMessage = new View.Layout.Message();
     that.viewMessage.render();
@@ -90,7 +91,6 @@ View.Layout.Main = Backbone.View.extend({
     this.viewHeader.remove();
     this.viewMessage.remove();
     
-    this.$el.empty();
-    this.stopListening();
+    Backbone.View.prototype.remove.call(this);
   }
 });
