@@ -5,9 +5,9 @@
   </div>
   
   <div class="collapse navbar-collapse navbar-right" id="main-header-collapse-container">
-    <em>Welcome!</em> <!-- <em><a class="navbar-link" href="#/user/<%= $.cookie("user_id") %>"><%= $.cookie("user_nickname") %></a></em> -->
+    <em>Welcome!</em> <em><a class="navbar-link" href="#/user/<%= $.cookie("user_id") %>"><%= $.cookie("user_nickname") %></a></em>
+    <a id="log_out_button" class="navbar-link" href="#">log out</a>
     <img class="avatar-img img-rounded" src="<%= $.cookie("user_avatar_url") %>">
-    <!-- <a id="log_out_button" class="navbar-link" href="#">log out</a> -->
   </div>
 <% } else { %>
   <div class="navbar-header">

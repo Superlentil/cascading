@@ -1,7 +1,7 @@
 // define the view "Index.Main"
 View.Article.Index.Main = Backbone.View.extend({
   initialize: function() {
-    _.bindAll(this, 'handleScroll');
+    _.bindAll(this, "handleScroll");
     $(window).on("scroll", this.handleScroll);
     
     this.resetCascadeContainer();

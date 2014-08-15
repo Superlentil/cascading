@@ -1,7 +1,12 @@
 View.Layout.Main = Backbone.View.extend({
   initialize: function() {   
-    GlobalVariable.Layout.leftNavOn = false;
-    GlobalVariable.Layout.rightNavOn = false;
+    _.bindAll(this, "openLeftNav");
+    _.bindAll(this, "openRightNav");
+    
+    this.leftNavOn = false;
+    this.rightNavOn = false;
+    this.leftNavWidth = 300;
+    this.rightNavWidth = 300;
   },
   
   
@@ -20,8 +25,8 @@ View.Layout.Main = Backbone.View.extend({
     if (navWidth > 300) {
       navWidth = 300;
     }
-    GlobalVariable.Layout.leftNavWidth = navWidth;
-    GlobalVariable.Layout.rightNavWidth = navWidth;
+    that.leftNavWidth = navWidth;
+    that.rightNavWidth = navWidth;
     navWidth += "px";
     
     var leftNav = $("<div id='layout-leftNav'></div>");
@@ -43,7 +48,7 @@ View.Layout.Main = Backbone.View.extend({
     that.viewRightNav = new View.Layout.RightNav();
     rightNav.append(that.viewRightNav.render().$el);
     
-    that.viewHeader = new View.Layout.Header();
+    that.viewHeader = new View.Layout.Header({functionToOpenLeftNav: that.openLeftNav, functionToOpenRightNav: that.openRightNav});
     header.append(that.viewHeader.render().$el);
     
     container.append(leftNav);
@@ -62,34 +67,82 @@ View.Layout.Main = Backbone.View.extend({
   },
   
   
-  events: {
-    "click #layout-mainBody": "clearNav"
+  refresh: function() {
+    this.viewContent.remove();
+    this.viewMessage.remove();
+    if (this.viewHeader.headerChanged) {
+      this.viewHeader.remove();
+      this.viewHeader = new View.Layout.Header({functionToOpenLeftNav: this.openLeftNav, functionToOpenRightNav: this.openRightNav});
+      $("#layout-header").html(this.viewHeader.render().$el);
+    }
+    $("#layout-mainBody").append("<div id='layout-message'></div><div id='layout-content' class='container'></div>");
+    this.viewMessage = new View.Layout.Message();
+    this.viewMessage.render();
+    return this;
   },
   
   
-  clearNav: function(event) {
-    if (GlobalVariable.Layout.leftNavOn || GlobalVariable.Layout.rightNavOn) {
-      event.preventDefault();
-      event.stopPropagation();
-      
-      if (GlobalVariable.Layout.leftNavOn) {
-        GlobalVariable.Layout.leftNavOn = false;
-        $("#layout-leftNav").transition({x: 0});
-      }
-      
-      if (GlobalVariable.Layout.rightNavOn) {
-        GlobalVariable.Layout.rightNavOn = false;
+  events: {
+    "click #layout-mainBody": "closeNav"
+  },
+  
+  
+  openLeftNav: function() {
+    if (!this.leftNavOn) {
+      if (this.rightNavOn) {
+        this.rightNavOn = false;
         $("#layout-rightNav").transition({x: 0});
       }
+      
+      this.leftNavOn = true;
+      $("#layout-leftNav").transition({x: this.leftNavWidth});
+      
+      this.viewContent.undelegateEvents();
     }
   },
   
+  
+  openRightNav: function() {
+    if (!this.rightNavOn) {
+      if (this.leftNavOn) {
+        this.leftNavOn = false;
+        $("#layout-leftNav").transition({x: 0});
+      }
+      
+      this.rightNavOn = true;
+      $("#layout-rightNav").transition({x: -this.rightNavWidth});
+      
+      this.viewContent.undelegateEvents();
+    }
+  },
+  
+  
+  closeNav: function(event) {
+    if (this.leftNavOn || this.rightNavOn) {
+      event.preventDefault();
+      event.stopPropagation();
+      
+      if (this.leftNavOn) {
+        this.leftNavOn = false;
+        $("#layout-leftNav").transition({x: 0});
+      }
+      
+      if (this.rightNavOn) {
+        this.rightNavOn = false;
+        $("#layout-rightNav").transition({x: 0});
+      }
+      
+      this.viewContent.delegateEvents();
+    }
+  },
+
   
   remove: function() {
     this.viewLeftNav.remove();
     this.viewRightNav.remove();
     this.viewHeader.remove();
     this.viewMessage.remove();
+    this.viewContent.remove();
     
     Backbone.View.prototype.remove.call(this);
   }

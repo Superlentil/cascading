@@ -20,29 +20,18 @@ Router = Backbone.Router.extend({
   execute: function(callback, args) {
     var that = this;
     
-    that.garbageCollection();
-    
     $(function() {
-      that.layout = new View.Layout.Main();
-      var htmlBody = $("body");
-      htmlBody.empty();
-      htmlBody.append(that.layout.render().$el);
+      if (that.layout) {
+        that.layout.refresh();
+      } else {
+        that.layout = new View.Layout.Main();
+        $("body").html(that.layout.render().$el);
+      }
       
       if (callback) {
-        that.lastView = callback.apply(that, args);
+        that.layout.viewContent = callback.apply(that, args);
       }
     });
-  },
-  
-  
-  garbageCollection: function() {
-    if (this.lastView) {
-      this.lastView.remove();
-    }
-    
-    if (this.layout) {
-      this.layout.remove();
-    }
   },
   
   
@@ -69,7 +58,7 @@ Router = Backbone.Router.extend({
       $.cookie('last_new_article_timestamp', now, {expires: 1});
       return viewEdit;
     } else {
-      // @TODO: need a better action for too frequent "new" page load.
+      // TODO: need a better action for too frequent "new" page load.
       this.loadUrl('');
     }
   },
