@@ -31,7 +31,7 @@ View.Layout.Main = Backbone.View.extend({
     
     var leftNav = $("<div id='layout-leftNav'></div>");
     var rightNav = $("<div id='layout-rightNav'></div>");
-    var header = $("<nav id='layout-header' class='navbar navbar-default navbar-fixed-top' role='navigation'></nav>");
+    var header = $("<nav id='layout-header' class='navbar navbar-default' role='navigation'></nav>");
     
     leftNav.css({
       "left": "-" + navWidth,
