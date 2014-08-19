@@ -1,4 +1,6 @@
-<img style="margin: 0; padding: 0; display: block; height: <%= article.get("cover_picture_height") %>px;" src="<%= article.get("cover_picture_url") %>" title="Cover Picture" alt="Cover Picture" class="Cover_Picture" />
+<a class="article-index-cover-img-link" href="#/article/<%= article.get("id") %>">
+  <img class="article-index-cover-img" style="height: <%= article.get("cover_picture_height") %>px;" src="<%= article.get("cover_picture_url") %>">
+</a>
 <div class="article_information" style="margin: 0; padding: 0;">
   <div style="word-break: break-all; word-wrap: break-word;"><strong><%= article.get("title") %></strong></div>
   <div><em><%= article.get("author") %> <%= article.get("category") %></em></div>

@@ -5,7 +5,7 @@ View.Article.Index.Main = Backbone.View.extend({
     $(window).on("scroll", this.handleScroll);
     
     this.resetCascadeContainer();
-    this.articlesPerBatch = 7;
+    this.articlesPerBatch = 8;
     
     this.allSubviews = [];
   },
@@ -30,6 +30,11 @@ View.Article.Index.Main = Backbone.View.extend({
   
   render: function() {
     this.$el.html(this.template());
+    
+    var maxWidth = this.$el.width();
+    var actualWidth = Math.floor(maxWidth / 240) * 240;
+    $("#article-index-cascade-container").css("width", actualWidth + "px");
+    
     this.loadArticles();
     
     return this;
@@ -58,7 +63,7 @@ View.Article.Index.Main = Backbone.View.extend({
     if (this.moreToLoad) {
       var that = this;
       
-      var cascadeContainer = $("#cascade_container");
+      var cascadeContainer = $("#article-index-cascade-container");
       var articles = new Collection.Article.Article();
       articles.fetchBatch(that.batch, that.articlesPerBatch, {
         success: function(fetchedResults) {
@@ -70,8 +75,8 @@ View.Article.Index.Main = Backbone.View.extend({
             var hCoordinate = that.hPosition[that.minHorizontalIndex];
             var vCoordinate = that.vPosition[that.minHorizontalIndex];
             cascadeContainer.append(viewArticleCover.render(hCoordinate, vCoordinate).$el);
-            var coverHeight = viewArticleCover.$el.children("div.article_information").height() + article.get("cover_picture_height") + 20.0;
-            var newHorizontalCoordinate = 5.0 + hCoordinate + coverHeight;
+            var coverHeight = viewArticleCover.$el.children("div.article_information").height() + article.get("cover_picture_height") + 32.0;
+            var newHorizontalCoordinate = 8.0 + hCoordinate + coverHeight;
             that.insertNewCoordinate(newHorizontalCoordinate, vCoordinate);
             if (newHorizontalCoordinate > cascadeContainer.height()) {
               cascadeContainer.css({"height": newHorizontalCoordinate + "px"});

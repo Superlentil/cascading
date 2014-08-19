@@ -6,7 +6,7 @@ View.Article.Index.Cover = Backbone.View.extend({
   
   
   tagName: "div",
-  className: "Article_Cover",
+  className: "article-index-cover",
   
   
   template: JST["template/article/index/cover"],
@@ -14,19 +14,7 @@ View.Article.Index.Cover = Backbone.View.extend({
   
   render: function(hCoordinate, vCoordinate) {
     this.$el.html(this.template({article: this.article}));
-    this.$el.css({"width": "215px", "margin": "0", "padding": "10px", "background-color": "#ebfffd", "position": "absolute", "top": hCoordinate + "px", "left": vCoordinate + "px"});
+    this.$el.css({"top": hCoordinate + "px", "left": vCoordinate + "px"});
     return this;
-  },
-  
-  
-  events: {
-    "click img.Cover_Picture": "showArticle"
-  },
-  
-  
-  showArticle: function(event) {
-    event.preventDefault();
-    
-    Backbone.history.navigate("article/" + this.article.get("id"), {trigger: true});
   }
 });
