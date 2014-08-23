@@ -7,7 +7,7 @@ View.Layout.Header = Backbone.View.extend({
   
   
   tagName: "div",
-  className: "container",
+  className: "container-fluid",
   
   
   template: JST["template/layout/header"],

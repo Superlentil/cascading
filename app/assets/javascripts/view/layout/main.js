@@ -54,9 +54,9 @@ View.Layout.Main = Backbone.View.extend({
     container.append(leftNav);
     container.append(rightNav);
     
-    var mainBody = $("<div id='layout-mainBody'></div>");
+    var mainBody = $("<div id='layout-mainBody' class='container-fluid'></div>");
     mainBody.append(header);
-    mainBody.append("<div id='layout-message'></div><div id='layout-content' class='container'></div>");  
+    mainBody.append("<div id='layout-message'></div><div id='layout-content' class='container-fluid'></div>");  
     
     container.append(mainBody);
     

@@ -6,7 +6,7 @@ View.Article.Index.Main = Backbone.View.extend({
     
     $(window).on("scroll", this.handleScroll);
     
-    this.articlesPerBatch = 1;
+    this.articlesPerBatch = 50;
     
     this.batch = 0;
     this.readyToLoad = true;
