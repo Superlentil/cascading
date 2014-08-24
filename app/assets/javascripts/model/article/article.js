@@ -3,7 +3,7 @@ Model.Article.Article = Backbone.Model.extend({
   defaults: {
     "title": "",
     "author": "",
-    "category": "",
+    "category_name": "",
     "content": "{}",
     "published": false
   },

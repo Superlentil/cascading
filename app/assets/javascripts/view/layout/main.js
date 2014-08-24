@@ -56,7 +56,7 @@ View.Layout.Main = Backbone.View.extend({
     
     var mainBody = $("<div id='layout-mainBody' class='container-fluid'></div>");
     mainBody.append(header);
-    mainBody.append("<div id='layout-message'></div><div id='layout-content' class='container-fluid'></div>");  
+    mainBody.append("<div id='layout-message' class='container-fluid'></div><div id='layout-content' class='container-fluid'></div>");  
     
     container.append(mainBody);
     
@@ -75,7 +75,7 @@ View.Layout.Main = Backbone.View.extend({
       this.viewHeader = new View.Layout.Header({functionToOpenLeftNav: this.openLeftNav, functionToOpenRightNav: this.openRightNav});
       $("#layout-header").html(this.viewHeader.render().$el);
     }
-    $("#layout-mainBody").append("<div id='layout-message'></div><div id='layout-content' class='container'></div>");
+    $("#layout-mainBody").append("<div id='layout-message' class='container-fluid'></div><div id='layout-content' class='container-fluid'></div>");
     this.viewMessage = new View.Layout.Message();
     this.viewMessage.render();
     return this;

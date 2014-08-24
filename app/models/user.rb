@@ -10,7 +10,9 @@ class User < ActiveRecord::Base
   
   has_attached_file :avatar, :styles => { :medium => "300x300>", :thumb => "50x50^" },
     :convert_options => {:thumb => "-gravity center -extent 50x50"},
-    :default_url => "/images/:style/missing.png"
+    :default_url => "/images/:style/missing.png",
+    :path => ":rails_root/public/system/:class/:attachment/:id_partition/:style/:id.:extension",
+    :url => "/system/:class/:attachment/:id_partition/:style/:id.:extension"
   
   
   validates_attachment_content_type :avatar, :content_type => /\Aimage\/.*\Z/

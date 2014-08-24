@@ -12,7 +12,7 @@
 <% } %>
   <h3><%= article.get("title") %></h3>
   <strong>author: <%= article.get("author") %></strong><br />
-  <em>category: <%= article.get("category") %></em><br />
+  <em>category: <%= article.get("category_name") %></em><br />
   <%= contentJsonToHtml(article.get("content")) %>
 </div>
 

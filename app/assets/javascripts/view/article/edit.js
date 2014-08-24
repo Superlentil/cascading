@@ -21,7 +21,7 @@ View.Article.Edit = Backbone.View.extend({
     article = article || new Model.Article.Article();
     $("#article_title").val(article.get("title"));
     $("#article_author").val(article.get("author"));
-    $("#article_category").val(article.get("category"));
+    $("#article_category").val(article.get("category_name"));
     var articleContent = JSON.parse(article.get("content"));
     $("#article_content").empty();
     _.each(articleContent, function(articleParagraph) {
@@ -150,7 +150,7 @@ View.Article.Edit = Backbone.View.extend({
     
     this.model.set({
       "title": $("#article_title").val(),
-      "category": $("#article_category").val(),
+      "category_name": $("#article_category").val(),
       "content": JSON.stringify(articleContent),
       "status": GlobalConstant.ArticleStatus.DRAFT
     });

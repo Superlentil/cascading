@@ -10,7 +10,7 @@ class ArticlesController < ApplicationController
     articlesPerBatch = params[:articles_per_batch].to_i
     
     @articles = Article.where(status: GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED)
-      .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, author, category")
+      .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, author, category_name")
       .limit(articlesPerBatch).offset(batch * articlesPerBatch).order(id: :desc)
     respond_with @articles
     return
@@ -76,7 +76,7 @@ private
 
 
   def articleParams
-    params.require(:article).permit(:id, :cover_picture_id, :cover_picture_url, :cover_picture_height, :title, :author, :content, :category, :views, :like, :status, :user_id, :created_at, :updated_at)
+    params.require(:article).permit(:id, :cover_picture_id, :cover_picture_url, :cover_picture_height, :title, :author, :content, :category_name, :views, :like, :status, :user_id, :created_at, :updated_at)
   end
   
   
@@ -112,7 +112,7 @@ private
   def assignCoverPicture(inputParams)
     pictureIds = articlePictureIds(inputParams[:content])
     if pictureIds.length == 0
-      articleIds = Article.where.not(:id => inputParams[:id]).where(:category => inputParams[:category]).limit(10000).pluck(:id)
+      articleIds = Article.where.not(:id => inputParams[:id]).where(:category_name => inputParams[:category_name]).limit(10000).pluck(:id)
       if articleIds.length == 0
         articleIds = Article.where.not(:id => inputParams[:id]).limit(10000).pluck(:id)
       end

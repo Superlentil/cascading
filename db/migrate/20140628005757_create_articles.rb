@@ -6,17 +6,17 @@ class CreateArticles < ActiveRecord::Migration
       t.integer :cover_picture_height, default: 0
       t.string :title, default: ""
       t.string :author, default: ""
-      t.string :category, default: ""
+      t.string :category_name, default: ""
       t.text :content, limit: 2000000000
       t.integer :views, default: 0
       t.integer :like, default: 0
       t.integer :status, default: GlobalConstant::ArticleStatus::DRAFT
       t.references :user, index: true
+      t.references :category, index: true
 
       t.timestamps
     end
     
     add_index :articles, :status
-    add_index :articles, :category
   end
 end
