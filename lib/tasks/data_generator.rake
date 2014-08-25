@@ -9,7 +9,7 @@ namespace :data_generator do
   task :article, [:amount, :useSamplePictures] => [:environment] do |task, args|
     amount = args.amount
     if amount.nil?
-      amount = 1000
+      amount = 0
     else
       amount = amount.to_i
     end
@@ -33,31 +33,33 @@ namespace :data_generator do
       end
     end
     
-    pictures = Picture.all.to_a
-    lastIndex = pictures.length - 1
-    randomNumberSeed = Time.now.getutc.to_i
-    randInt = Random.new(randomNumberSeed)
-    
-    picHeight = []
-    pictures.each do |pic|
-      picPath = pic.src.path(:thumb)
-      geometry = Paperclip::Geometry.from_file(picPath)
-      picHeight.push(geometry.height.to_i)
-    end
-    
-    for index in 1..amount
-      randPicIndex = randInt.rand(0..lastIndex)
-      pic = pictures[randPicIndex]
-      picPath = pic.src.path(:thumb)
-      geometry = Paperclip::Geometry.from_file(picPath)
-      Article.create({cover_picture_url: pic.src.url(:thumb), 
-        cover_picture_id: pic.id, 
-        cover_picture_height: picHeight[randPicIndex],
-        title: "This is article " + index.to_s + "!",
-        author: "Author_" + index.to_s,
-        category: "Category_" + index.to_s,
-        status: GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED
-      })
+    if amount > 0
+      pictures = Picture.all.to_a
+      lastIndex = pictures.length - 1
+      randomNumberSeed = Time.now.getutc.to_i
+      randInt = Random.new(randomNumberSeed)
+      
+      picHeight = []
+      pictures.each do |pic|
+        picPath = pic.src.path(:thumb)
+        geometry = Paperclip::Geometry.from_file(picPath)
+        picHeight.push(geometry.height.to_i)
+      end
+      
+      for index in 1..amount
+        randPicIndex = randInt.rand(0..lastIndex)
+        pic = pictures[randPicIndex]
+        picPath = pic.src.path(:thumb)
+        geometry = Paperclip::Geometry.from_file(picPath)
+        Article.create({cover_picture_url: pic.src.url(:thumb), 
+          cover_picture_id: pic.id, 
+          cover_picture_height: picHeight[randPicIndex],
+          title: "This is article " + index.to_s + "!",
+          author: "Author_" + index.to_s,
+          category_name: "Category_" + index.to_s,
+          status: GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED
+        })
+      end
     end
     
   end
