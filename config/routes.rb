@@ -18,6 +18,13 @@ Rails.application.routes.draw do
   resources :tiers
   resources :users
   resources :articles
+
+  resources :categories do
+    collection do
+      get 'predefined'
+    end
+  end
+
   resources :pictures
   resources :comments
   resources :login_sessions, only: [:create]

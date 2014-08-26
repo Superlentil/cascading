@@ -10,5 +10,6 @@ class CreateCategories < ActiveRecord::Migration
     end
     add_index :categories, :name, unique: true
     add_index :categories, :group
+    add_index :categories, :article_count
   end
 end

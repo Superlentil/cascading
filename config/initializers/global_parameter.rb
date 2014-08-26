@@ -7,10 +7,8 @@ class GlobalConstant
   
   
   class ArticleCategoryType
-    PREDEFINED_GENERAL = 0
-    PREDEFINED_POPULAR = 1
-    CUSTOMIZED_GENERAL = 2
-    CUSTOMIZED_POPULAR = 3
+    PREDEFINED = 0
+    CUSTOMIZED = 1
   end
   
   

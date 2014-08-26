@@ -1,52 +1,17 @@
-<pre style="width: 100%">
-  0
-  1
-  2
-  3
-  4
-  5
-  6
-  7
-  8
-  9
-  0
-  1
-  2
-  3
-  4
-  5
-  6
-  7
-  8
-  9
-  0
-  1
-  2
-  3
-  4
-  5
-  6
-  7
-  8
-  9
-  0
-  1
-  2
-  3
-  4
-  5
-  6
-  7
-  8
-  9
-  0
-  1
-  2
-  3
-  4
-  5
-  6
-  7
-  8
-  9
-</pre>
+<div class="row">
+  <div class="col-xs-10">
+    <a href="#">Home</a>
+  </div>
+</div>
+
+<div class="row">
+  <hr class="col-xs-10">
+</div>
+
+<div class="row">
+  <% _.each(categories, function(category) { %>
+    <div class="col-xs-10">
+      <a href="#"><%= category.get("name") %></a>
+    </div>
+  <% }); %>
+</div>

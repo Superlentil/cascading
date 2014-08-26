@@ -1,8 +1,8 @@
 class PopulatePredefinedCategories < ActiveRecord::Migration
   def up
-    Category.create({name: "Car", group: GlobalConstant::ArticleCategoryType::PREDEFINED_POPULAR})
-    Category.create({name: "Jewelry", group: GlobalConstant::ArticleCategoryType::PREDEFINED_POPULAR})
-    Category.create({name: "Tattoo", group: GlobalConstant::ArticleCategoryType::PREDEFINED_POPULAR})
+    Category.create({name: "Car", group: GlobalConstant::ArticleCategoryType::PREDEFINED})
+    Category.create({name: "Jewelry", group: GlobalConstant::ArticleCategoryType::PREDEFINED})
+    Category.create({name: "Tattoo", group: GlobalConstant::ArticleCategoryType::PREDEFINED})
   end
   
   
