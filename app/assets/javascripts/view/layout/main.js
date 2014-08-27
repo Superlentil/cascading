@@ -25,6 +25,7 @@ View.Layout.Main = Backbone.View.extend({
     if (navWidth > 300) {
       navWidth = 300;
     }
+    var navContentWidth = navWidth - 10;
     that.leftNavWidth = navWidth;
     that.rightNavWidth = navWidth;
     navWidth += "px";
@@ -35,11 +36,11 @@ View.Layout.Main = Backbone.View.extend({
     
     leftNav.css({
       "left": "-" + navWidth,
-      "width": navWidth
+      "width": navContentWidth + "px"
     });
     rightNav.css({
       "right": "-" + navWidth,
-      "width": navWidth
+      "width": navContentWidth + "px"
     });
     
     that.viewLeftNav = new View.Layout.LeftNav();
