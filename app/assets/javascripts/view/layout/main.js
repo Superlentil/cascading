@@ -5,8 +5,8 @@ View.Layout.Main = Backbone.View.extend({
     
     this.leftNavOn = false;
     this.rightNavOn = false;
-    this.leftNavWidth = 300;
-    this.rightNavWidth = 300;
+    this.leftNavWidthInPx = 300;
+    this.rightNavWidthInPx = 300;
   },
   
   
@@ -25,22 +25,23 @@ View.Layout.Main = Backbone.View.extend({
     if (navWidth > 300) {
       navWidth = 300;
     }
-    var navContentWidth = navWidth - 10;
-    that.leftNavWidth = navWidth;
-    that.rightNavWidth = navWidth;
-    navWidth += "px";
+    var navContentWidth = navWidth - GlobalConstant.SideNav.BORDER_SHADOW_WIDTH_IN_PX;
+    that.leftNavWidthInPx = navWidth;
+    that.rightNavWidthInPx = navWidth;
     
-    var leftNav = $("<div id='layout-leftNav'></div>");
-    var rightNav = $("<div id='layout-rightNav'></div>");
-    var header = $("<nav id='layout-header' class='navbar navbar-default' role='navigation'></nav>");
+    var leftNav = $("<div id='layout-leftNav' role='navigation'></div>");
+    var rightNav = $("<div id='layout-rightNav' role='navigation'></div>");
+    var header = $("<nav id='layout-header' role='navigation'></nav>");
     
+    navWidth = ["-", navWidth, "px"].join("");
+    navContentWidth = [navContentWidth, "px"].join("");
     leftNav.css({
-      "left": "-" + navWidth,
-      "width": navContentWidth + "px"
+      "left": navWidth,
+      "width": navContentWidth
     });
     rightNav.css({
-      "right": "-" + navWidth,
-      "width": navContentWidth + "px"
+      "right": navWidth,
+      "width": navContentWidth
     });
     
     that.viewLeftNav = new View.Layout.LeftNav();
@@ -55,9 +56,9 @@ View.Layout.Main = Backbone.View.extend({
     container.append(leftNav);
     container.append(rightNav);
     
-    var mainBody = $("<div id='layout-mainBody' class='container-fluid'></div>");
+    var mainBody = $("<div id='layout-mainBody' class='container'></div>");
     mainBody.append(header);
-    mainBody.append("<div id='layout-message' class='container-fluid'></div><div id='layout-content' class='container-fluid'></div>");  
+    mainBody.append("<div id='layout-message' class='container'></div><div id='layout-content' class='container'></div>");  
     
     container.append(mainBody);
     
@@ -76,7 +77,7 @@ View.Layout.Main = Backbone.View.extend({
       this.viewHeader = new View.Layout.Header({functionToOpenLeftNav: this.openLeftNav, functionToOpenRightNav: this.openRightNav});
       $("#layout-header").html(this.viewHeader.render().$el);
     }
-    $("#layout-mainBody").append("<div id='layout-message' class='container-fluid'></div><div id='layout-content' class='container-fluid'></div>");
+    $("#layout-mainBody").append("<div id='layout-message' class='container'></div><div id='layout-content' class='container'></div>");
     this.viewMessage = new View.Layout.Message();
     this.viewMessage.render();
     return this;
@@ -96,7 +97,7 @@ View.Layout.Main = Backbone.View.extend({
       }
       
       this.leftNavOn = true;
-      $("#layout-leftNav").transition({x: this.leftNavWidth});
+      $("#layout-leftNav").transition({x: this.leftNavWidthInPx});
       
       this.viewContent.undelegateEvents();
     }
@@ -111,7 +112,7 @@ View.Layout.Main = Backbone.View.extend({
       }
       
       this.rightNavOn = true;
-      $("#layout-rightNav").transition({x: -this.rightNavWidth});
+      $("#layout-rightNav").transition({x: -this.rightNavWidthInPx});
       
       this.viewContent.undelegateEvents();
     }

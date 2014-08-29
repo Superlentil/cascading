@@ -7,7 +7,7 @@ View.Layout.Header = Backbone.View.extend({
   
   
   tagName: "div",
-  className: "container-fluid",
+  className: "container",
   
   
   template: JST["template/layout/header"],
@@ -23,8 +23,8 @@ View.Layout.Header = Backbone.View.extend({
   events: {
     "click #login_submit_button": "onLogin",
     "click #log_out_button": "onLogOut",
-    "click .navbar-brand": "openLeftNav",
-    "click .avatar-img": "openRightNav"
+    "click .layout-header-openLeftNav": "openLeftNav",
+    "click .layout-header-openRightNav": "openRightNav"
   },
   
   

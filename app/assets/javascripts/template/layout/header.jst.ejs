@@ -1,25 +1,19 @@
 <% if ($.cookie("user_id")) { %>
-  <div class="navbar-header">
-    <strong><em><a class="navbar-brand" href="#">Haigy</a></em></strong>
-    <img class="avatar-img img-rounded navbar-toggle" src="<%= $.cookie("user_avatar_url") %>" data-toggle="collapse" data-target="#main-header-collapse-container">
-  </div>
+  <a class="haigy-logo left layout-header-openLeftNav" href="#">Haigy</a>
   
-  <div class="collapse navbar-collapse navbar-right" id="main-header-collapse-container">
-    <em>Welcome!</em> <em><a class="navbar-link" href="#/user/<%= $.cookie("user_id") %>"><%= $.cookie("user_nickname") %></a></em>
-    <a id="log_out_button" class="navbar-link" href="#">log out</a>
-    <img class="avatar-img img-rounded" src="<%= $.cookie("user_avatar_url") %>">
+  <div class="right">
+    <em>Welcome!</em> <em><a href="#/user/<%= $.cookie("user_id") %>"><%= $.cookie("user_nickname") %></a></em>
+    <a id="log_out_button" href="#">log out</a>
+    <img class="avatar-img layout-header-openRightNav" src="<%= $.cookie("user_avatar_url") %>">
   </div>
 <% } else { %>
-  <div class="navbar-header">
-    <strong><em><a class="navbar-brand" href="#">Haigy</a></em></strong>
-    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-header-collapse-container">
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-    </button>
+  <a class="haigy-logo left layout-header-openLeftNav" href="#">Haigy</a>
+  
+  <div class="right">
+    <span class="icon-cool layout-header-openRightNav"></span>
   </div>
   
-  <div class="collapse navbar-collapse" id="main-header-collapse-container">
+  <!-- <div class="collapse navbar-collapse" id="main-header-collapse-container">
     <form class="navbar-form navbar-right" role="search">
       <div class="form-group">
         <input id="login_email_input" class="form-control" type="text" placeholder="Email">
@@ -32,7 +26,7 @@
       </div>
       <small><em><a class="navbar-link" href="#/users/new">Sign Up</a></em></small>
     </form>
-  </div>
+  </div> -->
 
 <!--
     <% if ($.cookie("user_login_status")) { %>
