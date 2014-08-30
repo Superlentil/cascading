@@ -28,6 +28,14 @@ body, html {
 }
 
 
+.container:before,
+.container:after,
+.row:before,
+.row:after {
+  content: " ";
+  display: table;
+}
+
 .container:after,
 .row:after {
   clear: both;

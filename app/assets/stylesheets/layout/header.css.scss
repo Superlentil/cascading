@@ -1,13 +1,25 @@
+@import "compass";
+
+
 #layout-header {
-  position: fixed !important;
+  position: fixed;
   top: 0;
+  height: 50px;
   left: 0;
   right: 0;
   
+  background-color: #f8f8f8;
+  @include background-image(linear-gradient(to bottom, #ffffff 0%, #f8f8f8 100%));
+  
+  border-bottom: 1px solid #e7e7e7;
+  box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.15), 1px 0 5px rgba(0, 0, 0, 0.075);
+  
   z-index: 1000;
   
-  -moz-transform: translateZ(0);
-  -ms-transform: translateZ(0);
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
+  @include transform(translateZ(0));
+}
+
+
+.line-height {
+  line-height: 100%;
 }
