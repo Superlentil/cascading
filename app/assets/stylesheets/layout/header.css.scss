@@ -6,8 +6,10 @@
   top: 0;
   height: 50px;
   left: 0;
-  right: 0;
+  width: 100%;
   
+  display: table;
+    
   background-color: #f8f8f8;
   @include background-image(linear-gradient(to bottom, #ffffff 0%, #f8f8f8 100%));
   
@@ -20,6 +22,7 @@
 }
 
 
-.line-height {
-  line-height: 100%;
+.layout-header-content {
+  display: table-cell;
+  vertical-align: middle;
 }
