@@ -1,12 +1,20 @@
 View.Layout.Main = Backbone.View.extend({
-  initialize: function() {   
-    _.bindAll(this, "openLeftNav");
-    _.bindAll(this, "openRightNav");
+  initialize: function() {
+    var that = this;
     
-    this.leftNavOn = false;
-    this.rightNavOn = false;
-    this.leftNavWidthInPx = 300;
-    this.rightNavWidthInPx = 300;
+    _.bindAll(that, "onResize");
+    _.bindAll(that, "openLeftNav");
+    _.bindAll(that, "openRightNav");
+    
+    that.leftNavOn = false;
+    that.rightNavOn = false;
+    that.leftNavWidthInPx = 300;
+    that.rightNavWidthInPx = 300;
+    
+    $(window).on("resize", function() {
+      clearTimeout(that.resizeTimeout);
+      that.resizeTimeout = setTimeout(that.onResize, 300);
+    });
   },
   
   
@@ -64,7 +72,7 @@ View.Layout.Main = Backbone.View.extend({
     
     that.viewMessage = new View.Layout.Message();
     that.viewMessage.render();
-    
+       
     return that;
   },
   
@@ -81,6 +89,13 @@ View.Layout.Main = Backbone.View.extend({
     this.viewMessage = new View.Layout.Message();
     this.viewMessage.render();
     return this;
+  },
+  
+  
+  onResize: function(event) {
+    if (this.viewContent && this.viewContent.onResize) {
+      this.viewContent.onResize(event);
+    }
   },
   
   
@@ -145,6 +160,8 @@ View.Layout.Main = Backbone.View.extend({
     this.viewHeader.remove();
     this.viewMessage.remove();
     this.viewContent.remove();
+    
+    $(window).off("resize");
     
     Backbone.View.prototype.remove.call(this);
   }

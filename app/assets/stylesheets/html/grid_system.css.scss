@@ -1,0 +1,6 @@
+@import "global_parameter";
+@import "utility";
+
+
+// Default Grid System
+@include gridGenerator($GRID_COLUMN_COUNT, "col");

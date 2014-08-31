@@ -2,7 +2,6 @@
 View.Article.Index.Main = Backbone.View.extend({
   initialize: function() {
     _.bindAll(this, "handleScroll");
-    _.bindAll(this, "onResize");
     
     $(window).on("scroll", this.handleScroll);
     
@@ -53,12 +52,7 @@ View.Article.Index.Main = Backbone.View.extend({
     $("#article-index-cascade-container").css("width", that.actualWidth + "px");
     
     that.loadArticles();
-    
-    $(window).on("resize", function() {
-      clearTimeout(that.resizeTimeout);
-      that.resizeTimeout = setTimeout(that.onResize, 300);
-    });
-    
+       
     return that;
   },
   
@@ -154,7 +148,7 @@ View.Article.Index.Main = Backbone.View.extend({
   },
   
   
-  onResize: function() {
+  onResize: function(event) {
     this.maxWidth = this.$el.width();
     
     if (Math.floor(this.maxWidth / this.columnWidth) !== this.columnCount) {
@@ -192,7 +186,6 @@ View.Article.Index.Main = Backbone.View.extend({
   
   remove: function() {   
     $(window).off("scroll");
-    $(window).off("resize");
     
     Backbone.View.prototype.remove.call(this);
   }

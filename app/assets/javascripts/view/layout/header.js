@@ -1,8 +1,9 @@
 View.Layout.Header = Backbone.View.extend({
-  initialize: function(options) {
-    this.headerChanged = false;
+  initialize: function(options) {   
     this.functionToOpenLeftNav = options.functionToOpenLeftNav;
     this.functionToOpenRightNav = options.functionToOpenRightNav;
+    
+    this.headerChanged = false;
   },
   
   

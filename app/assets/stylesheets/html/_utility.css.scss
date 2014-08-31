@@ -1,0 +1,25 @@
+// Grid Generator
+@mixin gridGenerator($gridColumnCount, $classNamePrefix) {
+  @if $gridColumnCount >= 1 {
+    $allGridNames: "";
+    @for $columns from 1 through $gridColumnCount {
+      @if $columns == $gridColumnCount {
+        $allGridNames: "#{$allGridNames}.#{$classNamePrefix}-#{$columns}";
+      } @else {
+        $allGridNames: "#{$allGridNames}.#{$classNamePrefix}-#{$columns},";
+      }
+    }
+    
+    #{$allGridNames} {
+      position: relative;
+      min-height: 1px;
+      float: left;
+    }
+    
+    @for $columns from 1 through $gridColumnCount {
+      .#{$classNamePrefix}-#{$columns} {
+        width: #{100 / $gridColumnCount * $columns + "%"};
+      }
+    }
+  }
+}

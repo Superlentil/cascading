@@ -1,3 +1,7 @@
+@import "global_parameter";
+@import "utility";
+
+
 * {
   margin: 0;
   padding: 0;
@@ -14,8 +18,8 @@ body, html {
 .container {
   margin-left: auto;
   margin-right: auto;
-  padding-left: 2.5%;
-  padding-right: 2.5%;
+  padding-left: 2%;
+  padding-right: 2%;
 }
 
 
@@ -39,4 +43,16 @@ body, html {
 .container:after,
 .row:after {
   clear: both;
+}
+
+
+@media (max-width: $XS_MAX_WIDTH) {
+  .hidden-only-xs {
+    display: none !important;
+  }
+}
+@media (min-width: $SM_MIN_WIDTH) {
+  .hidden-sm-and-larger {
+    display: none !important;
+  }
 }

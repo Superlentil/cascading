@@ -1,18 +1,19 @@
+@import "compass";
+
+
 #layout-rightNav {
   position: fixed;
   top: 0;
   height: 100%;
-  
-  background-color: blue;
-  
   z-index: 2000;
-  
   overflow: auto;
   
-  transition: transform 500ms ease;
+  background-color: #f8f8f8;
+  @include background-image(linear-gradient(to left, #ffffff 0%, #f8f8f8 100%));
   
-  -moz-transform: translateZ(0);
-  -ms-transform: translateZ(0);
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
+  border-left: 1px solid #e7e7e7;
+  @include box-shadow(inset -1px 0 0 rgba(255, 255, 255, 0.15), -1px 0 5px rgba(0, 0, 0, 0.075));
+    
+  @include transition(transform 500ms ease);
+  @include transform(translateZ(0));
 }

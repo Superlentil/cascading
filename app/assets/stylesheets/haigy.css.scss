@@ -1,7 +1,12 @@
-a.haigy-log {
+@import "compass";
+
+
+a.haigy-logo {
   display: block;
-}
-
-
-.aaa{
+  
+  @include link-colors(#5e5e5e, red, red, #5e5e5e);
+  text-decoration: none;
+  outline: 0;
+  
+  font: italic normal 800 25px arial, sans-serif;
 }
