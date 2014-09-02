@@ -8,8 +8,8 @@ View.Layout.Main = Backbone.View.extend({
     
     that.leftNavOn = false;
     that.rightNavOn = false;
-    that.leftNavWidthInPx = 300;
-    that.rightNavWidthInPx = 300;
+    that.leftNavWidthInPx = 0;
+    that.rightNavWidthInPx = 0;
     
     $(window).on("resize", function() {
       clearTimeout(that.resizeTimeout);
@@ -27,42 +27,24 @@ View.Layout.Main = Backbone.View.extend({
     
     var container = that.$el;
     container.empty();
-    
-    var viewportWidth = $(window).width();
-    var navWidth = viewportWidth * 0.618;
-    if (navWidth > 300) {
-      navWidth = 300;
-    }
-    var navContentWidth = navWidth - GlobalConstant.SideNav.BORDER_SHADOW_WIDTH_IN_PX;
-    that.leftNavWidthInPx = navWidth;
-    that.rightNavWidthInPx = navWidth;
-    
-    var leftNav = $("<div id='layout-leftNav' role='navigation'></div>");
-    var rightNav = $("<div id='layout-rightNav' role='navigation'></div>");
-    var header = $("<nav id='layout-header' role='navigation'></nav>");
-    
-    navWidth = ["-", navWidth, "px"].join("");
-    navContentWidth = [navContentWidth, "px"].join("");
-    leftNav.css({
-      "left": navWidth,
-      "width": navContentWidth
-    });
-    rightNav.css({
-      "right": navWidth,
-      "width": navContentWidth
-    });
+        
+    that.leftNav = $("<div id='layout-leftNav' role='navigation'></div>");
+    that.rightNav = $("<div id='layout-rightNav' role='navigation'></div>");
+    that.adjustSideNavWidth();
     
     that.viewLeftNav = new View.Layout.LeftNav();
-    leftNav.append(that.viewLeftNav.render().$el);
+    that.leftNav.append(that.viewLeftNav.render().$el);
     
     that.viewRightNav = new View.Layout.RightNav();
-    rightNav.append(that.viewRightNav.render().$el);
+    that.rightNav.append(that.viewRightNav.render().$el);
+    
+    var header = $("<nav id='layout-header' role='navigation'></nav>");
     
     that.viewHeader = new View.Layout.Header({functionToOpenLeftNav: that.openLeftNav, functionToOpenRightNav: that.openRightNav});
     header.append(that.viewHeader.render().$el);
     
-    container.append(leftNav);
-    container.append(rightNav);
+    container.append(that.leftNav);
+    container.append(that.rightNav);
     
     var mainBody = $("<div id='layout-mainBody'></div>");
     mainBody.append(header);
@@ -93,8 +75,42 @@ View.Layout.Main = Backbone.View.extend({
   
   
   onResize: function(event) {
+    this.adjustSideNavWidth();
+    
     if (this.viewContent && this.viewContent.onResize) {
       this.viewContent.onResize(event);
+    }
+  },
+  
+  
+  adjustSideNavWidth: function() {
+    var navWidth = $(window).width() * 0.618;
+    if (navWidth > 300) {
+      navWidth = 300;
+    }
+    
+    if (navWidth !== this.leftNavWidthInPx) {
+      var navContentWidth = navWidth - GlobalConstant.SideNav.BORDER_SHADOW_WIDTH_IN_PX;
+      this.leftNavWidthInPx = navWidth;
+      this.rightNavWidthInPx = navWidth;
+            
+      navWidth = ["-", navWidth, "px"].join("");
+      navContentWidth = [navContentWidth, "px"].join("");
+      this.leftNav.css({
+        "left": navWidth,
+        "width": navContentWidth
+      });
+      this.rightNav.css({
+        "right": navWidth,
+        "width": navContentWidth
+      });
+      
+      if (this.leftNavOn) {
+        this.leftNav.transition({x: this.leftNavWidthInPx}, 0);
+      }
+      if (this.rightNavOn) {
+        this.rightNav.transition({x: -this.rightNavWidthInPx}, 0);
+      }
     }
   },
   
@@ -108,11 +124,11 @@ View.Layout.Main = Backbone.View.extend({
     if (!this.leftNavOn) {
       if (this.rightNavOn) {
         this.rightNavOn = false;
-        $("#layout-rightNav").transition({x: 0});
+        this.rightNav.transition({x: 0});
       }
       
       this.leftNavOn = true;
-      $("#layout-leftNav").transition({x: this.leftNavWidthInPx});
+      this.leftNav.transition({x: this.leftNavWidthInPx}, 500, "ease");
       
       this.viewContent.undelegateEvents();
     }
@@ -123,11 +139,11 @@ View.Layout.Main = Backbone.View.extend({
     if (!this.rightNavOn) {
       if (this.leftNavOn) {
         this.leftNavOn = false;
-        $("#layout-leftNav").transition({x: 0});
+        this.leftNav.transition({x: 0});
       }
       
       this.rightNavOn = true;
-      $("#layout-rightNav").transition({x: -this.rightNavWidthInPx});
+      this.rightNav.transition({x: -this.rightNavWidthInPx}, 500, "ease");
       
       this.viewContent.undelegateEvents();
     }
@@ -141,12 +157,12 @@ View.Layout.Main = Backbone.View.extend({
       
       if (this.leftNavOn) {
         this.leftNavOn = false;
-        $("#layout-leftNav").transition({x: 0});
+        this.leftNav.transition({x: 0});
       }
       
       if (this.rightNavOn) {
         this.rightNavOn = false;
-        $("#layout-rightNav").transition({x: 0});
+        this.rightNav.transition({x: 0});
       }
       
       this.viewContent.delegateEvents();
@@ -160,6 +176,9 @@ View.Layout.Main = Backbone.View.extend({
     this.viewHeader.remove();
     this.viewMessage.remove();
     this.viewContent.remove();
+    
+    this.leftNav = null;
+    this.rightNav = null;
     
     $(window).off("resize");
     

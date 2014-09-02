@@ -14,6 +14,14 @@
   border-left: 1px solid #e7e7e7;
   @include box-shadow(inset -1px 0 0 rgba(255, 255, 255, 0.15), -1px 0 5px rgba(0, 0, 0, 0.075));
     
-  @include transition(transform 500ms ease);
   @include transform(translateZ(0));
+}
+
+
+.layout-rightNav-loginForm {
+  border-bottom: 1px solid #e7e7e7;
+  
+  .col-12 {
+    padding: 0 0 10px 0;
+  }
 }

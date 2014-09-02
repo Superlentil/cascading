@@ -1,21 +1,21 @@
-<a class="haigy-logo left layout-header-openLeftNav" href="#">Haigy</a>
+<div class="left layout-header-content">
+  <a class="haigy-logo layout-header-openLeftNav" href="#">Haigy</a>
+</div>
 
+<div class="right layout-header-content">
 <% if ($.cookie("user_id")) { %>
-  <div class="right">
-    <em>Welcome!</em> <em><a href="#/user/<%= $.cookie("user_id") %>"><%= $.cookie("user_nickname") %></a></em>
-    <a id="log_out_button" href="#">log out</a>
-    <img class="avatar-img layout-header-openRightNav" src="<%= $.cookie("user_avatar_url") %>">
-  </div>
+  <em>Welcome!</em> <em><a href="#/user/<%= $.cookie("user_id") %>"><%= $.cookie("user_nickname") %></a></em>
+  <a id="log_out_button" href="#">log out</a>
+  <img class="avatar-img layout-header-openRightNav" src="<%= $.cookie("user_avatar_url") %>">
 <% } else { %> 
-  <div class="right">
-    <div class="hidden-only-xs">
-      <input id="login_email_input" type="text" placeholder="Email">
-      <input id="login_password_input" type="password" placeholder="Password">
-      <input id="login_submit_button" type="button" value="Log In">
-      <small><em><a class="navbar-link" href="#/users/new">Sign Up</a></em></small>
-    </div>
-    <div class="hidden-sm-and-larger">
-      <span class="icon-cool layout-header-openRightNav"></span>
-    </div>
+  <div class="hidden-only-xs layout-header-form">
+    <input id="login_email_input" class="form-textfield" type="text" placeholder="Email">
+    <input id="login_password_input" class="form-textfield" type="password" placeholder="Password">
+    <input id="login_submit_button" type="button" value="Log In">
+    <small><em><a class="navbar-link" href="#/users/new">Sign Up</a></em></small>
+  </div>
+  <div class="hidden-sm-and-larger">
+    <span class="icon-cool layout-header-openRightNav"></span>
   </div>
 <% } %>
+</div>

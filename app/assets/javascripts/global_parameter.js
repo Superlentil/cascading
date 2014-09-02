@@ -22,14 +22,3 @@ var GlobalConstant = {
     FREE_USER: 1
   }
 };
-
-
-var GlobalVariable = {
-  Layout: {
-    leftNavWidthInPx: 300,
-    rightNavWidthInPx: 300,
-    
-    leftNavOn: false,
-    rightNavOn: false
-  }
-};

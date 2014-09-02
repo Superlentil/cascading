@@ -2,7 +2,9 @@
 
 
 a.haigy-logo {
-  display: block;
+  display: inline-block;
+  line-height: 100%;
+  vertical-align: middle;
   
   @include link-colors(#5e5e5e, red, red, #5e5e5e);
   text-decoration: none;
