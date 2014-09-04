@@ -42,14 +42,14 @@ View.Layout.Main = Backbone.View.extend({
     
     that.viewHeader = new View.Layout.Header({functionToOpenLeftNav: that.openLeftNav, functionToOpenRightNav: that.openRightNav});
     header.append(that.viewHeader.render().$el);
-    
-    container.append(that.leftNav);
-    container.append(that.rightNav);
-    
+       
     var mainBody = $("<div id='layout-mainBody'></div>");
+    mainBody.append("<div id='layout-leftMenuIcon'><div style='height:30px; width:25px; background-color: blue;'></div></div>");
     mainBody.append(header);
     mainBody.append("<div id='layout-message' class='container'></div><div id='layout-content' class='container'></div>");  
     
+    container.append(that.leftNav);
+    container.append(that.rightNav);
     container.append(mainBody);
     
     that.viewMessage = new View.Layout.Message();
@@ -124,7 +124,7 @@ View.Layout.Main = Backbone.View.extend({
     if (!this.leftNavOn) {
       if (this.rightNavOn) {
         this.rightNavOn = false;
-        this.rightNav.transition({x: 0});
+        this.rightNav.transition({x: 0}, 500, "ease");
       }
       
       this.leftNavOn = true;
@@ -139,7 +139,7 @@ View.Layout.Main = Backbone.View.extend({
     if (!this.rightNavOn) {
       if (this.leftNavOn) {
         this.leftNavOn = false;
-        this.leftNav.transition({x: 0});
+        this.leftNav.transition({x: 0}, 500, "ease");
       }
       
       this.rightNavOn = true;
@@ -157,12 +157,12 @@ View.Layout.Main = Backbone.View.extend({
       
       if (this.leftNavOn) {
         this.leftNavOn = false;
-        this.leftNav.transition({x: 0});
+        this.leftNav.transition({x: 0}, 500, "ease");
       }
       
       if (this.rightNavOn) {
         this.rightNavOn = false;
-        this.rightNav.transition({x: 0});
+        this.rightNav.transition({x: 0}, 500, "ease");
       }
       
       this.viewContent.delegateEvents();
