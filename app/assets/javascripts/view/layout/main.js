@@ -143,7 +143,7 @@ View.Layout.Main = Backbone.View.extend({
       
       this.leftNavOn = true;
       this.leftNav.transition({x: this.leftNavWidthInPx}, 500, "ease");
-      this.menuIcon.transition({x: this.rightNavWidthInPx - this.getMenuIconTransitionOffset(), delay: 100}, 400, "in");
+      this.menuIcon.transition({x: this.rightNavWidthInPx - this.getMenuIconTransitionOffset()}, 400, "in");
       
       
       this.viewContent.undelegateEvents();
@@ -174,7 +174,7 @@ View.Layout.Main = Backbone.View.extend({
       if (this.leftNavOn) {
         this.leftNavOn = false;
         this.leftNav.transition({x: 0}, 500, "ease");
-        this.menuIcon.transition({x: 0, delay: 100}, 400, "in");
+        this.menuIcon.transition({x: 0}, 400, "out");
       }
       
       if (this.rightNavOn) {
