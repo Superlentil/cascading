@@ -27,7 +27,7 @@
   background-color: #dfdfdf;
   @include background-image(linear-gradient(to bottom, #f2f2f2 0%, #dfdfdf 100%));
   
-  &:hover {
+  &:hover, &:active {
     background-color: #f2f2f2;
     @include background-image(linear-gradient(to top, #f2f2f2 0%, #dfdfdf 100%));
   }
