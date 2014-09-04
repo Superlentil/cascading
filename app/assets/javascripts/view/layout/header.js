@@ -24,7 +24,6 @@ View.Layout.Header = Backbone.View.extend({
   events: {
     "click #login_submit_button": "onLogin",
     "click #log_out_button": "onLogOut",
-    "click .layout-header-openLeftNav": "openLeftNav",
     "click .layout-header-openRightNav": "openRightNav"
   },
   
@@ -57,15 +56,7 @@ View.Layout.Header = Backbone.View.extend({
       }
     });
   },
-  
-  
-  openLeftNav: function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    
-    this.functionToOpenLeftNav();
-  },
-  
+   
   
   openRightNav: function(event) {
     event.preventDefault();

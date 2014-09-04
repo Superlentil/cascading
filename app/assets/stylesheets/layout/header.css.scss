@@ -1,5 +1,5 @@
 @import "compass";
-@import "setting";
+@import "layout/setting";
 
 
 #layout-header {
@@ -9,7 +9,7 @@
   left: 0;
   width: 100%;
   
-  z-index: 1000;
+  z-index: $LAYOUT_HEADER_Z_INDEX;
     
   background-color: #f8f8f8;
   @include background-image(linear-gradient(to bottom, #ffffff 0%, #f8f8f8 100%));
@@ -21,9 +21,10 @@
 }
 
 
-#layout-header-leftMenuIconPlaceholder {
-  width: 30px;
+#layout-menuIconPlaceholder {
+  width: $LAYOUT_MENU_ICON_WIDTH;
   height: $LAYOUT_HEADER_HEIGHT;
+  margin-right: 20px;
 }
 
 

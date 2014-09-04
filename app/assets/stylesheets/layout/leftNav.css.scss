@@ -1,11 +1,12 @@
 @import "compass";
+@import "layout/setting";
 
 
 #layout-leftNav {
   position: fixed;
   top: 0;
   height: 100%;
-  z-index: 2000;
+  z-index: $LAYOUT_LEFT_NAV_Z_INDEX;
   overflow: auto;
   
   background-color: #f8f8f8;

@@ -3,7 +3,6 @@ View.Layout.Main = Backbone.View.extend({
     var that = this;
     
     _.bindAll(that, "onResize");
-    _.bindAll(that, "openLeftNav");
     _.bindAll(that, "openRightNav");
     
     that.leftNavOn = false;
@@ -22,6 +21,9 @@ View.Layout.Main = Backbone.View.extend({
   id: "layout-main",
   
   
+  menuIconTemplate: JST["template/layout/menuIcon"],
+  
+  
   render: function() {
     var that = this;
     
@@ -38,13 +40,14 @@ View.Layout.Main = Backbone.View.extend({
     that.viewRightNav = new View.Layout.RightNav();
     that.rightNav.append(that.viewRightNav.render().$el);
     
+    that.menuIcon = $(that.menuIconTemplate());
     var header = $("<nav id='layout-header' role='navigation'></nav>");
     
     that.viewHeader = new View.Layout.Header({functionToOpenLeftNav: that.openLeftNav, functionToOpenRightNav: that.openRightNav});
     header.append(that.viewHeader.render().$el);
-       
+    
     var mainBody = $("<div id='layout-mainBody'></div>");
-    mainBody.append("<div id='layout-leftMenuIcon'><div style='height:30px; width:25px; background-color: blue;'></div></div>");
+    mainBody.append(that.menuIcon);
     mainBody.append(header);
     mainBody.append("<div id='layout-message' class='container'></div><div id='layout-content' class='container'></div>");  
     
@@ -116,12 +119,23 @@ View.Layout.Main = Backbone.View.extend({
   
   
   events: {
+    "click #layout-menuIcon": "openLeftNav",
     "click #layout-mainBody": "closeNav"
   },
   
   
-  openLeftNav: function() {
+  getMenuIconTransitionOffset: function() {
+    var position = this.menuIcon.position();
+    var width = this.menuIcon.width();
+    return position.left + width / 2 + GlobalConstant.SideNav.BORDER_SHADOW_WIDTH_IN_PX;
+  },
+  
+  
+  openLeftNav: function(event) {
     if (!this.leftNavOn) {
+      event.preventDefault();
+      event.stopPropagation();
+      
       if (this.rightNavOn) {
         this.rightNavOn = false;
         this.rightNav.transition({x: 0}, 500, "ease");
@@ -129,6 +143,8 @@ View.Layout.Main = Backbone.View.extend({
       
       this.leftNavOn = true;
       this.leftNav.transition({x: this.leftNavWidthInPx}, 500, "ease");
+      this.menuIcon.transition({x: this.rightNavWidthInPx - this.getMenuIconTransitionOffset(), delay: 100}, 400, "in");
+      
       
       this.viewContent.undelegateEvents();
     }
@@ -158,6 +174,7 @@ View.Layout.Main = Backbone.View.extend({
       if (this.leftNavOn) {
         this.leftNavOn = false;
         this.leftNav.transition({x: 0}, 500, "ease");
+        this.menuIcon.transition({x: 0, delay: 100}, 400, "in");
       }
       
       if (this.rightNavOn) {

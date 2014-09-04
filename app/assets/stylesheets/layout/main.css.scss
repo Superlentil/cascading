@@ -1,4 +1,4 @@
-@import "setting";
+@import "layout/setting";
 
 
 body {
@@ -9,20 +9,6 @@ body {
 #layout-main, #layout-mainBody {
   width: 100%;
   height: 100%;
-}
-
-
-#layout-leftMenuIcon {
-  position: fixed;
-  top: 0;
-  height: $LAYOUT_HEADER_HEIGHT;
-  left: 2%;
-  width: 30px;
-  z-index: 3000;
-  
-  padding: 10px 0;
-  
-  background-color: transparent;
 }
 
 
