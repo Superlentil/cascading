@@ -79,7 +79,6 @@ View.Layout.Main = Backbone.View.extend({
   
   
   onResize: function(event) {
-    this.closeNav(null, true);
     this.adjustSideNavWidth();
     
     if (this.viewContent && this.viewContent.onResize) {
@@ -89,7 +88,7 @@ View.Layout.Main = Backbone.View.extend({
   
   
   adjustSideNavWidth: function() {  
-    var navWidth = $(window).width() * 0.618;
+    var navWidth = $(window).width() * 0.75;
     if (navWidth > 300) {
       navWidth = 300;
     }
@@ -109,6 +108,13 @@ View.Layout.Main = Backbone.View.extend({
         "right": navWidth,
         "width": navContentWidth
       });
+      
+      if (this.leftNavOn) {
+        this.leftNav.transition({x: this.leftNavWidthInPx}, 0);
+      }
+      if (this.rightNavOn) {
+        this.rightNav.transition({x: -this.rightNavWidthInPx}, 0);
+      }
     }
   },
   
@@ -120,16 +126,6 @@ View.Layout.Main = Backbone.View.extend({
   },
   
   
-  getMenuIconTransitionOffset: function() {
-    return this.menuIcon.position().left + this.menuIcon.width() / 2.0 + GlobalConstant.SideNav.BORDER_SHADOW_WIDTH_IN_PX;
-  },
-  
-  
-  getUserAvatarTransitionOffset: function() {
-    return this.header.width() - this.userAvatar.position().left - this.userAvatar.width() / 2.0 + GlobalConstant.SideNav.BORDER_SHADOW_WIDTH_IN_PX;
-  },
-  
-  
   openLeftNav: function(event) {
     if (!this.leftNavOn) {
       event.preventDefault();
@@ -138,12 +134,12 @@ View.Layout.Main = Backbone.View.extend({
       if (this.rightNavOn) {
         this.rightNavOn = false;
         this.rightNav.transition({x: 0}, 500, "ease");
-        this.userAvatar.transition({x: 0}, 400, "out");
+        this.userAvatar.transition({rotate: 0}, 500, "ease");
       }
       
       this.leftNavOn = true;
       this.leftNav.transition({x: this.leftNavWidthInPx}, 500, "ease");
-      this.menuIcon.transition({x: this.leftNavWidthInPx - this.getMenuIconTransitionOffset()}, 400, "in");
+      this.menuIcon.transition({rotate: "360deg"}, 500, "ease");
       
       this.viewHeader.undelegateEvents();
       this.viewContent.undelegateEvents();
@@ -159,12 +155,12 @@ View.Layout.Main = Backbone.View.extend({
       if (this.leftNavOn) {
         this.leftNavOn = false;
         this.leftNav.transition({x: 0}, 500, "ease");
-        this.menuIcon.transition({x: 0}, 400, "out");
+        this.menuIcon.transition({rotate: 0}, 500, "ease");
       }
       
       this.rightNavOn = true;
       this.rightNav.transition({x: -this.rightNavWidthInPx}, 500, "ease");
-      this.userAvatar.transition({x: -this.rightNavWidthInPx + this.getUserAvatarTransitionOffset(), delay: 100}, 300, "in");
+      this.userAvatar.transition({rotate: "-360deg"}, 500, "ease");
       
       this.viewHeader.undelegateEvents();
       this.viewContent.undelegateEvents();
@@ -179,23 +175,21 @@ View.Layout.Main = Backbone.View.extend({
         event.stopPropagation();
       }
 
-      var navSpeed = 500;
-      var iconSpeed = 400;
+      var speed = 500;
       if (immediateClose === true) {
-        navSpeed = 0;
-        iconSpeed = 0;
+        speed = 0;
       }
       
       if (this.leftNavOn) {
         this.leftNavOn = false;
-        this.leftNav.transition({x: 0}, navSpeed, "ease");
-        this.menuIcon.transition({x: 0}, iconSpeed, "out");
+        this.leftNav.transition({x: 0}, speed, "ease");
+        this.menuIcon.transition({rotate: 0}, speed, "ease");
       }
       
       if (this.rightNavOn) {
         this.rightNavOn = false;
-        this.rightNav.transition({x: 0}, navSpeed, "ease");
-        this.userAvatar.transition({x: 0}, iconSpeed, "out");
+        this.rightNav.transition({x: 0}, speed, "ease");
+        this.userAvatar.transition({rotate: 0}, speed, "ease");
       }
       
       this.viewHeader.delegateEvents();

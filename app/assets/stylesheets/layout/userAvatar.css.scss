@@ -13,8 +13,8 @@
   
   background-color: transparent;
     
-  &:hover, &:active {
-    opacity: 0.5;
+  &:hover {
+    cursor: pointer;
   }
 }
 
