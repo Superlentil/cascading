@@ -1,5 +1,6 @@
 View.Layout.LeftNav = Backbone.View.extend({
   tagName: "div",
+  id: "layout-leftNav-content",
   className: "container",
   
   

@@ -6,6 +6,7 @@ View.Layout.RightNav = Backbone.View.extend({
   
   
   tagName: "div",
+  id: "layout-rightNav-content",
   className: "container",
   
   
