@@ -5,6 +5,7 @@ View.Layout.Main = Backbone.View.extend({
     _.bindAll(that, "onResize");
     _.bindAll(that, "signIn");
     _.bindAll(that, "signOut");
+    _.bindAll(that, "closeNav");
     
     that.leftNavOn = false;
     that.rightNavOn = false;
@@ -37,10 +38,10 @@ View.Layout.Main = Backbone.View.extend({
     that.rightNav = $("<div id='layout-rightNav' role='navigation'></div>");
     that.adjustSideNavWidth();
     
-    that.viewLeftNav = new View.Layout.LeftNav();
+    that.viewLeftNav = new View.Layout.LeftNav({closeNavHandler: that.closeNav});
     that.leftNav.append(that.viewLeftNav.render().$el);
     
-    that.viewRightNav = new View.Layout.RightNav({signInHandler: that.signIn, signOutHandler: that.signOut});
+    that.viewRightNav = new View.Layout.RightNav({signInHandler: that.signIn, signOutHandler: that.signOut, closeNavHandler: that.closeNav});
     that.rightNav.append(that.viewRightNav.render().$el);
     
     that.menuIcon = $(that.menuIconTemplate());

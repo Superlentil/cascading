@@ -2,6 +2,7 @@ View.Layout.RightNav = Backbone.View.extend({
   initialize: function(options) {   
     this.signInHandler = options.signInHandler;
     this.signOutHandler = options.signOutHandler;
+    this.closeNavHandler = options.closeNavHandler;
   },
   
   
@@ -21,7 +22,8 @@ View.Layout.RightNav = Backbone.View.extend({
   
   events: {
     "click #layout-rightNav-form-submit": "onSignIn",
-    "click #layout-rightNav-signOut": "onSignOut"
+    "click #layout-rightNav-signOut": "onSignOut",
+    "click .layout-rightNav-closeNav": "onCloseNav"
   },
   
   
@@ -38,5 +40,10 @@ View.Layout.RightNav = Backbone.View.extend({
     event.preventDefault();
    
     this.signOutHandler();
+  },
+  
+  
+  onCloseNav: function(event) {
+    this.closeNavHandler();
   }
 });
