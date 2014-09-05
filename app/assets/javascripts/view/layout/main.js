@@ -134,7 +134,7 @@ View.Layout.Main = Backbone.View.extend({
       if (this.rightNavOn) {
         this.rightNavOn = false;
         this.rightNav.transition({x: 0}, 500, "ease");
-        this.userAvatar.transition({rotate: 0}, 500, "ease");
+        this.userAvatar.transition({rotate: 0}, 0);
       }
       
       this.leftNavOn = true;
@@ -155,7 +155,7 @@ View.Layout.Main = Backbone.View.extend({
       if (this.leftNavOn) {
         this.leftNavOn = false;
         this.leftNav.transition({x: 0}, 500, "ease");
-        this.menuIcon.transition({rotate: 0}, 500, "ease");
+        this.menuIcon.transition({rotate: 0}, 0);
       }
       
       this.rightNavOn = true;
