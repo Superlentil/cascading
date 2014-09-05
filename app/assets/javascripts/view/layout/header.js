@@ -1,8 +1,5 @@
 View.Layout.Header = Backbone.View.extend({
-  initialize: function(options) {   
-    this.functionToOpenLeftNav = options.functionToOpenLeftNav;
-    this.functionToOpenRightNav = options.functionToOpenRightNav;
-    
+  initialize: function() {   
     this.headerChanged = false;
   },
   
@@ -24,7 +21,6 @@ View.Layout.Header = Backbone.View.extend({
   events: {
     "click #login_submit_button": "onLogin",
     "click #log_out_button": "onLogOut",
-    "click .layout-header-openRightNav": "openRightNav"
   },
   
   
@@ -55,13 +51,5 @@ View.Layout.Header = Backbone.View.extend({
         Backbone.history.loadUrl("");
       }
     });
-  },
-   
-  
-  openRightNav: function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    
-    this.functionToOpenRightNav();
   }
 });

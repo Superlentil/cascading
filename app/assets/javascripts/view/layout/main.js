@@ -22,6 +22,7 @@ View.Layout.Main = Backbone.View.extend({
   
   
   menuIconTemplate: JST["template/layout/menuIcon"],
+  userAvatarTemplate: JST["template/layout/userAvatar"],
   
   
   render: function() {
@@ -41,13 +42,15 @@ View.Layout.Main = Backbone.View.extend({
     that.rightNav.append(that.viewRightNav.render().$el);
     
     that.menuIcon = $(that.menuIconTemplate());
+    that.userAvatar = $(that.userAvatarTemplate());
     var header = $("<nav id='layout-header' role='navigation'></nav>");
     
-    that.viewHeader = new View.Layout.Header({functionToOpenLeftNav: that.openLeftNav, functionToOpenRightNav: that.openRightNav});
+    that.viewHeader = new View.Layout.Header();
     header.append(that.viewHeader.render().$el);
     
     var mainBody = $("<div id='layout-mainBody'></div>");
     mainBody.append(that.menuIcon);
+    mainBody.append(that.userAvatar);
     mainBody.append(header);
     mainBody.append("<div id='layout-message' class='container'></div><div id='layout-content' class='container'></div>");  
     
@@ -67,7 +70,7 @@ View.Layout.Main = Backbone.View.extend({
     this.viewMessage.remove();
     if (this.viewHeader.headerChanged) {
       this.viewHeader.remove();
-      this.viewHeader = new View.Layout.Header({functionToOpenLeftNav: this.openLeftNav, functionToOpenRightNav: this.openRightNav});
+      this.viewHeader = new View.Layout.Header();
       $("#layout-header").html(this.viewHeader.render().$el);
     }
     $("#layout-mainBody").append("<div id='layout-message' class='container'></div><div id='layout-content' class='container'></div>");
@@ -120,6 +123,7 @@ View.Layout.Main = Backbone.View.extend({
   
   events: {
     "click #layout-menuIcon": "openLeftNav",
+    "click #layout-userAvatar": "openRightNav",
     "click #layout-mainBody": "closeNav"
   },
   
@@ -151,8 +155,11 @@ View.Layout.Main = Backbone.View.extend({
   },
   
   
-  openRightNav: function() {
+  openRightNav: function(event) {
     if (!this.rightNavOn) {
+      event.preventDefault();
+      event.stopPropagation();
+      
       if (this.leftNavOn) {
         this.leftNavOn = false;
         this.leftNav.transition({x: 0}, 500, "ease");

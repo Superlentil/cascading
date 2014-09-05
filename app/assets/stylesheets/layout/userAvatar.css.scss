@@ -1,0 +1,31 @@
+@import "compass";
+@import "html/setting";
+@import "layout/setting";
+
+
+#layout-userAvatar {
+  position: fixed;
+  top: 0;
+  height: $LAYOUT_HEADER_HEIGHT;
+  right: $CONTAINER_LEFT_PADDING;
+  width: $LAYOUT_MENU_ICON_WIDTH;
+  z-index: $LAYOUT_MENU_ICON_Z_INDEX;
+  
+  padding: (($LAYOUT_HEADER_HEIGHT - $LAYOUT_MENU_ICON_HEIGHT) / 2) 0;
+  
+  background-color: transparent;
+}
+
+
+#layout-userAvatar-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+
+#layout-userAvatar-notLogin {
+  width: 100%;
+  height: 100%;
+  background-color: blue;
+}

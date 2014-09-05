@@ -1,0 +1,9 @@
+<% if ($.cookie("user_id")) { %>
+  <div id='layout-userAvatar'>
+    <img id="layout-userAvatar-img" src="<%= $.cookie("user_avatar_url") %>">
+<% } else { %>
+  <div id='layout-userAvatar' class="hidden-sm-and-larger">
+    <div id="layout-userAvatar-notLogin">
+    </div>
+<% } %>
+</div>
