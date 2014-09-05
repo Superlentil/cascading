@@ -1,6 +1,6 @@
 View.Layout.Header = Backbone.View.extend({
-  initialize: function() {   
-    this.headerChanged = false;
+  initialize: function(options) {   
+    this.signInHandler = options.signInHandler;
   },
   
   
@@ -19,37 +19,15 @@ View.Layout.Header = Backbone.View.extend({
   
   
   events: {
-    "click #login_submit_button": "onLogin",
-    "click #log_out_button": "onLogOut",
+    "click #layout-header-form-submit": "onSignIn"
   },
   
   
-  onLogin: function(event) {
+  onSignIn: function(event) {
     event.preventDefault();
     
-    var that = this;
-    
-    var loginSession = new Model.Layout.LoginSession();
-    loginSession.save("login_session", {"type": "log in", "email": $("#login_email_input").val(), "password": $("#login_password_input").val()}, {
-      success: function() {
-        that.headerChanged = true;
-        Backbone.history.loadUrl();
-      }
-    });
-  },
-  
-  
-  onLogOut: function(event) {
-    event.preventDefault();
-    
-    var that = this;
-    
-    var loginSession = new Model.Layout.LoginSession();
-    loginSession.save("login_session", {"type": "log out"}, {
-      success: function() {
-        that.headerChanged = true;
-        Backbone.history.loadUrl("");
-      }
-    });
+    var email = $("#layout-header-form-email").val();
+    var password = $("#layout-header-form-password").val();    
+    this.signInHandler(email, password);
   }
 });

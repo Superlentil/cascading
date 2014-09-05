@@ -8,8 +8,8 @@ class User < ActiveRecord::Base
   has_many :articles, dependent: :destroy
   
   
-  has_attached_file :avatar, :styles => { :medium => "300x300>", :thumb => "50x50^" },
-    :convert_options => {:thumb => "-gravity center -extent 50x50"},
+  has_attached_file :avatar, :styles => { :medium => "300x300>", :thumb => "49x49^" },
+    :convert_options => {:thumb => "-gravity center -extent 49x49"},
     :default_url => "/images/:style/missing.png",
     :path => ":rails_root/public/system/:class/:attachment/:id_partition/:style/:id.:extension",
     :url => "/system/:class/:attachment/:id_partition/:style/:id.:extension"

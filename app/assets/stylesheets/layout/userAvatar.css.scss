@@ -6,14 +6,16 @@
 #layout-userAvatar {
   position: fixed;
   top: 0;
-  height: $LAYOUT_HEADER_HEIGHT;
-  right: $CONTAINER_LEFT_PADDING;
-  width: $LAYOUT_MENU_ICON_WIDTH;
-  z-index: $LAYOUT_MENU_ICON_Z_INDEX;
-  
-  padding: (($LAYOUT_HEADER_HEIGHT - $LAYOUT_MENU_ICON_HEIGHT) / 2) 0;
+  height: $LAYOUT_USER_AVATAR_HEIGHT;
+  right: $CONTAINER_RIGHT_PADDING;
+  width: $LAYOUT_USER_AVATAR_WIDTH;
+  z-index: $LAYOUT_USER_AVATAR_Z_INDEX;
   
   background-color: transparent;
+    
+  &:hover, &:active {
+    opacity: 0.5;
+  }
 }
 
 

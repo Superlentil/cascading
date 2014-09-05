@@ -7,10 +7,10 @@
 <div class="right layout-header-content">
 <% if (!$.cookie("user_id")) { %>
   <div class="hidden-only-xs layout-header-form">
-    <input id="login_email_input" class="form-textfield" type="text" placeholder="Email">
-    <input id="login_password_input" class="form-textfield" type="password" placeholder="Password">
-    <input id="login_submit_button" type="button" value="Log In">
-    <small><em><a class="navbar-link" href="#/users/new">Sign Up</a></em></small>
+    <input id="layout-header-form-email" class="form-textfield" type="text" placeholder="Email">
+    <input id="layout-header-form-password" class="form-textfield" type="password" placeholder="Password">
+    <input id="layout-header-form-submit" type="button" value="Sign In">
+    <small><em><a href="#/users/new">Sign Up</a></em></small>
   </div>
 <% } %>
 </div>
