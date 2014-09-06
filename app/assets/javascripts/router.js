@@ -25,7 +25,7 @@ Router = Backbone.Router.extend({
         that.layout.refresh();
       } else {
         that.layout = new View.Layout.Main();
-        $("body").html(that.layout.render().$el);
+        that.layout.render();
       }
       
       if (callback) {
