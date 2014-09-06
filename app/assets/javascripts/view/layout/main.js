@@ -19,7 +19,8 @@ View.Layout.Main = Backbone.View.extend({
   },
   
   
-  el: "body",
+  tagName: "div",
+  id: "layout-main",
   
   
   menuIconTemplate: JST["template/layout/menuIcon"],
