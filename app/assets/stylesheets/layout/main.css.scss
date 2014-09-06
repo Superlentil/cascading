@@ -1,3 +1,4 @@
+@import "compass";
 @import "layout/setting";
 
 
@@ -8,10 +9,11 @@ body {
 
 #layout-mainBody {
   width: 100%;
-  min-height: 100%;
+  height: 100%;
 }
 
 
 #layout-content {
   padding-top: 8px;
+  @include transform(translateZ(0));
 }
