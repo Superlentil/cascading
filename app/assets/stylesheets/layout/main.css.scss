@@ -2,12 +2,6 @@
 @import "layout/setting";
 
 
-html {
-  -ms-touch-action: manipulation;
-  touch-action: manipulation;
-}
-
-
 body {
   padding-top: $LAYOUT_HEADER_HEIGHT;
 }

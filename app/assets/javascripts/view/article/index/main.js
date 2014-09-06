@@ -14,15 +14,25 @@ View.Article.Index.Main = Backbone.View.extend({
   
   
   resetCascade: function() {
+    var divToMeasureScrollBarWidth = $("<div style='height: 9999px'></div>");
+    this.$el.append(divToMeasureScrollBarWidth);
     this.maxWidth = this.$el.width();
+    divToMeasureScrollBarWidth.detach();
+    divToMeasureScrollBarWidth.remove();
+    
     this.columnWidth = 240;
-    this.columnCount = Math.floor(this.maxWidth / this.columnWidth);
-    if (this.columnCount < 1) {
-      this.columnCount = 1;
-    } else if (this.columnCount > 5) {
-      this.columnCount = 5;
+    if (this.maxWidth < 480) {
+      this.columnCount = 2;
+      this.gap = 4;
+      this.actualWidth = this.maxWidth - this.gap;
+    } else {
+      this.columnCount = Math.floor(this.maxWidth / this.columnWidth);
+      if (this.columnCount > 5) {
+        this.columnCount = 5;
+      }
+      this.gap = 8;
+      this.actualWidth = this.columnCount * this.columnWidth - this.gap;
     }
-    this.actualWidth = this.columnCount * this.columnWidth;
     
     this.hPosition = [];
     this.vPosition = [];
@@ -45,8 +55,7 @@ View.Article.Index.Main = Backbone.View.extend({
     var that = this;
     
     that.$el.html(that.mainTemplate());
-    
-    that.maxWidth = that.$el.width();
+
     that.resetCascade();
 
     $("#article-index-cascade-container").css("width", that.actualWidth + "px");
@@ -158,7 +167,7 @@ View.Article.Index.Main = Backbone.View.extend({
       oldCascadeContainer.detach();
       that.resetCascade();
       
-      var newCascadeContainer = $("<div id='article-index-cascade-container' style='width: " + this.columnWidth * this.columnCount + "px;'></div>");
+      var newCascadeContainer = $("<div id='article-index-cascade-container' style='width: " + this.actualWidth + "px;'></div>");
       
       oldCascadeContainer.children().each(function(index, articleCover) {
         that.getMinHorizontalIndex();
