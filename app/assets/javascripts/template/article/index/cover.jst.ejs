@@ -1,7 +1,11 @@
-<a class="article-index-cover-img-link" href="#/article/<%= article.get("id") %>">
-  <img class="article-index-cover-img" style="height: <%= article.get("cover_picture_height") %>px;" src="<%= article.get("cover_picture_url") %>">
-</a>
-<div class="article_information" style="margin: 0; padding: 0;">
-  <div style="word-break: break-all; word-wrap: break-word;"><strong><%= article.get("title") %></strong></div>
-  <div><em><%= article.get("author") %> <%= article.get("category_name") %></em></div>
+<div class="article-index-cover" data-original-cover-picture-height="<%= originalCoverPictureHeight %>"
+  style="top: <%= hCoordinate %>px; left: <%= vCoordinate %>px; width: <%= width %>px; padding: <%= padding %>px;">
+  
+  <a class="article-index-cover-img-link" href="#/article/<%= article.get("id") %>">
+    <img class="article-index-cover-img" style="height: <%= coverPictureHeight %>px;" src="<%= article.get("cover_picture_url") %>">
+  </a>
+  <div class="article_information" style="margin: 0; padding: 0;">
+    <div style="word-break: break-all; word-wrap: break-word;"><strong><%= article.get("title") %></strong></div>
+    <div><em><%= article.get("author") %> <%= article.get("category_name") %></em></div>
+  </div>
 </div>

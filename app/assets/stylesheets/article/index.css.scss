@@ -1,29 +1,23 @@
 #article-index-cascade-container {
   position: relative;
   
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
 }
 
 
 .article-index-cover {
   position: absolute;
-  width: 232px;
-  
-  margin: 0;
-  padding: 16px;
-  
+
   background-color: #ebfffd;
 }
 
 
-.article-index-cover-img .article-index-cover-img-link {
-  margin: 0;
-  padding: 0;
-  display: block;
+.article-index-cover-img-link {
+  text-decoration: none;
 }
 
-
-a.article-index-cover-img-link {
-  text-decoration: none;
+.article-index-cover-img-link,
+.article-index-cover-img {
+  margin: 0 auto;
+  display: block;
 }

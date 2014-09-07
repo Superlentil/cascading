@@ -10,7 +10,14 @@ var GlobalConstant = {
     PRIVATE_PUBLISHED: 1,
     PUBLIC_PUBLISHED: 2
   },
-  
+
+
+  Cascade: {
+    COLUMN_WIDTH_IN_PX: 240.0,
+    MIN_WIDE_MODE_WIDTH_IN_PX: 480.0,
+    COVER_PICTURE_WIDTH_IN_PX: 200.0
+  },
+    
   
   SideNav: {
     BORDER_SHADOW_WIDTH_IN_PX: 10
