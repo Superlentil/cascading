@@ -10,6 +10,18 @@ body {
 html, body, #layout-main, #layout-mainBody {
   width: 100%;
   height: 100%;
+  z-index: $LAYOUT_NORMAL_Z_INDEX;
+}
+
+
+#layout-mainBody-clickListener {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 200%;
+  background-color: transparent;
+  z-index: $LAYOUT_HIDDEN_Z_INDEX;
 }
 
 

@@ -53,6 +53,7 @@ View.Layout.Main = Backbone.View.extend({
     that.header.append(that.viewHeader.render().$el);
     
     var mainBody = $("<div id='layout-mainBody'></div>");
+    mainBody.append("<div id='layout-mainBody-clickListener'></div>");
     mainBody.append(that.menuIcon);
     mainBody.append(that.userAvatar);
     mainBody.append(that.header);
