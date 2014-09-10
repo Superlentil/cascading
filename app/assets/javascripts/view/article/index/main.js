@@ -10,9 +10,31 @@ View.Article.Index.Main = Backbone.View.extend({
     this.batch = 0;
     this.readyToLoad = true;
     this.moreToLoad = true;
+    
+    // Global Page Cache
+    this.pageCacheKey = window.location.href;
+    GlobalVariable.PageCache[this.pageCacheKey];
+    if (GlobalVariable.PageCache[this.pageCacheKey]) {
+      this.cache = GlobalVariable.PageCache[this.pageCacheKey];
+      this.batch = this.cache.batch;
+      this.scrollPercentage = this.cache.scrollPercentage;
+      this.onResize();
+    } else {
+      this.cache = {
+        data: []
+      };
+      GlobalVariable.PageCache[this.pageCacheKey] = this.cache;
+    }
   },
   
   
+  el: "#layout-content",
+  
+  
+  mainTemplate: JST["template/article/index/main"],
+  coverTemplate: JST["template/article/index/cover"],
+
+
   resetCascade: function(maxWidth) {
     var divToMeasureScrollBarWidth = $("<div style='height: 9999px'></div>");
     this.$el.append(divToMeasureScrollBarWidth);
@@ -52,13 +74,6 @@ View.Article.Index.Main = Backbone.View.extend({
   },
   
   
-  el: "#layout-content",
-  
-  
-  mainTemplate: JST["template/article/index/main"],
-  coverTemplate: JST["template/article/index/cover"],
-  
-  
   render: function() {
     var that = this;
     
@@ -73,7 +88,7 @@ View.Article.Index.Main = Backbone.View.extend({
     return that;
   },
   
-  
+   
   getMinHorizontalIndex: function() {
     this.minHorizontalIndex = 0.0;
     var min = this.hPosition[0];
@@ -140,7 +155,10 @@ View.Article.Index.Main = Backbone.View.extend({
           });
           
           that.currentCascadeHeight = that.getCurrentCascadeHeight();
-                    
+          
+          that.cache.batch = that.batch;
+          that.cache.data.push(batchContainer);
+          
           ++that.batch;
           that.readyToLoad = true;
           if (fetchedArticles.length < that.articlesPerBatch) {
@@ -152,28 +170,9 @@ View.Article.Index.Main = Backbone.View.extend({
   },
    
   
-  handleScroll: function(event) {
-    var thisWindow = $(window);
-    var scrollTopPosition = thisWindow.scrollTop();
-    var documentHeight = $(document).height();
+  onResize: function() {
+    console.log(this.cache.data);
     
-    this.scrollPercentage = scrollTopPosition / documentHeight;
-    
-    if (scrollTopPosition + thisWindow.height() + 500 > documentHeight) {
-      if (this.readyToLoad && this.moreToLoad) {
-        this.readyToLoad = false;
-        this.loadArticles();
-      }
-    }
-  },
-  
-  
-  events: {
-    "click #click_to_load": "loadArticles"
-  },
-  
-  
-  onResize: function(event) {
     var maxWidth = this.$el.width();
     
     var newColumnCount = Math.floor(maxWidth / GlobalConstant.Cascade.COLUMN_WIDTH_IN_PX);
@@ -183,17 +182,19 @@ View.Article.Index.Main = Backbone.View.extend({
          
       var oldCascadeContainer = $("#article-index-cascade-container");
       oldCascadeContainer.detach();
+      
       that.resetCascade(maxWidth);
       
       var newCascadeContainer = $("<div id='article-index-cascade-container' style='width: " + this.actualWidth + "px;'></div>");
       that.$el.prepend(newCascadeContainer);
       
-      oldCascadeContainer.children().each(function(index, oldBatchContainer) {
+      var cacheDataLength = that.cache.data.length;
+      for (var index = 0; index < cacheDataLength; ++index) {
         var heightOffset = that.currentCascadeHeight;
         var newBatchContainer = $("<div style='position: absolute; left: 0; top: " + heightOffset + "px;'></div>");
         newCascadeContainer.append(newBatchContainer);
         
-        $(oldBatchContainer).children().each(function(index, articleCover) {
+        that.cache.data[index].children().each(function(index, articleCover) {
           that.getMinHorizontalIndex();
           var hCoordinate = that.hPosition[that.minHorizontalIndex];
           var vCoordinate = that.vPosition[that.minHorizontalIndex];
@@ -207,13 +208,35 @@ View.Article.Index.Main = Backbone.View.extend({
           var newHorizontalCoordinate = that.gap + hCoordinate + jqueryArticleCover.outerHeight();
           that.insertNewCoordinate(newHorizontalCoordinate, vCoordinate);
         });
-        
+                
         that.currentCascadeHeight = that.getCurrentCascadeHeight();
-      });
+        
+        that.cache.data[index] = newBatchContainer;
+      };
       
-      $(window).scrollTop($(document).height() * that.scrollPercentage);      
+      $(window).scrollTop($(document).height() * that.scrollPercentage);
       oldCascadeContainer.remove();
     }
+  },
+  
+  
+  handleScroll: function(event) {
+    var thisWindow = $(window);
+    var scrollTopPosition = thisWindow.scrollTop();
+    var documentHeight = $(document).height();
+       
+    if (scrollTopPosition + thisWindow.height() + 500 > documentHeight) {
+      if (this.readyToLoad && this.moreToLoad) {
+        this.readyToLoad = false;
+        this.loadArticles();
+        
+        scrollTopPosition = thisWindow.scrollTop();
+        documentHeight = $(document).height();
+      }
+    }
+    
+    this.scrollPercentage = scrollTopPosition / documentHeight;
+    this.cache.scrollPercentage = this.scrollPercentage;
   },
   
   

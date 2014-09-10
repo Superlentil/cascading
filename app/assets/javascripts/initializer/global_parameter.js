@@ -29,3 +29,9 @@ var GlobalConstant = {
     FREE_USER: 1
   }
 };
+
+
+var GlobalVariable = {
+  PageCache: {}
+};
+

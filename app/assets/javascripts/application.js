@@ -17,13 +17,12 @@
 //= require jquery_cookie
 //= require jquery_transit
 
-//= require global_parameter
 //= require initializer/_INDEXER_
 //= require model/_INDEXER_
 //= require collection/_INDEXER_
 //= require template/_INDEXER_
 //= require view/_INDEXER_
-//= require router
+//= require web_main/_INDEXER_
 
 
 $(function() {
@@ -32,8 +31,4 @@ $(function() {
   if (!Backbone.History.started) {
     Backbone.history.start();
   }
-  
-  $(document).off('page:load').on('page:load', function() {
-    Backbone.history.loadUrl();
-  });
 });
