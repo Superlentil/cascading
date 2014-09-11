@@ -52,16 +52,16 @@ View.Layout.Main = Backbone.View.extend({
     that.viewHeader = new View.Layout.Header({signInHandler: that.signIn});
     that.header.append(that.viewHeader.render().$el);
     
-    var mainBody = $("<div id='layout-mainBody'></div>");
-    mainBody.append("<div id='layout-mainBody-clickListener'></div>");
-    mainBody.append(that.menuIcon);
-    mainBody.append(that.userAvatar);
-    mainBody.append(that.header);
-    mainBody.append("<div id='layout-message' class='container'></div><div id='layout-content' class='container'></div>");  
+    that.mainBody = $("<div id='layout-mainBody'></div>");
+    that.mainBody.append("<div id='layout-mainBody-clickListener'></div>");
+    that.mainBody.append(that.header);
+    that.mainBody.append("<div id='layout-message' class='container'></div><div id='layout-content' class='container'></div>");  
     
     container.append(that.leftNav);
     container.append(that.rightNav);
-    container.append(mainBody);
+    container.append(that.menuIcon);
+    container.append(that.userAvatar);
+    container.append(that.mainBody);
     
     that.viewMessage = new View.Layout.Message();
     that.viewMessage.render();
@@ -124,27 +124,28 @@ View.Layout.Main = Backbone.View.extend({
   events: {
     "click #layout-menuIcon": "openLeftNav",
     "click #layout-userAvatar": "openRightNav",
-    "click #layout-mainBody": "closeNav"
   },
   
   
-  openLeftNav: function(event) {
+  openLeftNav: function(event) {  
     if (!this.leftNavOn) {
       event.preventDefault();
       event.stopPropagation();
+
+      this.viewHeader.undelegateEvents();
+      this.viewContent.undelegateEvents();
       
       if (this.rightNavOn) {
         this.rightNavOn = false;
         this.rightNav.transition({x: 0}, 500, "ease");
         this.userAvatar.transition({rotate: 0}, 0);
+      } else {
+        this.mainBody.on("click", this.closeNav);
       }
       
       this.leftNavOn = true;
       this.leftNav.transition({x: this.leftNavWidthInPx}, 500, "ease");
       this.menuIcon.transition({rotate: "360deg"}, 500, "ease");
-      
-      this.viewHeader.undelegateEvents();
-      this.viewContent.undelegateEvents();
     }
   },
   
@@ -153,19 +154,21 @@ View.Layout.Main = Backbone.View.extend({
     if (!this.rightNavOn) {
       event.preventDefault();
       event.stopPropagation();
+
+      this.viewHeader.undelegateEvents();
+      this.viewContent.undelegateEvents();
       
       if (this.leftNavOn) {
         this.leftNavOn = false;
         this.leftNav.transition({x: 0}, 500, "ease");
         this.menuIcon.transition({rotate: 0}, 0);
+      } else {
+        this.mainBody.on("click", this.closeNav);
       }
       
       this.rightNavOn = true;
       this.rightNav.transition({x: -this.rightNavWidthInPx}, 500, "ease");
       this.userAvatar.transition({rotate: "-360deg"}, 500, "ease");
-      
-      this.viewHeader.undelegateEvents();
-      this.viewContent.undelegateEvents();
     }
   },
   
@@ -194,6 +197,7 @@ View.Layout.Main = Backbone.View.extend({
         this.userAvatar.transition({rotate: 0}, speed, "ease");
       }
       
+      this.mainBody.off("click");
       this.viewHeader.delegateEvents();
       this.viewContent.delegateEvents();
     }
@@ -243,6 +247,9 @@ View.Layout.Main = Backbone.View.extend({
 
   
   remove: function() {
+    $(window).off("resize");
+    this.mainBody.off("click");
+    
     this.viewLeftNav.remove();
     this.viewRightNav.remove();
     this.viewHeader.remove();
@@ -254,8 +261,7 @@ View.Layout.Main = Backbone.View.extend({
     this.menuIcon = null;
     this.userAvatar = null;
     this.header = null;
-    
-    $(window).off("resize");
+    this.mainBody = null;
     
     Backbone.View.prototype.remove.call(this);
   }

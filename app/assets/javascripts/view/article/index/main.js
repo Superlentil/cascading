@@ -11,6 +11,8 @@ View.Article.Index.Main = Backbone.View.extend({
     this.readyToLoad = true;
     this.moreToLoad = true;
     
+    this.readyToResize = false;
+    
     // Global Page Cache
     this.pageCacheKey = window.location.href;
     // GlobalVariable.PageCache[this.pageCacheKey];
@@ -41,8 +43,6 @@ View.Article.Index.Main = Backbone.View.extend({
     } else {
       this.maxWidth = this.$el.width() - GlobalVariable.Browser.SCROLL_BAR_WIDTH_IN_PX;
     }
-    
-    console.log(GlobalVariable.Browser.SCROLL_BAR_WIDTH_IN_PX);
     
     this.columnWidth = GlobalConstant.Cascade.COLUMN_WIDTH_IN_PX;
     if (this.maxWidth < GlobalConstant.Cascade.MIN_WIDE_MODE_WIDTH_IN_PX) {
@@ -86,6 +86,8 @@ View.Article.Index.Main = Backbone.View.extend({
     $("#article-index-cascade-container").css("width", that.actualWidth + "px");
     
     that.loadArticles();
+    
+    that.readyToResize = true;
        
     return that;
   },
@@ -173,49 +175,51 @@ View.Article.Index.Main = Backbone.View.extend({
    
   
   onResize: function() {
-    var maxWidth = this.$el.width();
-    
-    var newColumnCount = Math.floor(maxWidth / GlobalConstant.Cascade.COLUMN_WIDTH_IN_PX);
-    
-    if (newColumnCount != this.columnCount || this.maxWidth < GlobalConstant.Cascade.MIN_WIDE_MODE_WIDTH_IN_PX) {
-      var that = this;
-         
-      var oldCascadeContainer = $("#article-index-cascade-container");
-      oldCascadeContainer.detach();
+    if (this.readyToResize) {
+      var maxWidth = this.$el.width();
       
-      that.resetCascade(maxWidth);
+      var newColumnCount = Math.floor(maxWidth / GlobalConstant.Cascade.COLUMN_WIDTH_IN_PX);
       
-      var newCascadeContainer = $("<div id='article-index-cascade-container' style='width: " + this.actualWidth + "px;'></div>");
-      that.$el.prepend(newCascadeContainer);
-      
-      var cacheDataLength = that.cache.data.length;
-      for (var index = 0; index < cacheDataLength; ++index) {
-        var heightOffset = that.currentCascadeHeight;
-        var newBatchContainer = $("<div style='position: absolute; left: 0; top: " + heightOffset + "px;'></div>");
-        newCascadeContainer.append(newBatchContainer);
+      if (newColumnCount != this.columnCount || this.maxWidth < GlobalConstant.Cascade.MIN_WIDE_MODE_WIDTH_IN_PX) {
+        var that = this;
+           
+        var oldCascadeContainer = $("#article-index-cascade-container");
+        oldCascadeContainer.detach();
         
-        that.cache.data[index].children().each(function(index, articleCover) {
-          that.getMinHorizontalIndex();
-          var hCoordinate = that.hPosition[that.minHorizontalIndex];
-          var vCoordinate = that.vPosition[that.minHorizontalIndex];
+        that.resetCascade(maxWidth);
+        
+        var newCascadeContainer = $("<div id='article-index-cascade-container' style='width: " + this.actualWidth + "px;'></div>");
+        that.$el.prepend(newCascadeContainer);
+        
+        var cacheDataLength = that.cache.data.length;
+        for (var index = 0; index < cacheDataLength; ++index) {
+          var heightOffset = that.currentCascadeHeight;
+          var newBatchContainer = $("<div style='position: absolute; left: 0; top: " + heightOffset + "px;'></div>");
+          newCascadeContainer.append(newBatchContainer);
           
-          var jqueryArticleCover = $(articleCover);
-          jqueryArticleCover.css({"top": (hCoordinate - heightOffset) + "px", "left": vCoordinate + "px", "width": that.coverWidth + "px", "padding": that.coverPadding + "px"});
-          var coverPictureHeight = Math.floor(parseFloat(jqueryArticleCover.data("originalCoverPictureHeight")) * that.coverPictureScale);
-          jqueryArticleCover.children(".article-index-cover-img-link").children(".article-index-cover-img").css("height", coverPictureHeight);
-          newBatchContainer.append(jqueryArticleCover);
-  
-          var newHorizontalCoordinate = that.gap + hCoordinate + jqueryArticleCover.outerHeight();
-          that.insertNewCoordinate(newHorizontalCoordinate, vCoordinate);
-        });
-                
-        that.currentCascadeHeight = that.getCurrentCascadeHeight();
+          that.cache.data[index].children().each(function(index, articleCover) {
+            that.getMinHorizontalIndex();
+            var hCoordinate = that.hPosition[that.minHorizontalIndex];
+            var vCoordinate = that.vPosition[that.minHorizontalIndex];
+            
+            var jqueryArticleCover = $(articleCover);
+            jqueryArticleCover.css({"top": (hCoordinate - heightOffset) + "px", "left": vCoordinate + "px", "width": that.coverWidth + "px", "padding": that.coverPadding + "px"});
+            var coverPictureHeight = Math.floor(parseFloat(jqueryArticleCover.data("originalCoverPictureHeight")) * that.coverPictureScale);
+            jqueryArticleCover.children(".article-index-cover-img-link").children(".article-index-cover-img").css("height", coverPictureHeight);
+            newBatchContainer.append(jqueryArticleCover);
+    
+            var newHorizontalCoordinate = that.gap + hCoordinate + jqueryArticleCover.outerHeight();
+            that.insertNewCoordinate(newHorizontalCoordinate, vCoordinate);
+          });
+                  
+          that.currentCascadeHeight = that.getCurrentCascadeHeight();
+          
+          that.cache.data[index] = newBatchContainer;
+        };
         
-        that.cache.data[index] = newBatchContainer;
-      };
-      
-      $(window).scrollTop($(document).height() * that.scrollPercentage);
-      oldCascadeContainer.remove();
+        $(window).scrollTop($(document).height() * that.scrollPercentage);
+        oldCascadeContainer.remove();
+      }
     }
   },
   
