@@ -2,7 +2,7 @@ View.Layout.Main = Backbone.View.extend({
   initialize: function() {
     var that = this;
     
-    _.bindAll(that, "onResize");
+    _.bindAll(that, "onWidthChange");
     _.bindAll(that, "signIn");
     _.bindAll(that, "signOut");
     _.bindAll(that, "closeNav");
@@ -12,9 +12,12 @@ View.Layout.Main = Backbone.View.extend({
     that.leftNavWidthInPx = 0;
     that.rightNavWidthInPx = 0;
     
-    $(window).on("resize", function() {
-      clearTimeout(that.resizeTimeout);
-      that.resizeTimeout = setTimeout(that.onResize, 300);
+    var thisWindow = GlobalVariable.Browser.Window;
+    that.windowWidth = thisWindow.width();
+    
+    thisWindow.on("resize", function() {
+      clearTimeout(that.widthChangeTimeout);
+      that.widthChangeTimeout = setTimeout(that.onWidthChange, 300);
     });
   },
   
@@ -80,17 +83,25 @@ View.Layout.Main = Backbone.View.extend({
   },
   
   
-  onResize: function(event) {
-    this.adjustSideNavWidth();
+  onWidthChange: function(event) {
+    var thisWindow = GlobalVariable.Browser.Window;
+    GlobalVariable.Browser.WindowHeightInPx = thisWindow.height();
     
-    if (this.viewContent && this.viewContent.onResize) {
-      this.viewContent.onResize(event);
+    var windowWidth = thisWindow.width();
+    if (Math.abs(this.windowWidth - windowWidth) > 5) {   // Width change is expensive. Filter out only height change and very small width change.
+      this.windowWidth = windowWidth;
+      
+      this.adjustSideNavWidth();
+      
+      if (this.viewContent && this.viewContent.onWidthChange) {
+        this.viewContent.onWidthChange(event);
+      }
     }
   },
   
   
   adjustSideNavWidth: function() {  
-    var navWidth = $(window).width() * 0.75;
+    var navWidth = GlobalVariable.Browser.Window.width() * 0.75;
     if (navWidth > 300) {
       navWidth = 300;
     }
@@ -247,7 +258,7 @@ View.Layout.Main = Backbone.View.extend({
 
   
   remove: function() {
-    $(window).off("resize");
+    GlobalVariable.Browser.Window.off("resize");
     this.mainBody.off("click");
     
     this.viewLeftNav.remove();

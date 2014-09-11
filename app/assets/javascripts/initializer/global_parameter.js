@@ -33,7 +33,9 @@ var GlobalConstant = {
 
 var GlobalVariable = {
   Browser: {
-    SCROLL_BAR_WIDTH_IN_PX: 20,
+    Window: null,
+    WindowHeightInPx: 0,
+    ScrollBarWidthInPx: 20
   },
   
   

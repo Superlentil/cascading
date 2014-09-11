@@ -26,12 +26,16 @@
 
 
 $(function() {
+  // initialize global variables
+  GlobalVariable.Browser.Window = $(window);
+  var thisWindow = GlobalVariable.Browser.Window;
+  GlobalVariable.Browser.WindowHeightInPx = thisWindow.height();
+  
   // measure the width of the scroll bar of the web browser.
-  var htmlBody = $("body");
-  var widthWithoutScrollBar = htmlBody.width();
+  var widthWithoutScrollBar = thisWindow.width();
   var divToMeasureScrollBarWidth = $("<div style='height: 200%'></div>");
-  htmlBody.append(divToMeasureScrollBarWidth);
-  GlobalVariable.Browser.SCROLL_BAR_WIDTH_IN_PX = Math.ceil(widthWithoutScrollBar - htmlBody.width());
+  $("body").append(divToMeasureScrollBarWidth);
+  GlobalVariable.Browser.ScrollBarWidthInPx = Math.ceil(widthWithoutScrollBar - thisWindow.width());
   divToMeasureScrollBarWidth.detach();
   divToMeasureScrollBarWidth.remove();
   

@@ -3,7 +3,7 @@ View.Article.Index.Main = Backbone.View.extend({
   initialize: function() {
     _.bindAll(this, "handleScroll");
     
-    $(window).on("scroll", this.handleScroll);
+    GlobalVariable.Browser.Window.on("scroll", this.handleScroll);
     
     this.articlesPerBatch = 50;
     
@@ -11,7 +11,7 @@ View.Article.Index.Main = Backbone.View.extend({
     this.readyToLoad = true;
     this.moreToLoad = true;
     
-    this.readyToResize = false;
+    this.readyForWidthChange = false;
     
     // Global Page Cache
     this.pageCacheKey = window.location.href;
@@ -20,7 +20,7 @@ View.Article.Index.Main = Backbone.View.extend({
       // this.cache = GlobalVariable.PageCache[this.pageCacheKey];
       // this.batch = this.cache.batch;
       // this.scrollPercentage = this.cache.scrollPercentage;
-      // this.onResize();
+      // this.onWidthChange();
     // } else {
       this.cache = {
         data: []
@@ -41,7 +41,7 @@ View.Article.Index.Main = Backbone.View.extend({
     if (maxWidth) {
       this.maxWidth = maxWidth;
     } else {
-      this.maxWidth = this.$el.width() - GlobalVariable.Browser.SCROLL_BAR_WIDTH_IN_PX;
+      this.maxWidth = this.$el.width() - GlobalVariable.Browser.ScrollBarWidthInPx;
     }
     
     this.columnWidth = GlobalConstant.Cascade.COLUMN_WIDTH_IN_PX;
@@ -87,7 +87,7 @@ View.Article.Index.Main = Backbone.View.extend({
     
     that.loadArticles();
     
-    that.readyToResize = true;
+    that.readyForWidthChange = true;
        
     return that;
   },
@@ -174,10 +174,10 @@ View.Article.Index.Main = Backbone.View.extend({
   },
    
   
-  onResize: function() {
-    if (this.readyToResize) {
+  onWidthChange: function() {
+    if (this.readyForWidthChange) {   
       var maxWidth = this.$el.width();
-      
+           
       var newColumnCount = Math.floor(maxWidth / GlobalConstant.Cascade.COLUMN_WIDTH_IN_PX);
       
       if (newColumnCount != this.columnCount || this.maxWidth < GlobalConstant.Cascade.MIN_WIDE_MODE_WIDTH_IN_PX) {
@@ -217,7 +217,7 @@ View.Article.Index.Main = Backbone.View.extend({
           that.cache.data[index] = newBatchContainer;
         };
         
-        $(window).scrollTop($(document).height() * that.scrollPercentage);
+        GlobalVariable.Browser.Window.scrollTop($(document).height() * that.scrollPercentage);
         oldCascadeContainer.remove();
       }
     }
@@ -225,7 +225,7 @@ View.Article.Index.Main = Backbone.View.extend({
   
   
   handleScroll: function(event) {
-    var thisWindow = $(window);
+    var thisWindow = GlobalVariable.Browser.Window;
     var scrollTopPosition = thisWindow.scrollTop();
     var documentHeight = $(document).height();
        
@@ -245,7 +245,7 @@ View.Article.Index.Main = Backbone.View.extend({
   
   
   remove: function() {   
-    $(window).off("scroll");
+    GlobalVariable.Browser.Window.off("scroll");
     
     Backbone.View.prototype.remove.call(this);
   }
