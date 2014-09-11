@@ -13,18 +13,18 @@ View.Article.Index.Main = Backbone.View.extend({
     
     // Global Page Cache
     this.pageCacheKey = window.location.href;
-    GlobalVariable.PageCache[this.pageCacheKey];
-    if (GlobalVariable.PageCache[this.pageCacheKey]) {
-      this.cache = GlobalVariable.PageCache[this.pageCacheKey];
-      this.batch = this.cache.batch;
-      this.scrollPercentage = this.cache.scrollPercentage;
-      this.onResize();
-    } else {
+    // GlobalVariable.PageCache[this.pageCacheKey];
+    // if (GlobalVariable.PageCache[this.pageCacheKey]) {
+      // this.cache = GlobalVariable.PageCache[this.pageCacheKey];
+      // this.batch = this.cache.batch;
+      // this.scrollPercentage = this.cache.scrollPercentage;
+      // this.onResize();
+    // } else {
       this.cache = {
         data: []
       };
       GlobalVariable.PageCache[this.pageCacheKey] = this.cache;
-    }
+    // }
   },
   
   
@@ -36,11 +36,13 @@ View.Article.Index.Main = Backbone.View.extend({
 
 
   resetCascade: function(maxWidth) {
-    var divToMeasureScrollBarWidth = $("<div style='height: 9999px'></div>");
-    this.$el.append(divToMeasureScrollBarWidth);
-    this.maxWidth = maxWidth || this.$el.width();
-    divToMeasureScrollBarWidth.detach();
-    divToMeasureScrollBarWidth.remove();
+    if (maxWidth) {
+      this.maxWidth = maxWidth;
+    } else {
+      this.maxWidth = this.$el.width() - GlobalVariable.Browser.SCROLL_BAR_WIDTH_IN_PX;
+    }
+    
+    console.log(GlobalVariable.Browser.SCROLL_BAR_WIDTH_IN_PX);
     
     this.columnWidth = GlobalConstant.Cascade.COLUMN_WIDTH_IN_PX;
     if (this.maxWidth < GlobalConstant.Cascade.MIN_WIDE_MODE_WIDTH_IN_PX) {
@@ -171,8 +173,6 @@ View.Article.Index.Main = Backbone.View.extend({
    
   
   onResize: function() {
-    console.log(this.cache.data);
-    
     var maxWidth = this.$el.width();
     
     var newColumnCount = Math.floor(maxWidth / GlobalConstant.Cascade.COLUMN_WIDTH_IN_PX);

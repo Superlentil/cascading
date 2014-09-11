@@ -65,7 +65,7 @@ View.Layout.Main = Backbone.View.extend({
     
     that.viewMessage = new View.Layout.Message();
     that.viewMessage.render();
-       
+    
     return that;
   },
   

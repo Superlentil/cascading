@@ -26,8 +26,19 @@
 
 
 $(function() {
+  // measure the width of the scroll bar of the web browser.
+  var htmlBody = $("body");
+  var widthWithoutScrollBar = htmlBody.width();
+  var divToMeasureScrollBarWidth = $("<div style='height: 200%'></div>");
+  htmlBody.append(divToMeasureScrollBarWidth);
+  GlobalVariable.Browser.SCROLL_BAR_WIDTH_IN_PX = Math.ceil(widthWithoutScrollBar - htmlBody.width());
+  divToMeasureScrollBarWidth.detach();
+  divToMeasureScrollBarWidth.remove();
+  
+  // backbone routes
   new Router();
   
+  // backbone histories
   if (!Backbone.History.started) {
     Backbone.history.start();
   }
