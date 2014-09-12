@@ -28,6 +28,7 @@
 $(function() {
   // initialize global variables
   GlobalVariable.Browser.Window = $(window);
+  GlobalVariable.Browser.Document = $(document);
   var thisWindow = GlobalVariable.Browser.Window;
   GlobalVariable.Browser.WindowHeightInPx = thisWindow.height();
   

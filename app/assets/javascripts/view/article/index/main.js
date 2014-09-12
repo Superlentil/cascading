@@ -12,6 +12,7 @@ View.Article.Index.Main = Backbone.View.extend({
     this.moreToLoad = true;
     
     this.readyForWidthChange = false;
+    this.lastScrollTop = 0;
     
     // Global Page Cache
     this.pageCacheKey = window.location.href;
@@ -23,7 +24,10 @@ View.Article.Index.Main = Backbone.View.extend({
       // this.onWidthChange();
     // } else {
       this.cache = {
+        firstVisibleBatch: 0,
+        lastVisibleBatch: 0,
         batchPosition: [],
+        batchContainer: [],
         articleParams: []
       };
       GlobalVariable.PageCache[this.pageCacheKey] = this.cache;
@@ -135,9 +139,10 @@ View.Article.Index.Main = Backbone.View.extend({
           fetchedArticles = fetchedResults.models;
           
           var heightOffset = that.currentCascadeHeight;
-          var batchContainer = $("<div style='position: absolute; left: 0; top: " + heightOffset + "px;'></div>");
+          var batchContainer = $("<div id='article-index-batch-" + that.batch + "' style='position: absolute; left: 0; top: " + heightOffset + "px;'></div>");
           cascadeContainer.append(batchContainer);
           that.cache.batchPosition.push(heightOffset);
+          that.cache.batchContainer.push(batchContainer);
           
           _.each(fetchedArticles, function(article) {          
             that.getMinHorizontalIndex();
@@ -242,20 +247,70 @@ View.Article.Index.Main = Backbone.View.extend({
   handleScroll: function(event) {
     var thisWindow = GlobalVariable.Browser.Window;
     var scrollTopPosition = thisWindow.scrollTop();
-    var documentHeight = $(document).height();
-       
-    if (scrollTopPosition + thisWindow.height() + 500 > documentHeight) {
-      if (this.readyToLoad && this.moreToLoad) {
-        this.readyToLoad = false;
-        this.loadArticles();
-        
-        scrollTopPosition = thisWindow.scrollTop();
-        documentHeight = $(document).height();
-      }
-    }
     
-    this.scrollPercentage = scrollTopPosition / documentHeight;
-    this.cache.scrollPercentage = this.scrollPercentage;
+    if (scrollTopPosition > this.lastScrollTop) {   // scroll down
+      this.lastScrollTop = scrollTopPosition;
+      
+      var documentHeight = GlobalVariable.Browser.Document.height();
+      
+      var lastBatch = this.cache.batchPosition.length - 1;
+      if (lastBatch < 0) {
+        this.cache.firstVisibleBatch = 0;
+        this.cache.lastVisibleBatch = 0;
+      } else {
+        if (scrollTopPosition >= this.cache.batchPosition[lastBatch]) {
+          this.cache.firstVisibleBatch = lastBatch;
+          this.cache.lastVisibleBatch = lastBatch;
+        } else {
+          for (var ii = lastBatch; ii > 0; --ii) {
+            if (scrollTopPosition < this.cache.batchPosition[ii]) {
+              this.cache.firstVisibleBatch = ii - 1;
+              this.cache.lastVisibleBatch = this.cache.firstVisibleBatch;
+              
+              var scrollBottmPosition = scrollTopPosition + thisWindow.height();
+              if (scrollBottmPosition >= this.cache.batchPosition[lastBatch]) {
+                this.cache.lastVisibleBatch = lastBatch;
+              } else {
+                for (var jj = this.cache.firstVisibleBatch + 1; jj <= lastBatch; ++index) {
+                  if (scrollTopPosition < this.cache.batchPosition[jj]) {
+                    this.cache.lastVisibleBatch = jj - 1;
+                    break;
+                  }
+                }
+              }
+              
+              break;
+            }
+          }
+        }
+      }
+      
+      console.log(this.cache.firstVisibleBatch + "         " + this.cache.lastVisibleBatch);
+      
+      for (var index = this.cache.firstVisibleBatch - 2; index >= 0; --index) {
+        var batchContainer = this.cache.batchContainer[index];
+        if (batchContainer) {
+          batchContainer.detach();
+          batchContainer.remove();
+          this.cache.batchContainer[index] = false;
+        }
+      }
+         
+      if (this.cache.lastVisibleBatch > this.batch - 2) {
+        if (this.readyToLoad && this.moreToLoad) {
+          this.readyToLoad = false;
+          this.loadArticles();
+          
+          scrollTopPosition = thisWindow.scrollTop();
+          documentHeight = $(document).height();
+        }
+      }
+      
+      this.scrollPercentage = scrollTopPosition / documentHeight;
+      this.cache.scrollPercentage = this.scrollPercentage;
+    } else if (scrollTopPosition > this.lastScrollTop) {   // scroll up
+      this.lastScrollTop = scrollTopPosition;
+    }
   },
   
   
