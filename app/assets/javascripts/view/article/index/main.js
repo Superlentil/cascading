@@ -239,6 +239,8 @@ View.Article.Index.Main = Backbone.View.extend({
             cascadeContainer.css("height", that.currentCascadeHeight + "px");
             that.cache.cascadeContainerHeight = that.currentCascadeHeight;
             that.cache.columnHeight = that.hPosition;
+            that.scrollPercentage = GlobalVariable.Browser.Window.scrollTop() / GlobalVariable.Browser.Document.height();
+            that.cache.scrollPercentage = that.scrollPercentage;
           } else {
             that.readyToLoad = true;
             that.moreToLoad = false;
