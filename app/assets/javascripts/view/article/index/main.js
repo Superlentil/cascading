@@ -371,6 +371,8 @@ View.Article.Index.Main = Backbone.View.extend({
   handleScroll: function(event) {
     var thisWindow = GlobalVariable.Browser.Window;
     var scrollTopPosition = thisWindow.scrollTop();
+    this.scrollPercentage = scrollTopPosition / GlobalVariable.Browser.Document.height();
+    this.cache.scrollPercentage = this.scrollPercentage;
     
     var firstVisibleBatch = 0;
     var lastVisibleBatch = 0;
@@ -452,9 +454,6 @@ View.Article.Index.Main = Backbone.View.extend({
         }
       }
     }
-    
-    this.scrollPercentage = scrollTopPosition / GlobalVariable.Browser.Document.height();
-    this.cache.scrollPercentage = this.scrollPercentage;
   },
   
   
