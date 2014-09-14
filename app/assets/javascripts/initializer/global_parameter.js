@@ -33,6 +33,7 @@ var GlobalConstant = {
 
 var GlobalVariable = {
   Browser: {
+    WidthChangeable: false,
     Window: null,
     Document: null,
     WindowHeightInPx: 0,
