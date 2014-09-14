@@ -371,7 +371,6 @@ View.Article.Index.Main = Backbone.View.extend({
   handleScroll: function(event) {
     var thisWindow = GlobalVariable.Browser.Window;
     var scrollTopPosition = thisWindow.scrollTop();
-    var documentHeight = GlobalVariable.Browser.Document.height();
     
     var firstVisibleBatch = 0;
     var lastVisibleBatch = 0;
@@ -410,9 +409,6 @@ View.Article.Index.Main = Backbone.View.extend({
       if (this.readyToLoad && this.moreToLoad) {
         this.readyToLoad = false;
         this.loadArticles();
-        
-        scrollTopPosition = thisWindow.scrollTop();
-        documentHeight = GlobalVariable.Browser.Document.height();
       }
       lastBatch = this.cache.batchContainer.length - 1;
     }
@@ -457,7 +453,7 @@ View.Article.Index.Main = Backbone.View.extend({
       }
     }
     
-    this.scrollPercentage = scrollTopPosition / documentHeight;
+    this.scrollPercentage = scrollTopPosition / GlobalVariable.Browser.Document.height();
     this.cache.scrollPercentage = this.scrollPercentage;
   },
   
