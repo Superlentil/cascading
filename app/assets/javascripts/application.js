@@ -25,9 +25,6 @@
 //= require web_main/_INDEXER_
 
 
-alert(screen.width + " x " + screen.height + "; " + (screen.width / window.devicePixelRatio) + " x " + (screen.height / window.devicePixelRatio) + "; " + window.devicePixelRatio + " || " + Math.round(window.screen.availWidth / document.documentElement.clientWidth));
-
-
 $(function() {
   // initialize global variables
   GlobalVariable.Browser.Window = $(window);
