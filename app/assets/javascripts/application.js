@@ -25,6 +25,9 @@
 //= require web_main/_INDEXER_
 
 
+alert(screen.width + " x " + screen.height);
+
+
 $(function() {
   // initialize global variables
   GlobalVariable.Browser.Window = $(window);

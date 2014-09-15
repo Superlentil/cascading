@@ -42,8 +42,6 @@ View.Article.Index.Main = Backbone.View.extend({
       };
       GlobalVariable.PageCache[this.pageCacheKey] = this.cache;
     }
-    
-    alert(screen.width);
   },
   
   
