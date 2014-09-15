@@ -25,7 +25,7 @@
 //= require web_main/_INDEXER_
 
 
-alert(screen.width + " x " + screen.height);
+alert(screen.width + " x " + screen.height + "; " + (screen.width / window.devicePixelRatio) + " x " + (screen.height / window.devicePixelRatio) + "; " + window.devicePixelRatio + " || " + Math.round(window.screen.availWidth / document.documentElement.clientWidth));
 
 
 $(function() {
