@@ -3,7 +3,7 @@ View.Article.Index.Main = Backbone.View.extend({
   initialize: function() {
     _.bindAll(this, "handleScroll");
         
-    this.articlesPerBatch = 50;
+    this.articlesPerBatch = 30;
     
     this.batch = 0;
     this.eagerLoadBatchCount = 1;

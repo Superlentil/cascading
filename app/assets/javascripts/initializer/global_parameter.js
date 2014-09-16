@@ -13,9 +13,9 @@ var GlobalConstant = {
 
 
   Cascade: {
-    COLUMN_WIDTH_IN_PX: 240.0,
-    MIN_WIDE_MODE_WIDTH_IN_PX: 480.0,
-    COVER_PICTURE_WIDTH_IN_PX: 200.0
+    COLUMN_WIDTH_IN_PX: 290.0,
+    MIN_WIDE_MODE_WIDTH_IN_PX: 580.0,
+    COVER_PICTURE_WIDTH_IN_PX: 250.0
   },
     
   
