@@ -90,7 +90,6 @@ View.Layout.Main = Backbone.View.extend({
     var windowWidth = thisWindow.width();
     if (Math.abs(this.windowWidth - windowWidth) > 5) {   // Width change is expensive. Filter out only height change and very small width change.
       this.windowWidth = windowWidth;
-      GlobalVariable.Browser.WidthChangeable = true;
       
       this.adjustSideNavWidth();
       

@@ -5,7 +5,7 @@ View.Article.Index.Main = Backbone.View.extend({
         
     this.articlesPerBatch = 30;
     
-    this.batch = 0;
+    this.nextBatchToLoad = 0;
     this.eagerLoadBatchCount = 1;
     this.readyToLoad = true;
     this.moreToLoad = true;
@@ -23,7 +23,7 @@ View.Article.Index.Main = Backbone.View.extend({
     GlobalVariable.PageCache[this.pageCacheKey];
     if (GlobalVariable.PageCache[this.pageCacheKey]) {
       this.cache = GlobalVariable.PageCache[this.pageCacheKey];
-      this.batch = this.cache.batch;
+      this.nextBatchToLoad = this.cache.nextBatchToLoad;
       if ($.now() - this.cache.lastCacheTime < 3600000) {
         this.renderWithCache = true;
       } 
@@ -52,8 +52,8 @@ View.Article.Index.Main = Backbone.View.extend({
   coverTemplate: JST["template/article/index/cover"],
   
   
-  getColumnCount: function(maxWidth) {
-    var columnCount = Math.floor(maxWidth / GlobalConstant.Cascade.COLUMN_WIDTH_IN_PX);
+  getColumnCount: function(maxWidth, columnWidth) {
+    var columnCount = Math.floor(maxWidth / columnWidth);
     if (columnCount < 1) {
       columnCount = 1;
     }
@@ -64,34 +64,28 @@ View.Article.Index.Main = Backbone.View.extend({
   },
 
 
-  resetCascade: function(maxWidth) {
-    if (maxWidth) {
-      this.maxWidth = maxWidth;
-    } else {
-      this.maxWidth = this.$el.width() - GlobalVariable.Browser.ScrollBarWidthInPx;
-    }
+  resetCascade: function(maxWidth, columnCount) {
+    var defaultColumnWidth = GlobalConstant.Cascade.COLUMN_WIDTH_IN_PX;
+    this.columnWidth = defaultColumnWidth;
     
-    this.columnWidth = GlobalConstant.Cascade.COLUMN_WIDTH_IN_PX;
-    if (GlobalVariable.Browser.WidthChangeable || this.maxWidth > GlobalConstant.Cascade.MIN_WIDE_MODE_WIDTH_IN_PX) {
-      this.columnCount = this.getColumnCount(this.maxWidth);
+    if (this.CoverInNormalMode) {
       this.gap = 8.0;
       this.coverPadding = 16.0;
       this.coverWidth = this.columnWidth - this.gap;
-      this.actualWidth = this.columnCount * this.columnWidth - this.gap;
+      this.actualWidth = columnCount * this.columnWidth - this.gap;
       this.coverPictureScale = 1.0;
     } else {
-      this.columnCount = 2;
       this.gap = 4.0;
       this.coverPadding = 8.0;
-      this.columnWidth = this.maxWidth / 2.0;
+      this.columnWidth = maxWidth / columnCount;
       this.coverWidth = this.columnWidth - this.gap;
-      this.actualWidth = this.maxWidth - this.gap;
-      this.coverPictureScale = (this.coverWidth - this.coverPadding * 2) / GlobalConstant.Cascade.COVER_PICTURE_WIDTH_IN_PX;
+      this.actualWidth = maxWidth - this.gap;
+      this.coverPictureScale = (this.coverWidth - this.coverPadding * 2.0) / GlobalConstant.Cascade.COVER_PICTURE_WIDTH_IN_PX;
     }
         
     this.hPosition = [];
     this.vPosition = [];
-    for (var index = 0; index < this.columnCount; ++index) {
+    for (var index = 0; index < columnCount; ++index) {
       this.hPosition.push(0.0);
       this.vPosition.push(this.columnWidth * index);
     }
@@ -103,8 +97,25 @@ View.Article.Index.Main = Backbone.View.extend({
   render: function() {
     GlobalVariable.Browser.Window.scrollTop(0);
     this.$el.html(this.mainTemplate());
+    
+    // get the display mode for article cover, "shrinked" or "normal"
+    this.maxWidth = this.$el.width() - GlobalVariable.Browser.ScrollBarWidthInPx;
+    var defaultColumnWidth = GlobalConstant.Cascade.COLUMN_WIDTH_IN_PX;
+    this.columnCount = this.getColumnCount(this.maxWidth, defaultColumnWidth);
+    this.CoverInNormalMode = true;
+    if (this.maxWidth > GlobalConstant.Cascade.MIN_WIDE_MODE_WIDTH_IN_PX) {
+      $("#article-index-cascade-option").hide();
+    } else {
+      if (this.maxWidth - this.columnCount * defaultColumnWidth > defaultColumnWidth * 0.4) {
+        $("#article-index-cascade-option").show();
+        this.columnCount += 1;
+        this.CoverInNormalMode = false;
+      } else {
+        $("#article-index-cascade-option").hide();
+      }
+    }
 
-    this.resetCascade();
+    this.resetCascade(this.maxWidth, this.columnCount);
 
     this.cascadeContainer = $("#article-index-cascade-container");
     this.cascadeContainer.css("width", this.actualWidth + "px");
@@ -124,7 +135,7 @@ View.Article.Index.Main = Backbone.View.extend({
         
         var oldScrollTop = this.lastScrollTop;
         var newScrollTop = GlobalVariable.Browser.Document.height() * this.cache.scrollPercentage;
-        GlobalVariable.Browser.Window.scrollTop(newScrollTop);
+        GlobalVariable.Browser.Window.scrollTop(newScrollTop);   // will automatically trigger "this.handleScroll()"
         if (newScrollTop === oldScrollTop) {
           this.handleScroll();
         }
@@ -184,7 +195,7 @@ View.Article.Index.Main = Backbone.View.extend({
       var cascadeContainer = that.cascadeContainer;
       var articles = new Collection.Article.Article();
       
-      articles.fetchBatch(that.batch, that.articlesPerBatch, {
+      articles.fetchBatch(that.nextBatchToLoad, that.articlesPerBatch, {
         success: function(fetchedResults) {
           fetchedArticles = fetchedResults.models;
           
@@ -228,8 +239,8 @@ View.Article.Index.Main = Backbone.View.extend({
             
             that.currentCascadeHeight = that.getCurrentCascadeHeight();
                       
-            ++that.batch;
-            that.cache.batch = that.batch;
+            ++that.nextBatchToLoad;
+            that.cache.nextBatchToLoad = that.nextBatchToLoad;
             that.cache.lastCacheTime = $.now();
             that.readyToLoad = true;
             if (fetchedArticles.length < that.articlesPerBatch) {
@@ -249,15 +260,98 @@ View.Article.Index.Main = Backbone.View.extend({
       });
     }
   },
+  
+  
+  changeCoverDisplayMode: function(event) {
+    event.preventDefault();
+    
+    var newCoverInNormalMode = $(event.currentTarget).data("coverDisplayMode") === "normal";
+    if (newCoverInNormalMode !== this.CoverInNormalMode) {
+      var oldCascadeContainer = this.cascadeContainer;
+      oldCascadeContainer.detach();
+      
+      if (newCoverInNormalMode) {
+        this.columnCount = this.getColumnCount(this.maxWidth, GlobalConstant.Cascade.COLUMN_WIDTH_IN_PX);
+      } else {
+        this.columnCount = this.getColumnCount(this.maxWidth, this.columnWidth);
+      }
+      
+      this.resetCascade(maxWidth);
+      this.cache.columnWidth = this.columnWidth;
+      this.cache.columnCount = this.columnCount;
+      this.cache.scrollPercentage = 0;
+      this.cache.columnHeight = null;
+      
+      var newCascadeContainer = $("<div id='article-index-cascade-container' style='width: " + this.actualWidth + "px;'></div>");
+      this.$el.append(newCascadeContainer);
+      this.cascadeContainer = newCascadeContainer;
+      
+      var lastBatchInCache = this.cache.nextBatchToLoad - 1;
+      var reusableCacheSize = 0;
+      if (lastBatchInCache >= 1) {
+        reusableCacheSize = 2;
+      } else if (lastBatchInCache === 0) {
+        reusableCacheSize = 1;
+      }
+      
+      if (reusableCacheSize > 0) {
+        this.cache.nextBatchToLoad = reusableCacheSize;
+        batchPosition = batchPosition.slice(0, reusableCacheSize);
+        batchContainer = batchContainer.slice(0, reusableCacheSize);
+        articleParams = articleParams.slice(0, reusableCacheSize * this.articlesPerBatch);
+        
+        for (var batchIndex = 0; batchIndex < reusableCacheSize; ++batchIndex) {
+          var heightOffset = that.currentCascadeHeight;
+          this.cache.batchPosition[batchIndex] = heightOffset;
+          this.cache.batchContainer[batchIndex] = false;
+          
+          var newBatchContainer = $("<div style='position: absolute; left: 0; top: " + heightOffset + "px;'></div>");
+          newCascadeContainer.append(newBatchContainer);
+          this.cache.batchContainer[batchIndex] = newBatchContainer;
+
+          var thisBatchStart = batchIndex * this.articlesPerBatch;
+          var nextBatchStart = (batchIndex + 1) * this.articlesPerBatch;
+                    
+          for (var index = thisBatchStart; index < nextBatchStart; ++index) {
+            this.getMinHorizontalIndex();
+            var hCoordinate = that.hPosition[that.minHorizontalIndex];
+            var vCoordinate = that.vPosition[that.minHorizontalIndex];
+            
+            var params = that.cache.articleParams[index];
+            params.hCoordinate = hCoordinate - heightOffset;
+            params.vCoordinate = vCoordinate;
+            params.coverPictureHeight = params.originalCoverPictureHeight * this.coverPictureScale;
+            params.width = that.coverWidth;
+            params.padding = that.coverPadding;
+            
+            var articleCover = $(that.coverTemplate(params));
+            newBatchContainer.append(articleCover);
+            var articleCoverHeight = articleCover.outerHeight();
+            params.height = articleCoverHeight;
+            
+            var newHorizontalCoordinate = that.gap + hCoordinate + articleCoverHeight;
+            that.insertNewCoordinate(newHorizontalCoordinate, vCoordinate);
+        }
+        
+        newCascadeContainer.css("height", that.currentCascadeHeight + "px");
+        that.cache.cascadeContainerHeight = that.currentCascadeHeight;
+        that.cache.columnHeight = that.hPosition;
+        that.firstVisibleBatch = -1;
+        that.lastVisibleBatch = -1;
+      } else {
+        this.loadArticles();
+      }
+      
+      oldCascadeContainer.remove();
+  },
    
   
   onWidthChange: function() {
     if (this.readyForWidthChange) {   
       var maxWidth = this.$el.width();
-      var newColumnCount = this.getColumnCount(maxWidth);
-      var columnWidth = this.columnWidth;
+      var newColumnCount = this.getColumnCount(maxWidth, this.columnWidth);
       
-      if (newColumnCount !== this.columnCount || columnWidth < GlobalConstant.Cascade.COLUMN_WIDTH_IN_PX) {
+      if (newColumnCount !== this.columnCount) {
         var that = this;
         
         var oldCascadeContainer = that.cascadeContainer;
@@ -283,44 +377,15 @@ View.Article.Index.Main = Backbone.View.extend({
           that.cache.batchPosition[batchIndex] = heightOffset;
           that.cache.batchContainer[batchIndex] = false;
           
-          if (columnWidth < GlobalConstant.Cascade.COLUMN_WIDTH_IN_PX) {
-            var newBatchContainer = $("<div style='position: absolute; left: 0; top: " + heightOffset + "px;'></div>");
-            newCascadeContainer.append(newBatchContainer);
-            
-            for (var index = thisBatchStart; index < nextBatchStart; ++index) {
-              that.getMinHorizontalIndex();
-              var hCoordinate = that.hPosition[that.minHorizontalIndex];
-              var vCoordinate = that.vPosition[that.minHorizontalIndex];
-              
-              var params = that.cache.articleParams[index];
-              params.hCoordinate = hCoordinate - heightOffset;
-              params.vCoordinate = vCoordinate;
-              params.coverPictureHeight = params.originalCoverPictureHeight;
-              params.width = that.coverWidth;
-              params.padding = that.coverPadding;
-              
-              var articleCover = $(that.coverTemplate(params));
-              newBatchContainer.append(articleCover);
-              var articleCoverHeight = articleCover.outerHeight();
-              params.height = articleCoverHeight;
-              
-              var newHorizontalCoordinate = that.gap + hCoordinate + articleCoverHeight;
-              that.insertNewCoordinate(newHorizontalCoordinate, vCoordinate);
-            }
-            
-            newBatchContainer.detach();
-            newBatchContainer.remove();
-          } else {
-            for (var index = thisBatchStart; index < nextBatchStart; ++index) {
-              that.getMinHorizontalIndex();
-              var hCoordinate = that.hPosition[that.minHorizontalIndex];
-              var vCoordinate = that.vPosition[that.minHorizontalIndex];
-              var params = that.cache.articleParams[index];
-              params.hCoordinate = hCoordinate - heightOffset;
-              params.vCoordinate = vCoordinate;
-              var newHorizontalCoordinate = that.gap + hCoordinate + params.height;
-              that.insertNewCoordinate(newHorizontalCoordinate, vCoordinate);
-            }
+          for (var index = thisBatchStart; index < nextBatchStart; ++index) {
+            that.getMinHorizontalIndex();
+            var hCoordinate = that.hPosition[that.minHorizontalIndex];
+            var vCoordinate = that.vPosition[that.minHorizontalIndex];
+            var params = that.cache.articleParams[index];
+            params.hCoordinate = hCoordinate - heightOffset;
+            params.vCoordinate = vCoordinate;
+            var newHorizontalCoordinate = that.gap + hCoordinate + params.height;
+            that.insertNewCoordinate(newHorizontalCoordinate, vCoordinate);
           }
                   
           that.currentCascadeHeight = that.getCurrentCascadeHeight();
@@ -378,7 +443,7 @@ View.Article.Index.Main = Backbone.View.extend({
     
     var firstVisibleBatch = 0;
     var lastVisibleBatch = 0;
-    var lastBatch = this.cache.batchContainer.length - 1;
+    var lastBatch = this.cache.nextBatchToLoad - 1;
     
     if (lastBatch >= 0) {
       if (scrollTopPosition >= this.cache.batchPosition[lastBatch]) {
@@ -408,13 +473,13 @@ View.Article.Index.Main = Backbone.View.extend({
       }
     }
     
-    if (lastVisibleBatch + this.eagerLoadBatchCount > this.batch - 1) {   // Possible Bug: may triggered but not loaded.
-      lastOnBoardBatch = this.batch;      
+    if (lastVisibleBatch + this.eagerLoadBatchCount > this.nextBatchToLoad - 1) {   // Possible Bug: may triggered but not loaded.
+      lastOnBoardBatch = this.nextBatchToLoad;      
       if (this.readyToLoad && this.moreToLoad) {
         this.readyToLoad = false;
         this.loadArticles();
       }
-      lastBatch = this.cache.batchContainer.length - 1;
+      lastBatch = this.cache.nextBatchToLoad - 1;
     }
     
     if (firstVisibleBatch !== this.firstVisibleBatch || lastVisibleBatch !== this.lastVisibleBatch) {
