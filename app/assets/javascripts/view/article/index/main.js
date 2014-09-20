@@ -412,7 +412,7 @@ View.Article.Index.Main = Backbone.View.extend({
       if (newColumnCount !== cache.columnCount) {       
         this.resetCascade(this.columnWidth * newColumnCount, newColumnCount);      
         this.resetCascadeContainer();
-                
+
         var articleParamsLength = cache.articleParams.length;
         var countPerBatch = GlobalConstant.Cascade.ARTICLE_COUNT_PER_BATCH;
         var batchIndex = 0;
