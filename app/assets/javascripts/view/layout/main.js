@@ -13,7 +13,7 @@ View.Layout.Main = Backbone.View.extend({
     that.rightNavWidthInPx = 0;
     
     var thisWindow = GlobalVariable.Browser.Window;
-    that.windowWidth = thisWindow.width();
+    that.windowWidth = thisWindow.outerWidth();
     
     thisWindow.on("resize", function() {
       clearTimeout(that.widthChangeTimeout);
@@ -87,7 +87,7 @@ View.Layout.Main = Backbone.View.extend({
     var thisWindow = GlobalVariable.Browser.Window;
     GlobalVariable.Browser.WindowHeightInPx = thisWindow.height();
     
-    var windowWidth = thisWindow.width();
+    var windowWidth = thisWindow.outerWidth();
     if (Math.abs(this.windowWidth - windowWidth) > 5) {   // Width change is expensive. Filter out only height change and very small width change.
       this.windowWidth = windowWidth;
       
