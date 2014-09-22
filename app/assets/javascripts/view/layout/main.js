@@ -12,6 +12,8 @@ View.Layout.Main = Backbone.View.extend({
     that.leftNavWidthInPx = 0;
     that.rightNavWidthInPx = 0;
     
+    that.widthChangeThreshold = GlobalVariable.Browser.ScrollBarWidthInPx > 6 ? GlobalVariable.Browser.ScrollBarWidthInPx : 6;
+    
     var thisWindow = GlobalVariable.Browser.Window;
     that.windowWidth = thisWindow.outerWidth();
     
@@ -88,11 +90,10 @@ View.Layout.Main = Backbone.View.extend({
     GlobalVariable.Browser.WindowHeightInPx = thisWindow.height();
     
     var windowWidth = thisWindow.outerWidth();
-    if (Math.abs(this.windowWidth - windowWidth) > 5) {   // Width change is expensive. Filter out only height change and very small width change.
+    if (Math.abs(this.windowWidth - windowWidth) > this.widthChangeThreshold) {   // Width change is expensive. Filter out only height change and very small width change.
       this.windowWidth = windowWidth;
-      
       this.adjustSideNavWidth();
-      
+
       if (this.viewContent && this.viewContent.onWidthChange) {
         this.viewContent.onWidthChange(event);
       }
