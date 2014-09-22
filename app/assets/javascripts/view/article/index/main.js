@@ -296,57 +296,53 @@ View.Article.Index.Main = Backbone.View.extend({
     
     var cache = this.cache;
     
-    var compactMode = $(event.currentTarget).data("displayMode") === "compact";
-    if (compactMode !== cache.compactMode) {
-      cache.compactMode = compactMode;
-  
-      var maxWidth = this.$el.width();
-      cache.columnCount = this.getColumnCount(maxWidth, GlobalConstant.Cascade.NORMAL_COLUMN_WIDTH_IN_PX, GlobalConstant.Cascade.NORMAL_GAP_SIZE, cache.compactMode);
+    cache.compactMode = $(event.currentTarget).data("displayMode") === "compact";
+    var maxWidth = this.$el.width();
+    cache.columnCount = this.getColumnCount(maxWidth, GlobalConstant.Cascade.NORMAL_COLUMN_WIDTH_IN_PX, GlobalConstant.Cascade.NORMAL_GAP_SIZE, cache.compactMode);
+    
+    this.resetCascadeParams(maxWidth);
+    this.resetCoverPositionGenerator();
+    this.resetCascadeContainer();
+    this.readyToLoad = true;
+    this.moreToLoad = true;
+         
+    var lastBatchInCache = cache.nextBatchToLoad - 1;
+    var reusableCacheSize = 0;
+    if (lastBatchInCache >= 1) {
+      reusableCacheSize = 2;
+    } else if (lastBatchInCache === 0) {
+      reusableCacheSize = 1;
+    }
+    
+    if (reusableCacheSize > 0) {
+      var countPerBatch = GlobalConstant.Cascade.ARTICLE_COUNT_PER_BATCH;
       
-      this.resetCascadeParams(maxWidth);
-      this.resetCoverPositionGenerator();
-      this.resetCascadeContainer();
-      this.readyToLoad = true;
-      this.moreToLoad = true;
-           
-      var lastBatchInCache = cache.nextBatchToLoad - 1;
-      var reusableCacheSize = 0;
-      if (lastBatchInCache >= 1) {
-        reusableCacheSize = 2;
-      } else if (lastBatchInCache === 0) {
-        reusableCacheSize = 1;
-      }
+      cache.nextBatchToLoad = reusableCacheSize;
+      cache.batchPosition = cache.batchPosition.slice(0, reusableCacheSize);
+      cache.batchContainer = cache.batchContainer.slice(0, reusableCacheSize);
+      cache.articleParams = cache.articleParams.slice(0, reusableCacheSize * countPerBatch);
       
-      if (reusableCacheSize > 0) {
-        var countPerBatch = GlobalConstant.Cascade.ARTICLE_COUNT_PER_BATCH;
+      for (var batchIndex = 0; batchIndex < reusableCacheSize; ++batchIndex) {
+        var heightOffset = cache.cascadeHeight;
+        cache.batchPosition[batchIndex] = heightOffset;
+        cache.batchContainer[batchIndex] = false;
         
-        cache.nextBatchToLoad = reusableCacheSize;
-        cache.batchPosition = cache.batchPosition.slice(0, reusableCacheSize);
-        cache.batchContainer = cache.batchContainer.slice(0, reusableCacheSize);
-        cache.articleParams = cache.articleParams.slice(0, reusableCacheSize * countPerBatch);
-        
-        for (var batchIndex = 0; batchIndex < reusableCacheSize; ++batchIndex) {
-          var heightOffset = cache.cascadeHeight;
-          cache.batchPosition[batchIndex] = heightOffset;
-          cache.batchContainer[batchIndex] = false;
-          
-          var thisBatchStart = batchIndex * countPerBatch;
-          var nextBatchStart = (batchIndex + 1) * countPerBatch;
-                    
-          for (var index = thisBatchStart; index < nextBatchStart; ++index) {           
-            var params = cache.articleParams[index];
-            params.width = cache.coverWidth;
-            params.padding = cache.coverPadding;
-            params.picHeight = Math.floor(params.originalPicHeight * cache.coverPictureScale);
-            params.picWidth = Math.floor(GlobalConstant.Cascade.COVER_PICTURE_WIDTH_IN_PX * cache.coverPictureScale);
-          }
-          
-          this.attachBatch(batchIndex, true);
+        var thisBatchStart = batchIndex * countPerBatch;
+        var nextBatchStart = (batchIndex + 1) * countPerBatch;
+                  
+        for (var index = thisBatchStart; index < nextBatchStart; ++index) {           
+          var params = cache.articleParams[index];
+          params.width = cache.coverWidth;
+          params.padding = cache.coverPadding;
+          params.picHeight = Math.floor(params.originalPicHeight * cache.coverPictureScale);
+          params.picWidth = Math.floor(GlobalConstant.Cascade.COVER_PICTURE_WIDTH_IN_PX * cache.coverPictureScale);
         }
-      } else {
-        this.resetCache();
-        this.loadArticles();
+        
+        this.attachBatch(batchIndex, true);
       }
+    } else {
+      this.resetCache();
+      this.loadArticles();
     }
   },
    
