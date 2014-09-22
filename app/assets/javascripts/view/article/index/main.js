@@ -142,6 +142,8 @@ View.Article.Index.Main = Backbone.View.extend({
   
   
   resetCascadeContainer: function() {
+    GlobalVariable.Browser.Window.off("scroll", this.handleScroll);
+    
     var oldCascadeContainer = this.cascadeContainer;
     if (oldCascadeContainer) {
       oldCascadeContainer.detach();
@@ -151,6 +153,8 @@ View.Article.Index.Main = Backbone.View.extend({
     var newCascadeContainer = $("<div id='article-index-cascade-container' style='width: " + this.cache.cascadeWidth + "px;'></div>");
     this.$el.append(newCascadeContainer);
     this.cascadeContainer = newCascadeContainer;
+    
+    GlobalVariable.Browser.Window.on("scroll", this.handleScroll);
   },
 
   
@@ -161,8 +165,6 @@ View.Article.Index.Main = Backbone.View.extend({
     this.$el.html(this.mainTemplate());
     
     var maxWidth = this.$el.width() - GlobalVariable.Browser.ScrollBarWidthInPx;
-      
-    GlobalVariable.Browser.Window.on("scroll", this.handleScroll);
     
     if (this.renderWithCache) {
       var newColumnCount = this.getColumnCount(maxWidth, GlobalConstant.Cascade.NORMAL_COLUMN_WIDTH_IN_PX, GlobalConstant.Cascade.NORMAL_GAP_SIZE, cache.compactMode);
@@ -456,12 +458,14 @@ View.Article.Index.Main = Backbone.View.extend({
     cache.firstVisibleBatch = -1;
     cache.lastVisibleBatch = -1;
 
+    var oldScrollTop = cache.scrollTop;
     var newScrollTop = GlobalVariable.Browser.Document.height() * cache.scrollPercentage;
-    GlobalVariable.Browser.Window.scrollTop(newScrollTop);
-    if (newScrollTop === cache.scrollTop) {
-      this.handleScroll();
-    }
     cache.scrollTop = newScrollTop;
+    if (newScrollTop === oldScrollTop || newScrollTop == 0) {
+      this.handleScroll();
+    } else {
+      GlobalVariable.Browser.Window.scrollTop(newScrollTop);
+    }
   },
   
   
