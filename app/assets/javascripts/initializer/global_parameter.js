@@ -15,7 +15,7 @@ var GlobalConstant = {
   Cascade: {
     CACHE_LIFETIME_IN_SECOND: 3600,
     
-    ARTICLE_COUNT_PER_BATCH: 2,
+    ARTICLE_COUNT_PER_BATCH: 30,
     EAGER_LOAD_BATCH_COUNT: 1,
     
     MIN_WIDE_MODE_WIDTH_IN_PX: 720.0,
