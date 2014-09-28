@@ -30,12 +30,13 @@
 
 .layout-header-content {
   line-height: $LAYOUT_HEADER_HEIGHT;
-}
-
-
-.layout-header-form {
-  .form-textfield {
-    max-width: 200px;
+  
+  .textfield {
+    width: 180px;
+    margin-right: 4px;
+  }
+  
+  .button {
     margin-right: 4px;
   }
 }

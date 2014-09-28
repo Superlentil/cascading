@@ -2,6 +2,12 @@
 @import "layout/setting";
 
 
+html {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+
 body {
   padding-top: $LAYOUT_HEADER_HEIGHT;
 }

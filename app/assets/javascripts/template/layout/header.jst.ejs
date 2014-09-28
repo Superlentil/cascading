@@ -4,13 +4,11 @@
   <a class="haigy-logo layout-header-openLeftNav" href="#">Haigy</a>
 </div>
 
-<div class="right layout-header-content">
+<div class="right hidden-only-xs layout-header-content">
 <% if (!$.cookie("user_id")) { %>
-  <div class="hidden-only-xs layout-header-form">
-    <input id="layout-header-form-email" class="form-textfield" type="text" placeholder="Email">
-    <input id="layout-header-form-password" class="form-textfield" type="password" placeholder="Password">
-    <input id="layout-header-form-submit" class="btn" type="button" value="Sign In">
-    <small><em><a href="#/users/new">Sign Up</a></em></small>
-  </div>
+  <input id="layout-header-form-email" class="textfield" type="text" placeholder="Email">
+  <input id="layout-header-form-password" class="textfield" type="password" placeholder="Password">
+  <input id="layout-header-form-submit" class="button button-primary" type="button" value="Sign In">
+  <small><em><a href="#/users/new">Sign Up</a></em></small>
 <% } %>
 </div>
