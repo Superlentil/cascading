@@ -6,11 +6,11 @@ button, .button {
   text-align: center;
   vertical-align: middle;
   cursor: pointer;
-  border: 1px solid transparent;
   white-space: nowrap;
   padding: 6px 12px 4px 12px;
   margin-top: -2px;
-  border-radius: 4px;
+  border: 1px solid transparent;
+  @include border-radius(4px);
   @include box-shadow(1px 1px 1px 1px #888888);
 }
 
@@ -21,7 +21,7 @@ button, .button-default {
   background-color: #ddd;
 }
 
-button, .button-default:hover {
+button:hover, .button-default:hover {
   background-color: #bfbfbf;
 }
 

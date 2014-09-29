@@ -44,6 +44,16 @@
 }
 
 
+.text-align-right {
+  text-align: right;
+}
+
+
+.block {
+  display: block;
+}
+
+
 @media (max-width: $XS_MAX_WIDTH) {
   .hidden-only-xs {
     display: none !important;

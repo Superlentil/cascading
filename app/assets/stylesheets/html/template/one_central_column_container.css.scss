@@ -1,0 +1,40 @@
+@import "compass";
+@import "html/template/setting";
+
+
+$CENTRAL_COLUMN_MAX_WIDTH: $TEMPLATE_CONTAINER_MAX_WIDTH * 0.6;
+
+
+.one-central-column-container {
+  width: 100%;
+  max-width: $TEMPLATE_CONTAINER_MAX_WIDTH;
+  
+  margin: $TEMPLATE_CONTAINER_MARGIN_TOP $TEMPLATE_CONTAINER_MARGIN_RIGHT $TEMPLATE_CONTAINER_MARGIN_BOTTOM $TEMPLATE_CONTAINER_MARGIN_LEFT;
+  
+  border: 1px solid gray;
+  @include border-radius(4px);
+  
+  
+  .central-column {
+    width: 100%;
+    max-width: $CENTRAL_COLUMN_MAX_WIDTH;
+    
+    padding: 15px 30px;
+    margin: 0 auto;
+  }
+}
+
+
+.one-central-column-container:before,
+.one-central-column-container:after,
+.central-column:before,
+.central-column:after {
+  content: " ";
+  display: table;
+}
+
+
+.one-central-column-container:after,
+.central-column:after {
+  clear: both;
+}
