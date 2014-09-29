@@ -1,4 +1,5 @@
 @import "compass";
+@import "html/setting";
 @import "html/template/setting";
 
 
@@ -22,19 +23,15 @@ $CENTRAL_COLUMN_MAX_WIDTH: $TEMPLATE_CONTAINER_MAX_WIDTH * 0.6;
     padding: 15px 30px;
     margin: 0 auto;
   }
-}
-
-
-.one-central-column-container:before,
-.one-central-column-container:after,
-.central-column:before,
-.central-column:after {
-  content: " ";
-  display: table;
-}
-
-
-.one-central-column-container:after,
-.central-column:after {
-  clear: both;
+  
+  
+  .row {
+    padding: ($FONT_SIZE / 7) 0;
+    line-height: 110%;
+  }
+  
+  
+  .empty-row {
+    padding: $FONT_SIZE 0;
+  }
 }

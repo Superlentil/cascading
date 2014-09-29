@@ -28,15 +28,20 @@
 }
 
 
-.layout-header-content {
+.layout-header-logo, .layout-header-signin {
   line-height: $LAYOUT_HEADER_HEIGHT;
+}
+
+.layout-header-signin {
+  min-width: 530px;
   
   .textfield {
-    width: 180px;
+    max-width: 180px;
     margin-right: 4px;
   }
   
-  .button {
+  .button-primary {
+    max-width: 80px;
     margin-right: 4px;
   }
 }

@@ -543,7 +543,7 @@ View.Article.Index.Main = Backbone.View.extend({
       if (this.readyToLoad && this.moreToLoad) {
         // prevent loading the same contents more than once
         clearTimeout(this.loadArticleTimeout);
-        this.loadArticleTimeout = setTimeout(this.loadArticles, 100);
+        this.loadArticleTimeout = setTimeout(this.loadArticles, 10);
       }
       lastBatch = cache.nextBatchToLoad - 1;
     }

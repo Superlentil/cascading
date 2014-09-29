@@ -1,22 +1,10 @@
 @import "compass";
 
 
-#user_new_container {
-  input, h1, h3, div {
-    width: 100%;
-    line-height: 120%;
-  }
-  
-  h3 {
-    padding-bottom: 3px;
-  }
-  
-  h1, div {
-    padding-bottom: 20px;
-  }
-  
+#user_new_container { 
   button {
     width: 100%;
+    min-width: 100px;
   }
   
   .button-wrapper {
