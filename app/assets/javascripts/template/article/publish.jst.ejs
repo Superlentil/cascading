@@ -3,11 +3,11 @@
     <h3>Choose a picture in the article as a cover picture:</h3>
     <% if (coverPictureId !== -1) { %>
       <p>Current cover picture:</p>
-      <img src="<%= coverPictureUrl %>" class="Article_Picture" data-picture-id="<%= coverPictureId %>" style="margin-bottom: 1em; border:0px none;" />
+      <img src="<%= coverPictureUrl %>" class="Article_Picture" data-picture-id="<%= coverPictureId %>" data-imported="<%= importedCoverPicture %>" style="margin-bottom: 1em; border:0px none;" />
     <% } %>
     <p>All pictures used by the article:</p>
     <% _.each(contentPictures, function(picture) { %>
-      <img src="<%= picture.url %>" class="Article_Picture" data-picture-id="<%= picture.id %>" style="margin-bottom: 1em; border:0px none;" />
+      <img src="<%= picture.url %>" class="Article_Picture" data-picture-id="<%= picture.id %>" data-imported="no" style="margin-bottom: 1em; border:0px none;" />
     <% }); %>
   </div>
   

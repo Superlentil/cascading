@@ -4,6 +4,7 @@ class CreateArticles < ActiveRecord::Migration
       t.string :cover_picture_url, default: ""
       t.integer :cover_picture_id, default: -1
       t.integer :cover_picture_height, default: 0
+      t.boolean :imported_cover_picture, default: false
       t.string :title, default: ""
       t.string :author, default: ""
       t.string :category_name, default: ""

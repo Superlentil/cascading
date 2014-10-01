@@ -186,8 +186,9 @@ View.Article.Edit = Backbone.View.extend({
       var type = paragraph.data("type");
 
       if (type === "picture") {
+        var uploadPictureInput = editor.children(".Upload_Picture");
         var img = paragraph.children("img");
-        if (img.length === 0) {
+        if (img.length === 0 && uploadPictureInput.val() !== "") {
           allUploaded = false;
         }
       }
@@ -220,7 +221,7 @@ View.Article.Edit = Backbone.View.extend({
           }
         });
       } else {
-        setTimeout(waitingForUpload, 500);
+        setTimeout(waitingForUpload, 200);
       }
     }
     

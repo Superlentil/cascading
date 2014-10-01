@@ -76,7 +76,7 @@ private
 
 
   def articleParams
-    params.require(:article).permit(:id, :cover_picture_id, :cover_picture_url, :cover_picture_height, :title, :author, :content, :category_name, :views, :like, :status, :user_id, :created_at, :updated_at)
+    params.require(:article).permit(:id, :cover_picture_id, :cover_picture_url, :cover_picture_height, :imported_cover_picture, :title, :author, :content, :category_name, :views, :like, :status, :user_id, :created_at, :updated_at)
   end
   
   
@@ -127,6 +127,7 @@ private
           if coverPicture.save
             inputParams[:cover_picture_id] = coverPicture.id
             inputParams[:cover_picture_url] = coverPicture.src.url(:thumb)
+            inputParams[:imported_cover_picture] = true
           end
         end
       end
@@ -134,6 +135,7 @@ private
       coverPicture = Picture.find(pictureIds.sample)
       inputParams[:cover_picture_id] = coverPicture.id
       inputParams[:cover_picture_url] = coverPicture.src.url(:thumb)
+      inputParams[:imported_cover_picture] = false
     end
   end
   

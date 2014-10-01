@@ -2,22 +2,25 @@
   <div id="popup_container" class="popup_box"></div>
     
   <div id="article_content_container">
-    <a href="#">All Article</a><br />
-    <br />
-    <img src="<%= article.get("cover_picture_url") %>" title="Cover Picture" /><br />
+    <a href="#">All Article</a><br>
+    <br>
     <a href="#/article/<%= article.get("id") %>/edit">edit</a>
-    <a href="#" class="Delete_Article" data-article-id="<%= article.get("id") %>">delete</a><br />
+    <a href="#" class="Delete_Article" data-article-id="<%= article.get("id") %>">delete</a><br>
 <% } else { %>
   <div id="article_content_container">
 <% } %>
   <h3><%= article.get("title") %></h3>
-  <strong>author: <%= article.get("author") %></strong><br />
-  <em>category: <%= article.get("category_name") %></em><br />
+  <strong>author: <%= article.get("author") %></strong><br>
+  <em>category: <%= article.get("category_name") %></em><br>
+  <% if (article.get("imported_cover_picture")) { %>
+    <img src="<%= article.get("cover_picture_url").replace("/thumb/", "/medium/") %>" title="Cover Picture">
+    <p>-----------------------------------------------------------------------</p>
+  <% } %>
   <%= contentJsonToHtml(article.get("content")) %>
 </div>
 
 
 <% if (!preview) { %>
-  <br /><br />
+  <br><br>
   <div id="article_comments_container"></div>
 <% } %>
