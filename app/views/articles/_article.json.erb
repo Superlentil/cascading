@@ -1,0 +1,12 @@
+{
+  <% unless @article.nil? %>
+    "id": <%= @article.id %>,
+    "title": "<%= raw(@article.title) %>",
+    "author": "<%= raw(@article.author) %>",
+    "category_name": "<%= raw(@article.category_name) %>",
+    "imported_cover_picture": <%= @article.imported_cover_picture %>,
+    "cover_picture_url": "<%= raw(@article.cover_picture_url) %>",
+    "content": <%= raw(@article.content.to_json) %>,
+    "created_at": <%= @article.created_at.to_i %>
+  <% end %>
+}

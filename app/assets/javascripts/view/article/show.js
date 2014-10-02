@@ -54,15 +54,14 @@ View.Article.Show = Backbone.View.extend({
   
   contentJsonToHtml: function(articleContent) {
     var contentObj = JSON.parse(articleContent);
-    var contentHtml = "<div>";
+    var contentHtml = "";
     _.each(contentObj, function(paragraph) {
       if (paragraph.type === "text") {
-        contentHtml += "<pre>" + paragraph.src + "</pre>";
+        contentHtml += "<pre class='article-show-text'>" + paragraph.src + "</pre>";
       } else if (paragraph.type === "picture") {
-        contentHtml += "<pre><img src='" + paragraph.src.url + "' class='Article_Picture' /></pre>";
+        contentHtml += "<pre class='article-show-picture'><img src='" + paragraph.src.url + "' class='Article_Picture' /></pre>";
       }
     });
-    contentHtml += "</div>";
     return contentHtml;
   },
   
@@ -78,7 +77,7 @@ View.Article.Show = Backbone.View.extend({
     var popupContainer = $("#popup_container");
     if (popupContainer.length > 0) {
       var picture = $(event.currentTarget);
-      var articleContainer = $("#article_content_container");
+      var articleContainer = $("#article-show-container");
       popupContainer.html("<img src='" + picture.attr("src").replace("/medium/", "/original/") + "' />");
       popupContainer.fadeIn("slow");
       articleContainer.css({"opacity": "0.3"});
@@ -94,7 +93,7 @@ View.Article.Show = Backbone.View.extend({
   
   remove: function() {
     $(".Delete_Article").off("click");
-    $("#article_content_container").off("click");
+    $("#article-show-container").off("click");
     
     var subview;
     while (this.allSubviews.length > 0) {

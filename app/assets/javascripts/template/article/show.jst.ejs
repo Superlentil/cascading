@@ -1,19 +1,22 @@
 <% if (!preview) { %>
   <div id="popup_container" class="popup_box"></div>
-    
-  <div id="article_content_container">
+  
+  <div>
     <a href="#">All Article</a><br>
-    <br>
     <a href="#/article/<%= article.get("id") %>/edit">edit</a>
     <a href="#" class="Delete_Article" data-article-id="<%= article.get("id") %>">delete</a><br>
-<% } else { %>
-  <div id="article_content_container">
+  </div>
 <% } %>
-  <h3><%= article.get("title") %></h3>
-  <strong>author: <%= article.get("author") %></strong><br>
-  <em>category: <%= article.get("category_name") %></em><br>
+
+<div id="article-show-container">
+  <h1 class="article-show-title"><%= article.get("title") %></h1>
+  <div class="row article-show-info">
+    <div class="left article-show-date"><%= (new Date(article.get("created_at") * 1000)).toLocaleDateString("zh-Hans-CN") %></div>
+    <div class="left article-show-author">author: <%= article.get("author") %></div>
+    <div class="right article-show-category">category: <%= article.get("category_name") %></div>
+  </div>
   <% if (article.get("imported_cover_picture")) { %>
-    <img src="<%= article.get("cover_picture_url").replace("/thumb/", "/medium/") %>" title="Cover Picture">
+    <pre class="article-show-picture"><img src="<%= article.get("cover_picture_url").replace("/thumb/", "/medium/") %>" title="Cover Picture"></pre>
     <p>-----------------------------------------------------------------------</p>
   <% } %>
   <%= contentJsonToHtml(article.get("content")) %>

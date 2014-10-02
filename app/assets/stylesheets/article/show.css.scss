@@ -1,0 +1,45 @@
+#article-show-container {
+  width: 100%;
+  max-width: 600px;
+  
+  font-size: 16px;
+  line-height: 200%;
+  
+  margin: 8px auto 20px auto;
+  
+  
+  img {
+    width: 100%;
+  }
+  
+  
+  .article-show-title {
+    text-align: center;
+  }
+  
+  
+  .article-show-info {
+    padding-bottom: 30px;
+    font-size: 12px;
+    font-style: italic;
+  }
+  
+  .article-show-date, .article-show-author {
+    padding-right: 20px;
+  }
+  
+  
+  .article-show-text, .article-show-picture {
+    width: 100%;
+    line-height: 200%;
+  }
+  
+  .article-show-text {
+    text-align: left;
+    font-family: sans-serif;
+  }
+  
+  .article-show-picture {
+    text-align: center;
+  }
+}
