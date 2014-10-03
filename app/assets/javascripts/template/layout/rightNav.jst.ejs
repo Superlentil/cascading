@@ -1,13 +1,14 @@
 <br><br><br><br>
 
 <% if ($.cookie("user_id")) { %>
-  <div id="layout-rightNav-welcome" class="row">
-    <div class="col-12">
+  <div id="layout-rightNav-user-menu" class="row">
+    <div class="row">
       Welcome <%= $.cookie("user_nickname") %>!
     </div>
-  </div>
-  <div class="row">
-    <div class="col-12">
+    <div class="row">
+      <a href="#/user/<%= $.cookie("user_id") %>">My Account</a>
+    </div>
+    <div class="row">
       <a id="layout-rightNav-signOut" href="#">Sign Out</a>
     </div>
   </div>
