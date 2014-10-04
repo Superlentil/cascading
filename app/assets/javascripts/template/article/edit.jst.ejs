@@ -2,7 +2,13 @@
 
 <div id="article_edit_area">
   Title: <input type="text" id="article_title" value="TITLE" /><br />
-  Category: <input type="text" id="article_category" value="CATEGORY" /><br />
+  Category: <select id="article_category_tmp">
+    <option selected="selected" value="-1">choose a category</option>
+    <% _.each(allCategories, function(category) { %>
+      <option value="<%= category.get("id") %>"><%= category.get("name") %></option>
+    <% }); %>
+  </select>
+  <br>
   Content: 
   <div id="article_content"></div>
   <div>

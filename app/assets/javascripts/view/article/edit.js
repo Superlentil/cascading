@@ -16,7 +16,7 @@ View.Article.Edit = Backbone.View.extend({
   render: function(article) {
     var that = this;
 
-    that.$el.html(that.template());
+    that.$el.html(that.template({allCategories: GlobalVariable.Article.AllCategories.models}));
     
     article = article || new Model.Article.Article();
     $("#article_title").val(article.get("title"));
