@@ -1,8 +1,8 @@
 <div id="popup_container" class="popup_box"></div>
 
-<div id="article_edit_area">
-  Title: <input type="text" id="article_title" value="TITLE" /><br />
-  Category: <select id="article_category_tmp">
+<div id="article-edit-container">
+  Title: <input type="text" id="article-edit-title" value="TITLE" /><br />
+  Category: <select id="article-edit-category">
     <option selected="selected" value="-1">choose a category</option>
     <% _.each(allCategories, function(category) { %>
       <option value="<%= category.get("id") %>"><%= category.get("name") %></option>
@@ -10,13 +10,13 @@
   </select>
   <br>
   Content: 
-  <div id="article_content"></div>
+  <div id="article-edit-content"></div>
   <div>
-    <input type="button" id="article_add_text" value="add text" />
-    <input type="button" id="article_add_picture" value="add picture" />
+    <input type="button" id="article-edit-add-text" value="add text" />
+    <input type="button" id="article-edit-add-picture" value="add picture" />
   </div>
   <br /><br />
-  <button id="article_save">Save</button>
-  <button id="article_save_and_preview">Save and Preview</button>
-  <button id="article_save_and_publish">Save and Publish</button>
+  <button id="article-edit-save">Save</button>
+  <button id="article-edit-save-preview">Save and Preview</button>
+  <button id="article-edit-save-publish">Save and Publish</button>
 </div>

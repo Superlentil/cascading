@@ -1,11 +1,11 @@
 {
   <% unless @article.nil? %>
     "id": <%= @article.id %>,
-    "title": "<%= raw(@article.title) %>",
-    "author": "<%= raw(@article.author) %>",
+    "title": <%= raw(@article.title.to_json) %>,
+    "author": <%= raw(@article.author.to_json) %>,
     "user_id": <%= @article.user_id %>,
-    "category_name": "<%= raw(@article.category_name) %>",
-    "category_id": 1,
+    "category_name": <%= raw(@article.category_name.to_json) %>,
+    "category_id": <%= @article.category_id %>,
     "imported_cover_picture": <%= @article.imported_cover_picture %>,
     "cover_picture_url": <%= raw(@article.cover_picture_url.to_json) %>,
     "content": <%= raw(@article.content.to_json) %>,

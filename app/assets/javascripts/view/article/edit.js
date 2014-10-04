@@ -19,24 +19,25 @@ View.Article.Edit = Backbone.View.extend({
     that.$el.html(that.template({allCategories: GlobalVariable.Article.AllCategories.models}));
     
     article = article || new Model.Article.Article();
-    $("#article_title").val(article.get("title"));
+    $("#article-edit-title").val(article.get("title"));
     $("#article_author").val(article.get("author"));
-    $("#article_category").val(article.get("category_name"));
+    var articleCategoryId = article.get("category_id") || -1;
+    $("#article-edit-category").val(articleCategoryId);
     var articleContent = JSON.parse(article.get("content"));
-    $("#article_content").empty();
+    $("#article-edit-content").empty();
     _.each(articleContent, function(articleParagraph) {
       if (articleParagraph.src) {
         if (articleParagraph.type === "text") {
           var textEditor = new View.Article.Editor.TextEditor();
           that.allSubviews.push(textEditor);   // prevent view memory leak
-          $("#article_content").append(textEditor.render(articleParagraph.src).el);
+          $("#article-edit-content").append(textEditor.render(articleParagraph.src).el);
         } else if (articleParagraph.type === "picture") {
           var pictureEditor = new View.Article.Editor.PictureEditor({
             parentView: that,
             articleId: article.get("id")
           });
           that.allSubviews.push(pictureEditor);   // prevent view memory leak
-          $("#article_content").append(pictureEditor.render(articleParagraph.src).el);
+          $("#article-edit-content").append(pictureEditor.render(articleParagraph.src).el);
         }
       }
     });
@@ -80,12 +81,12 @@ View.Article.Edit = Backbone.View.extend({
   
   
   events: {
-    "click #article_add_text": "addText",
-    "click #article_add_picture": "addPicture",
+    "click #article-edit-add-text": "addText",
+    "click #article-edit-add-picture": "addPicture",
  
-    "click #article_save": "save",
-    "click #article_save_and_preview": "saveAndPreview",
-    "click #article_save_and_publish": "saveAndPublish"
+    "click #article-edit-save": "save",
+    "click #article-edit-save-preview": "saveAndPreview",
+    "click #article-edit-save-publish": "saveAndPublish"
   },
   
   
@@ -96,7 +97,7 @@ View.Article.Edit = Backbone.View.extend({
     this.allSubviews.push(textEditor);   // prevent view memory leak
     
     $(function() {
-      $("#article_content").append(textEditor.render().el);
+      $("#article-edit-content").append(textEditor.render().el);
     });
   },
   
@@ -111,7 +112,7 @@ View.Article.Edit = Backbone.View.extend({
     this.allSubviews.push(pictureEditor);   // prevent view memory leak
     
     $(function() {
-      $("#article_content").append(pictureEditor.render().el);
+      $("#article-edit-content").append(pictureEditor.render().el);
     });
   },
   
@@ -148,9 +149,12 @@ View.Article.Edit = Backbone.View.extend({
       }
     });
     
+    var categorySelector = $("#article-edit-category");
+    
     this.model.set({
-      "title": $("#article_title").val(),
-      "category_name": $("#article_category").val(),
+      "title": $("#article-edit-title").val(),
+      "category_id": parseInt(categorySelector.val()),
+      "category_name": categorySelector.children(":selected").text(),
       "content": JSON.stringify(articleContent),
       "status": GlobalConstant.ArticleStatus.DRAFT
     });
@@ -235,7 +239,7 @@ View.Article.Edit = Backbone.View.extend({
 
     viewShow.render({id: savedArticle.get("id"), preview: true});
     var popupContainer = $("#popup_container");
-    var editArea = $("#article_edit_area");
+    var editArea = $("#article-edit-container");
     popupContainer.fadeIn("slow");
     editArea.css({"opacity": "0.3"});
     
@@ -266,7 +270,7 @@ View.Article.Edit = Backbone.View.extend({
   
   
   remove: function() {
-    $("#article_edit_area").off("click");
+    $("#article-edit-container").off("click");
     
     var subview;
     while (this.allSubviews.length > 0) {
