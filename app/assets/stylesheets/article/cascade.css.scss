@@ -1,0 +1,32 @@
+#article-cascade-option-container {
+  padding-bottom: 20px;
+  
+  .col-6 {
+    padding: 2px 6px;
+  }
+}
+
+
+#article-cascade-content-container {
+  position: relative;
+  
+  margin: 0 auto;
+}
+
+
+.article-cascade-cover {
+  position: absolute;
+
+  background-color: #ebfffd;
+}
+
+
+.article-cascade-cover-img-link {
+  text-decoration: none;
+}
+
+.article-cascade-cover-img-link,
+.article-cascade-cover-img {
+  margin: 0 auto;
+  display: block;
+}

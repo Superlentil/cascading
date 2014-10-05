@@ -1,5 +1,5 @@
-// define the view "Index.Main"
-View.Article.Index.Main = Backbone.View.extend({
+// define the Article Cascade main API view "Cascade.Main"
+View.Article.Cascade.Main = Backbone.View.extend({
   initialize: function() {
     _.bindAll(this, "handleScroll");
     _.bindAll(this, "loadArticles");
@@ -64,11 +64,11 @@ View.Article.Index.Main = Backbone.View.extend({
   },
   
   
-  el: "#layout-content",
+  el: "#article-cascade-container",
   
   
-  mainTemplate: JST["template/article/index/main"],
-  coverTemplate: JST["template/article/index/cover"],
+  mainTemplate: JST["template/article/cascade/main"],
+  coverTemplate: JST["template/article/cascade/cover"],
   
   
   getColumnCount: function(maxWidth, columnWidth, gapSize, moreCompact) {
@@ -158,7 +158,7 @@ View.Article.Index.Main = Backbone.View.extend({
       oldCascadeContainer.remove();
     }
     
-    var newCascadeContainer = $("<div id='article-index-cascade-container' style='width: " + this.cache.cascadeWidth + "px;'></div>");
+    var newCascadeContainer = $("<div id='article-cascade-content-container' style='width: " + this.cache.cascadeWidth + "px;'></div>");
     this.$el.append(newCascadeContainer);
     this.cascadeContainer = newCascadeContainer;
     
@@ -312,8 +312,8 @@ View.Article.Index.Main = Backbone.View.extend({
   
   
   events: {
-    "click #article-index-cascade-compact-mode": "changeCoverDisplayMode",
-    "click #article-index-cascade-normal-mode": "changeCoverDisplayMode"
+    "click #article-cascade-compact-mode": "changeCoverDisplayMode",
+    "click #article-cascade-normal-mode": "changeCoverDisplayMode"
   },
   
   

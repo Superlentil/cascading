@@ -13,7 +13,7 @@ Router = Backbone.Router.extend({
     "user/:id/edit": "editUser",
     "user/:id/articles": "userArticles",
     
-    "*others": "allArticles"
+    "*others": "invalidUrl"
   },
   
   
@@ -43,7 +43,7 @@ Router = Backbone.Router.extend({
 
   
   articles: function() {
-    var viewIndex = new View.Article.Index.Main();
+    var viewIndex = new View.Article.Index();
     viewIndex.render();
     return viewIndex;
   },
@@ -59,7 +59,7 @@ Router = Backbone.Router.extend({
       return viewEdit;
     } else {
       // TODO: need a better action for too frequent "new" page load.
-      this.loadUrl('');
+      this.loadUrl("");
     }
   },
   
@@ -106,5 +106,10 @@ Router = Backbone.Router.extend({
   
   userArticles: function() {
     
+  },
+  
+  
+  invalidUrl: function() {
+    this.loadUrl("");   // jump to the main page for invalid URLs
   }
 });

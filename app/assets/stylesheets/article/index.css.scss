@@ -1,32 +1,5 @@
-#article-index-cascade-option {
-  padding-bottom: 20px;
-  
-  .col-6 {
-    padding: 2px 6px;
-  }
-}
-
-
-#article-index-cascade-container {
-  position: relative;
-  
-  margin: 0 auto;
-}
-
-
-.article-index-cover {
-  position: absolute;
-
-  background-color: #ebfffd;
-}
-
-
-.article-index-cover-img-link {
-  text-decoration: none;
-}
-
-.article-index-cover-img-link,
-.article-index-cover-img {
-  margin: 0 auto;
-  display: block;
+#article-cascade-container {
+  margin: 0;
+  padding: 0;
+  width: 100%;
 }
