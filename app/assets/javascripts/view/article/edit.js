@@ -19,6 +19,9 @@ View.Article.Edit = Backbone.View.extend({
     that.$el.html(that.template({allCategories: GlobalVariable.Article.AllCategories.models}));
     
     article = article || new Model.Article.Article();
+    article.unset("created_at", { silent: true });
+    article.unset("updated_at", { silent: true });
+    
     $("#article-edit-title").val(article.get("title"));
     $("#article_author").val(article.get("author"));
     var articleCategoryId = article.get("category_id") || -1;

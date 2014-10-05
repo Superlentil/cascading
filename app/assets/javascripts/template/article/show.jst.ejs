@@ -11,7 +11,7 @@
 <div id="article-show-container">
   <h1 class="article-show-title"><%= article.get("title") %></h1>
   <div class="row article-show-info">
-    <div class="left article-show-date"><%= (new Date(article.get("created_at") * 1000)).toLocaleDateString("zh-Hans-CN") %></div>
+    <div class="left article-show-date"><%= GlobalFormater.LocalDate.Chinese(article.get("created_at") * 1000) %></div>
     <div class="left article-show-author">作者：<a href="#/user/<%= article.get("user_id") %>"><%= article.get("author") %></a></div>
     <div class="right article-show-category">类别：<a href="#/category/<%= article.get("category_id") %>"><%= article.get("category_name") %></a></div>
   </div>

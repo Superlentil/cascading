@@ -350,7 +350,11 @@ View.Article.Index.Main = Backbone.View.extend({
       cache.nextBatchToLoad = reusableCacheSize;
       cache.batchPosition = cache.batchPosition.slice(0, reusableCacheSize);
       cache.batchContainer = cache.batchContainer.slice(0, reusableCacheSize);
-      cache.articleParams = cache.articleParams.slice(0, reusableCacheSize * countPerBatch);
+      var articleParamsCount = reusableCacheSize * countPerBatch;
+      if (articleParamsCount > cache.articleParams.length) {
+        articleParamsCount = cache.articleParams.length;
+      }
+      cache.articleParams = cache.articleParams.slice(0, articleParamsCount);
       
       for (var batchIndex = 0; batchIndex < reusableCacheSize; ++batchIndex) {
         var heightOffset = cache.cascadeHeight;
@@ -359,7 +363,10 @@ View.Article.Index.Main = Backbone.View.extend({
         
         var thisBatchStart = batchIndex * countPerBatch;
         var nextBatchStart = (batchIndex + 1) * countPerBatch;
-                  
+        if (nextBatchStart > articleParamsCount) {
+          nextBatchStart = articleParamsCount;
+        }
+        
         for (var index = thisBatchStart; index < nextBatchStart; ++index) {           
           var params = cache.articleParams[index];
           params.width = cache.coverWidth;
