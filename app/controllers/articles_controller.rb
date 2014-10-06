@@ -9,10 +9,27 @@ class ArticlesController < ApplicationController
     batch = params[:batch].to_i
     articlesPerBatch = params[:articles_per_batch].to_i
     
-    @articles = Article.where(status: GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED)
-      .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, author, user_id, category_name, category_id")
-      .limit(articlesPerBatch).offset(batch * articlesPerBatch).order(id: :desc)
-    respond_with @articles
+    queryArticlesByBatch(batch, articlesPerBatch, {})
+    return
+  end
+  
+  
+  def inCategory
+    batch = params[:batch].to_i
+    articlesPerBatch = params[:articles_per_batch].to_i
+    queryConditions = {category_id: params[:category_id].to_i}
+    
+    queryArticlesByBatch(batch, articlesPerBatch, queryConditions)
+    return
+  end
+  
+  
+  def byUser
+    batch = params[:batch].to_i
+    articlesPerBatch = params[:articles_per_batch].to_i
+    queryConditions = {user_id: params[:user_id].to_i}
+    
+    queryArticlesByBatch(batch, articlesPerBatch, queryConditions)
     return
   end
   
@@ -77,6 +94,15 @@ private
 
   def articleParams
     params.require(:article).permit(:id, :cover_picture_id, :cover_picture_url, :cover_picture_height, :imported_cover_picture, :title, :author, :content, :category_name, :category_id, :views, :like, :status, :user_id, :created_at, :updated_at)
+  end
+  
+  
+  def queryArticlesByBatch(batch, articlesPerBatch, queryConditions)
+    queryConditions[:status] = GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED;
+    @articles = Article.where(queryConditions)
+      .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, author, user_id, category_name, category_id")
+      .limit(articlesPerBatch).offset(batch * articlesPerBatch).order(id: :desc)
+    respond_with @articles
   end
   
   

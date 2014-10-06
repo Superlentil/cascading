@@ -5,7 +5,7 @@
 
   <% _.each(categories, function(category) { %>
     <div class="col-12 layout-leftNav-row">
-      <a class="layout-leftNav-closeNav" href="#"><%= category.get("name") %></a>
+      <a class="layout-leftNav-closeNav" href="#/articles/category/<%= category.get("id") %>"><%= category.get("name") %></a>
     </div>
   <% }); %>
 </div>

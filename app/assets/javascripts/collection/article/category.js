@@ -1,4 +1,4 @@
-Collection.Article.AllCategory = Backbone.Collection.extend({
+Collection.Article.Category = Backbone.Collection.extend({
   model: Model.Article.Category,
   
   

@@ -15,7 +15,7 @@ View.Layout.LeftNav = Backbone.View.extend({
   render: function() {
     var that = this;
     
-    var allCategories = new Collection.Article.AllCategory();
+    var allCategories = new Collection.Article.Category();
     allCategories.fetch({
       success: function(fetchedCategories) {
         that.$el.html(that.template({categories: fetchedCategories.models}));

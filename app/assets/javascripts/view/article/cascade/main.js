@@ -1,9 +1,11 @@
 // define the Article Cascade main API view "Cascade.Main"
 View.Article.Cascade.Main = Backbone.View.extend({
-  initialize: function() {
+  initialize: function(options) {
     _.bindAll(this, "handleScroll");
     _.bindAll(this, "loadArticles");
 
+    this.articleFetchFunction = options.articleFetchFunction;
+    
     this.readyToLoad = true;
     this.moreToLoad = true;    
     this.readyForWidthChange = false;
@@ -251,11 +253,10 @@ View.Article.Cascade.Main = Backbone.View.extend({
       var that = this;
       var cache = this.cache;
 
-      var articles = new Collection.Article.Article();
       var batchToLoad = cache.nextBatchToLoad;
       var countPerBatch = GlobalConstant.Cascade.ARTICLE_COUNT_PER_BATCH;
       
-      articles.fetchBatch(batchToLoad, countPerBatch, {
+      this.articleFetchFunction(batchToLoad, countPerBatch, {
         success: function(fetchedResults) {
           fetchedArticles = fetchedResults.models;
           

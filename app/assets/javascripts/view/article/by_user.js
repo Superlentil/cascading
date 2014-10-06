@@ -1,9 +1,16 @@
-// define the view Index
-View.Article.Index = Backbone.View.extend({
+// define the view ByUser
+View.Article.ByUser = Backbone.View.extend({
+  initialize: function(options) {
+    _.bindAll(this, "articleFetchFunction");
+    
+    this.userId = options.userId;
+  },
+  
+  
   el: "#layout-content",
   
   
-  template: JST["template/article/index"],
+  template: JST["template/article/by_user"],
   
   
   render: function() {
@@ -17,8 +24,8 @@ View.Article.Index = Backbone.View.extend({
   
   
   articleFetchFunction: function(batchToLoad, countPerBatch, options) {
-    var articles = new Collection.Article.Article();
-    articles.fetchBatch(batchToLoad, countPerBatch, options);
+    var articles = new Collection.Article.ArticleByUser();
+    articles.fetchBatch(batchToLoad, countPerBatch, this.userId, options);
   },
 
   

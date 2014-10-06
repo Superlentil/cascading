@@ -1,9 +1,16 @@
-// define the view Index
-View.Article.Index = Backbone.View.extend({
+// define the view InCategory
+View.Article.InCategory = Backbone.View.extend({
+  initialize: function(options) {
+    _.bindAll(this, "articleFetchFunction");
+    
+    this.categoryId = options.categoryId;
+  },
+  
+  
   el: "#layout-content",
   
   
-  template: JST["template/article/index"],
+  template: JST["template/article/in_category"],
   
   
   render: function() {
@@ -17,8 +24,8 @@ View.Article.Index = Backbone.View.extend({
   
   
   articleFetchFunction: function(batchToLoad, countPerBatch, options) {
-    var articles = new Collection.Article.Article();
-    articles.fetchBatch(batchToLoad, countPerBatch, options);
+    var articles = new Collection.Article.ArticleInCategory();
+    articles.fetchBatch(batchToLoad, countPerBatch, this.categoryId, options);
   },
 
   

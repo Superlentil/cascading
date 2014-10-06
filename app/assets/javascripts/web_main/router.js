@@ -3,6 +3,8 @@ Router = Backbone.Router.extend({
     "forbidden": "forbiddenAccess",
     
     "": "articles",
+    "articles/category/:category_id": "articlesInCategory",
+    "articles/user/:user_id": "articlesByUser",
     "articles/new": "newArticle",
     "article/:id": "showArticle",
     "article/:id/edit": "editArticle",
@@ -46,6 +48,20 @@ Router = Backbone.Router.extend({
     var viewIndex = new View.Article.Index();
     viewIndex.render();
     return viewIndex;
+  },
+  
+  
+  articlesInCategory: function(categoryId) {
+    var viewInCategory = new View.Article.InCategory({categoryId: categoryId});
+    viewInCategory.render();
+    return viewInCategory;
+  },
+  
+  
+  articlesByUser: function(userId) {
+    var viewByUser = new View.Article.ByUser({userId: userId});
+    viewByUser.render();
+    return viewByUser;
   },
   
   
