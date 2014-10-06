@@ -6,7 +6,7 @@ namespace :data_generator do
   # It's great for testing cascading endless display. 
   #
   # Example Command: rake data_generator:article[10000,true]
-  task :article, [:amount, :useSamplePictures] => [:environment] do |task, args|
+  task :article, [:amount, :useSamplePictures, :minCountOfUser, :minCountOfCategory] => [:environment] do |task, args|
     amount = args.amount
     if amount.nil?
       amount = 0
@@ -21,6 +21,21 @@ namespace :data_generator do
       useSamplePictures = useSamplePictures == "true" ? true : false
     end
     
+    minCountOfUser = args.minCountOfUser
+    if minCountOfUser.nil?
+      minCountOfUser = 10
+    else
+      minCountOfUser = minCountOfUser.to_i
+    end
+    
+    minCountOfCategory = args.minCountOfCategory
+    if minCountOfCategory.nil?
+      minCountOfCategory = 10
+    else
+      minCountOfCategory = minCountOfCategory.to_i
+    end
+    
+    
     if useSamplePictures
       allPictureNames = Dir.entries(Rails.root.join("resource", "pictures"))
       
@@ -33,9 +48,38 @@ namespace :data_generator do
       end
     end
     
+    
+    userCount = User.count
+    if minCountOfUser > User.count
+      for count in userCount..(minCountOfUser-1)
+        User.create({
+          email: "example_user_" + count.to_s + "@example.com",
+          password: "example_user_" + count.to_s + "_password",
+          nickname: "example_user_" + count.to_s
+        })
+      end
+    end
+    
+    
+    categoryCount = Category.count
+    if minCountOfCategory > categoryCount
+      for count in categoryCount..(minCountOfCategory-1)
+        Category.create({
+          name: "example_category_" + count.to_s,
+          group: GlobalConstant::ArticleCategoryType::PREDEFINED,
+          description: "example_category_" + count.to_s + "_description"
+        })
+      end
+    end
+
+    
     if amount > 0
+      users = User.all.to_a
+      categories = Category.all.to_a
       pictures = Picture.all.to_a
-      lastIndex = pictures.length - 1
+      userLastIndex = users.length - 1
+      categoryLastIndex = categories.length - 1
+      pictureLastIndex = pictures.length - 1
       randomNumberSeed = Time.now.getutc.to_i
       randInt = Random.new(randomNumberSeed)
       
@@ -47,7 +91,11 @@ namespace :data_generator do
       end
       
       for index in 1..amount
-        randPicIndex = randInt.rand(0..lastIndex)
+        randUserIndex = randInt.rand(0..userLastIndex)
+        randCategoryIndex = randInt.rand(0..categoryLastIndex)
+        randPicIndex = randInt.rand(0..pictureLastIndex)
+        user = users[randUserIndex]
+        category = categories[randCategoryIndex]
         pic = pictures[randPicIndex]
         picPath = pic.src.path(:thumb)
         geometry = Paperclip::Geometry.from_file(picPath)
@@ -55,8 +103,10 @@ namespace :data_generator do
           cover_picture_id: pic.id, 
           cover_picture_height: picHeight[randPicIndex],
           title: "This is article " + index.to_s + "!",
-          author: "Author_" + index.to_s,
-          category_name: "Category_" + index.to_s,
+          author: user.nickname,
+          user_id: user.id,
+          category_name: category.name,
+          category_id: category.id,
           status: GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED
         })
       end
