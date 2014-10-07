@@ -100,14 +100,20 @@ namespace :data_generator do
       articleId = article.id
       articleContent = generateArticleContent(randInt, allPicturePaths, articleId)
       
-      articlePictures = Picture.where(article_id: articleId).to_a
-      articlePicturesLastIndex = articlePictures.length - 1
       importCoverPicture = randInt.rand(0..1)
+      if importCoverPicture == 0
+        articlePictures = Picture.where(article_id: articleId).to_a
+        articlePicturesLastIndex = articlePictures.length - 1
+        if articlePicturesLastIndex < 0
+          importCoverPicture = 1
+        end
+      end
       
-      if importCoverPicture == 1 || articlePicturesLastIndex < 0
+      if importCoverPicture == 1
         file = File.open(allPicturePaths[randInt.rand(0..allPicturePathsLastIndex)])
         coverPicture = Picture.create({src: file, article_id: articleId})
         file.close
+        article.imported_cover_picture = true
       else
         coverPicture = articlePictures[randInt.rand(0..articlePicturesLastIndex)]
       end
@@ -126,7 +132,7 @@ namespace :data_generator do
   def generateText(randomIntegerGenerator)
     chars = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k",
          "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w",
-         "x", "y", "z", ",", ".", "!", "?", " ", " ", " ", " ", " "]
+         "x", "y", "z", " ", " ", " ", " ", " ", " "]
     
     charsLastIndex = chars.length - 1
     textLength = randomIntegerGenerator.rand(1..1000)
@@ -139,7 +145,7 @@ namespace :data_generator do
   
   
   def generateArticleContent(randomIntegerGenerator, allPicturePaths, articleId)
-    contentTypes = [0, 1, 2, 1, 2]   # 0 means done, 1 means text, 2 means picture
+    contentTypes = [0, 1, 2]   # 0 means done, 1 means text, 2 means picture
     
     contentTypesLastIndex = contentTypes.length - 1
     allPicturePathsLastIndex = allPicturePaths.length - 1
