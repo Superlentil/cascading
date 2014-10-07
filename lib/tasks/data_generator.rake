@@ -67,7 +67,7 @@ namespace :data_generator do
     # get sample categories ready
     categoryCount = Category.count
     if minCountOfCategory > categoryCount
-      for count in categoryCount..(minCountOfCategory-1)
+      for count in (categoryCount + 1)..minCountOfCategory
         Category.create({
           name: "example_category_" + count.to_s,
           group: GlobalConstant::ArticleCategoryType::PREDEFINED,
@@ -145,7 +145,7 @@ namespace :data_generator do
   
   
   def generateArticleContent(randomIntegerGenerator, allPicturePaths, articleId)
-    contentTypes = [0, 1, 2]   # 0 means done, 1 means text, 2 means picture
+    contentTypes = [0, 1, 2]   # "0" means "done". "1" means "text". "2" means "picture".
     
     contentTypesLastIndex = contentTypes.length - 1
     allPicturePathsLastIndex = allPicturePaths.length - 1
