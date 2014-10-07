@@ -5,20 +5,14 @@ namespace :data_generator do
   # Use this task to add tons of articles into the database.
   # It's great for testing cascading endless display. 
   #
-  # Example Command: rake data_generator:article[10000,true]
-  task :article, [:amount, :useSamplePictures, :minCountOfUser, :minCountOfCategory] => [:environment] do |task, args|
+  # Example Command: rake data_generator:article[10000,15,20]
+  task :article, [:amount, :minCountOfUser, :minCountOfCategory] => [:environment] do |task, args|
+    # initialize input parameters
     amount = args.amount
     if amount.nil?
-      amount = 0
+      amount = 100
     else
       amount = amount.to_i
-    end
-    
-    useSamplePictures = args.useSamplePictures
-    if useSamplePictures.nil?
-      useSamplePictures = false
-    else
-      useSamplePictures = useSamplePictures == "true" ? true : false
     end
     
     minCountOfUser = args.minCountOfUser
@@ -36,31 +30,41 @@ namespace :data_generator do
     end
     
     
-    if useSamplePictures
-      allPictureNames = Dir.entries(Rails.root.join("resource", "pictures"))
-      
-      allPictureNames.each do |picName|
-        if picName != "." && picName != ".."
-          file = File.open(Rails.root.join("resource", "pictures", picName))
-          Picture.create({src: file})
-          file.close
-        end
+    # initialize a random number generator
+    randomNumberSeed = Time.now.getutc.to_i
+    randInt = Random.new(randomNumberSeed)
+    
+    
+    # get all sample pictures
+    allPictureNames = Dir.entries(Rails.root.join("resource", "pictures"))
+    allPicturePaths = []
+    
+    allPictureNames.each do |picName|
+      if picName != "." && picName != ".."
+        allPicturePaths.push(Rails.root.join("resource", "pictures", picName))
       end
     end
     
+    allPicturePathsLastIndex = allPicturePaths.length - 1
     
+    
+    # get sample users ready
     userCount = User.count
     if minCountOfUser > User.count
-      for count in userCount..(minCountOfUser-1)
+      for count in (userCount + 1)..minCountOfUser
+        file = File.open(allPicturePaths[randInt.rand(0..allPicturePathsLastIndex)])
         User.create({
           email: "example_user_" + count.to_s + "@example.com",
           password: "example_user_" + count.to_s + "_password",
-          nickname: "example_user_" + count.to_s
+          nickname: "example_user_" + count.to_s,
+          avatar: file
         })
+        file.close
       end
     end
     
     
+    # get sample categories ready
     categoryCount = Category.count
     if minCountOfCategory > categoryCount
       for count in categoryCount..(minCountOfCategory-1)
@@ -73,45 +77,93 @@ namespace :data_generator do
     end
 
     
-    if amount > 0
-      users = User.all.to_a
-      categories = Category.all.to_a
-      pictures = Picture.all.to_a
-      userLastIndex = users.length - 1
-      categoryLastIndex = categories.length - 1
-      pictureLastIndex = pictures.length - 1
-      randomNumberSeed = Time.now.getutc.to_i
-      randInt = Random.new(randomNumberSeed)
+    # generate articles
+    users = User.all.to_a
+    categories = Category.all.to_a
+
+    usersLastIndex = users.length - 1
+    categoriesLastIndex = categories.length - 1
+    
+    for index in 1..amount
+      randUserIndex = randInt.rand(0..usersLastIndex)
+      randCategoryIndex = randInt.rand(0..categoriesLastIndex)
+      randUser = users[randUserIndex]
+      randCategory = categories[randCategoryIndex]
       
-      picHeight = []
-      pictures.each do |pic|
-        picPath = pic.src.path(:thumb)
-        geometry = Paperclip::Geometry.from_file(picPath)
-        picHeight.push(geometry.height.to_i)
+      article = Article.create({title: "This is article " + index.to_s + "!",
+        author: randUser.nickname,
+        user_id: randUser.id,
+        category_name: randCategory.name,
+        category_id: randCategory.id,
+      })
+      
+      articleId = article.id
+      articleContent = generateArticleContent(randInt, allPicturePaths, articleId)
+      
+      articlePictures = Picture.where(article_id: articleId).to_a
+      articlePicturesLastIndex = articlePictures.length - 1
+      importCoverPicture = randInt.rand(0..1)
+      
+      if importCoverPicture == 1 || articlePicturesLastIndex < 0
+        file = File.open(allPicturePaths[randInt.rand(0..allPicturePathsLastIndex)])
+        coverPicture = Picture.create({src: file, article_id: articleId})
+        file.close
+      else
+        coverPicture = articlePictures[randInt.rand(0..articlePicturesLastIndex)]
       end
       
-      for index in 1..amount
-        randUserIndex = randInt.rand(0..userLastIndex)
-        randCategoryIndex = randInt.rand(0..categoryLastIndex)
-        randPicIndex = randInt.rand(0..pictureLastIndex)
-        user = users[randUserIndex]
-        category = categories[randCategoryIndex]
-        pic = pictures[randPicIndex]
-        picPath = pic.src.path(:thumb)
-        geometry = Paperclip::Geometry.from_file(picPath)
-        Article.create({cover_picture_url: pic.src.url(:thumb), 
-          cover_picture_id: pic.id, 
-          cover_picture_height: picHeight[randPicIndex],
-          title: "This is article " + index.to_s + "!",
-          author: user.nickname,
-          user_id: user.id,
-          category_name: category.name,
-          category_id: category.id,
-          status: GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED
-        })
+      article.cover_picture_url = coverPicture.src.url(:thumb)
+      article.cover_picture_id = coverPicture.id
+      article.cover_picture_height = Paperclip::Geometry.from_file(coverPicture.src.path(:thumb)).height.to_i
+      article.status = GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED
+      article.content = articleContent
+      
+      article.save
+    end
+  end
+  
+  
+  def generateText(randomIntegerGenerator)
+    chars = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k",
+         "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w",
+         "x", "y", "z", ",", ".", "!", "?", " ", " ", " ", " ", " "]
+    
+    charsLastIndex = chars.length - 1
+    textLength = randomIntegerGenerator.rand(1..1000)
+    text = ""
+    (1..textLength).each do
+      text += chars[randomIntegerGenerator.rand(0..charsLastIndex)]
+    end
+    return text
+  end
+  
+  
+  def generateArticleContent(randomIntegerGenerator, allPicturePaths, articleId)
+    contentTypes = [0, 1, 2, 1, 2]   # 0 means done, 1 means text, 2 means picture
+    
+    contentTypesLastIndex = contentTypes.length - 1
+    allPicturePathsLastIndex = allPicturePaths.length - 1
+    articleContent = "[";
+    
+    nextContentType = contentTypes[randomIntegerGenerator.rand(0..contentTypesLastIndex)]
+    while nextContentType != 0
+      if nextContentType == 1
+        articleContent += "{\"type\":\"text\",\"src\":\"#{generateText(randomIntegerGenerator)}\"},"
+      elsif nextContentType == 2
+        file = File.open(allPicturePaths[randomIntegerGenerator.rand(0..allPicturePathsLastIndex)])
+        pic = Picture.create({src: file, article_id: articleId})
+        file.close
+        articleContent += "{\"type\":\"picture\",\"src\":{\"id\":#{pic.id},\"url\":\"#{pic.src.url(:medium)}\"}},"
       end
+      nextContentType = contentTypes[randomIntegerGenerator.rand(0..contentTypesLastIndex)]
     end
     
+    if articleContent[articleContent.length - 1] == ","
+      articleContent[articleContent.length - 1] = "]"
+    else
+      articleContent += "]"
+    end
+    
+    return articleContent
   end
-
 end
