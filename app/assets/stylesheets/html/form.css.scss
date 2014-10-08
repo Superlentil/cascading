@@ -6,7 +6,11 @@ input {
 }
 
 
-.textfield {
+input[type="file"],
+input[type="password"],
+input[type="textfield"],
+input[type="textarea"],
+select {  
   display: inline-block;
   vertical-align: middle;
   

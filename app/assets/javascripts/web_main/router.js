@@ -13,9 +13,7 @@ Router = Backbone.Router.extend({
     "users/new": "newUser",
     "user/:id": "showUser",
     "user/:id/edit": "editUser",
-    "user/:id/articles": "userArticles",
-    
-    "*others": "invalidUrl"
+    "user/:id/articles": "userArticles"
   },
   
   
@@ -122,10 +120,5 @@ Router = Backbone.Router.extend({
   
   userArticles: function() {
     
-  },
-  
-  
-  invalidUrl: function() {
-    this.loadUrl("");   // jump to the main page for invalid URLs
   }
 });

@@ -1,22 +1,46 @@
 <div id="popup_container" class="popup_box"></div>
 
 <div id="article-edit-container">
-  Title: <input type="text" id="article-edit-title" class="textfield" value="TITLE" /><br />
-  Category: <select id="article-edit-category">
-    <option selected="selected" value="-1">choose a category</option>
-    <% _.each(allCategories, function(category) { %>
-      <option value="<%= category.get("id") %>"><%= category.get("name") %></option>
-    <% }); %>
-  </select>
-  <br>
-  Content: 
-  <div id="article-edit-content"></div>
-  <div>
-    <button id="article-edit-add-text">add text</button>
-    <button id="article-edit-add-picture">add picture</button>
+  <div class="one-central-column-container">
+    <div class="central-column">
+      <h1 class="row">Write a new Article</h1>
+      
+      <div class="empty-row"></div>
+      
+      <h3 class="row">Title</h3>
+      <div class="row"><input type="textarea" id="article-edit-title" value="TITLE" /></div>
+      
+      <div class="empty-row"></div>
+      
+      <h3 class="row">Category</h3>
+      <div class="row"><select id="article-edit-category">
+        <option selected="selected" value="-1">choose a category</option>
+        <% _.each(allCategories, function(category) { %>
+          <option value="<%= category.get("id") %>"><%= category.get("name") %></option>
+        <% }); %>
+      </select></div>
+
+      <div class="empty-row"></div>
+
+      <h3 class="row">Content</h3>
+      <div id="article-edit-content" class="row"></div>
+      
+      <div class="empty-row"></div>
+      
+      <div class="row">
+        <span class="inline-block col-6 padding-s-lr"><button id="article-edit-add-text">add text</button></span>
+        <span class="inline-block col-6 padding-s-lr"><button id="article-edit-add-picture">add picture</button></span>
+      </div>
+      
+      <div class="empty-row"></div>
+      
+      <div class="row">
+        <span class="inline-block col-4 padding-s-lr"><button id="article-edit-save">Save</button></span>
+        <span class="inline-block col-4 padding-s-lr"><button id="article-edit-save-preview">Save and Preview</button></span>
+        <span class="inline-block col-4 padding-s-lr"><button id="article-edit-save-publish">Save and Publish</button></span>
+      </div>
+      
+      <div class="empty-row"></div>
+    </div>
   </div>
-  <br /><br />
-  <button id="article-edit-save">Save</button>
-  <button id="article-edit-save-preview">Save and Preview</button>
-  <button id="article-edit-save-publish">Save and Publish</button>
 </div>

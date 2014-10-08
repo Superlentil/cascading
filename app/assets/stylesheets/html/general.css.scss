@@ -68,6 +68,17 @@ html {
   display: block;
 }
 
+.inline-block {
+  display: inline-block;
+}
+
+
+// .padding-small-left-right (has both left and right small padding)
+.padding-s-lr {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
 
 @media (max-width: $XS_MAX_WIDTH) {
   .hidden-only-xs {

@@ -1,14 +1,12 @@
 @import "compass";
 
 
-#user_new_container { 
-  button {
-    width: 100%;
-    min-width: 100px;
-  }
-  
-  .button-wrapper {
-    padding-left: 6px;
-    padding-right: 6px;
+#user_new_container {
+  .one-central-column-container {
+    max-width: 1000px;
+    
+    .central-column {
+      max-width: 600px;
+    }
   }
 }
