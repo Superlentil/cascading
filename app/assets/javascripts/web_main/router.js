@@ -100,7 +100,7 @@ Router = Backbone.Router.extend({
   
   
   newUser: function() {
-    var viewNew = new View.User.New();
+    var viewNew = new View.User.New({signInHandler: this.layout.signIn});
     viewNew.render();
     return viewNew;
   },
@@ -114,7 +114,7 @@ Router = Backbone.Router.extend({
   
   
   editUser: function(id) {
-    var viewEdit = new View.User.Edit();
+    var viewEdit = new View.User.Edit({signInHandler: this.layout.signIn});
     viewEdit.render({id: id});
     return viewEdit;
   },

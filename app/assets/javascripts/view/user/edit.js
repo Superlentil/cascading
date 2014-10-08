@@ -1,4 +1,9 @@
 View.User.Edit = Backbone.View.extend({
+  initialize: function(options) {   
+    this.signInHandler = options.signInHandler;
+  },
+  
+  
   el: "#layout-content",
   
   
@@ -48,6 +53,7 @@ View.User.Edit = Backbone.View.extend({
     
     user.save(formData, {    
       success: function(savedUser) {
+        that.signInHandler(null, null, true);
         Backbone.history.navigate("user/" + savedUser.id, {trigger: true});
       },
       

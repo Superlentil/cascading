@@ -208,17 +208,22 @@ View.Layout.Main = Backbone.View.extend({
   },
   
   
-  signIn: function(email, password) {
-    var that = this;
-
-    var loginSession = new Model.Layout.LoginSession();
-    loginSession.save("login_session", {"type": "log in", "email": email, "password": password}, {
-      success: function() {
-        that.renderUserAvatar();
-        that.viewHeader.render();
-        that.viewRightNav.render();
-      }
-    });
+  signIn: function(email, password, alreadyHasLoginSession) {
+    if (alreadyHasLoginSession) {
+      this.renderUserAvatar();
+      this.viewHeader.render();
+      this.viewRightNav.render();
+    } else {
+      var that = this;
+      var loginSession = new Model.Layout.LoginSession();
+      loginSession.save("login_session", {"type": "log in", "email": email, "password": password}, {
+        success: function() {
+          that.renderUserAvatar();
+          that.viewHeader.render();
+          that.viewRightNav.render();
+        }
+      });
+    }
   },
   
   

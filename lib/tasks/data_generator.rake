@@ -100,8 +100,9 @@ namespace :data_generator do
       articleId = article.id
       articleContent = generateArticleContent(randInt, allPicturePaths, articleId)
       
-      importCoverPicture = randInt.rand(0..1)
-      if importCoverPicture == 0
+      # I'd like to have about one fifth articles with imported cover picture. Here, only "1" means importing cover picture.
+      importCoverPicture = randInt.rand(1..5)
+      if importCoverPicture > 1
         articlePictures = Picture.where(article_id: articleId).to_a
         articlePicturesLastIndex = articlePictures.length - 1
         if articlePicturesLastIndex < 0

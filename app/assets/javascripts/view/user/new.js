@@ -1,4 +1,9 @@
 View.User.New = Backbone.View.extend({
+  initialize: function(options) {   
+    this.signInHandler = options.signInHandler;
+  },
+  
+  
   el: "#layout-content",
   
   
@@ -30,8 +35,9 @@ View.User.New = Backbone.View.extend({
     
     var user = new Model.User.User();
     
-    user.save(formData, {    
+    user.save(formData, {
       success: function(savedUser) {
+        that.signInHandler(null, null, true);
         Backbone.history.navigate("user/" + savedUser.id, {trigger: true});
       },
       
