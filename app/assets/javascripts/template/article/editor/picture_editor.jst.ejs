@@ -1,10 +1,11 @@
+<div class="text-align-right">
+  <button class="article-editor-move-up-button">Up</button>
+  <button class="article-editor-move-down-button">Down</button>
+  <button class="article-editor-remove-button">Remove</button>
+</div>
 <div class="Paragraph" data-type="picture">
   <% if (content) { %>
     <img src="<%= content.url %>" data-picture-id="<%= content.id %>" />
   <% } %>
 </div>
 <input class="Upload_Picture" name="file" type="file" />
-<button class="Upload_Button">Upload</button>
-<button class="Move_Up_Button">Up</button>
-<button class="Move_Down_Button">Down</button>
-<button class="Remove_Button">Remove</button>

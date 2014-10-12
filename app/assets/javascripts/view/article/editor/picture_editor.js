@@ -5,20 +5,8 @@ View.Article.Editor.PictureEditor = View.Article.Editor.BaseEditor.extend({
   
   events: function() {
     return _.extend({}, View.Article.Editor.BaseEditor.prototype.events, {
-      "change .Upload_Picture": "onFileChange",
-      "click .Upload_Button": "onUpload"
+      "change .Upload_Picture": "onFileChange"
     });
-  },
-  
-  
-  removeEditor: function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    
-    if (confirm("Are you sure to remove this picture?")) {
-      var pictureEditor = $(event.currentTarget).parent();
-      pictureEditor.remove();
-    }
   },
   
   
@@ -27,49 +15,46 @@ View.Article.Editor.PictureEditor = View.Article.Editor.BaseEditor.extend({
     // var name = file.name;
     // var size = file.size;
     // var type = file.type;
-    $(event.currentTarget).prev("div.Paragraph").empty();
-  },
-  
-  
-  onUpload: function(event) {
-    event.preventDefault();
     
     var that = this;
-    var pictureUploader = $(event.currentTarget).prev("input.Upload_Picture");
+    var pictureUploader = $(event.currentTarget);
     var contentContainer = pictureUploader.prev("div.Paragraph");
+    contentContainer.empty();
     
-    var formData = new FormData();
-    formData.append("picture[article_id]", that.articleId);
-    formData.append("picture[src]", pictureUploader.get(0).files[0]);
-    
-    var picture = new Model.Article.Picture();
-    
-    picture.save(formData, {
-      progress: function(event) {
-        if (event.lengthComputable) {
-          $('progress').attr({
-            value: event.loaded,
-            max: event.total
-          });
-        }
-      },
+    if (pictureUploader.val() !== "") {   
+      var formData = new FormData();
+      formData.append("picture[article_id]", that.articleId);
+      formData.append("picture[src]", pictureUploader.get(0).files[0]);
       
-      beforeSend: function() {
-        contentContainer.empty();
-        contentContainer.append("<progress></progress>");
-      },
+      var picture = new Model.Article.Picture();
       
-      success: function(savedPicture) {
-        contentContainer.empty();
-        contentContainer.append("<img src='" + savedPicture.medium_url
-          + "' alt='Uploaded Picture' data-picture-id='" + savedPicture.id
-          + "' />"
-        );
-      },
-      
-      error: function(jqXHR, textStatus, errorThrown) {},
-      
-      complete: function(jqXHR, textStatus ) {}
-    });
+      picture.save(formData, {
+        progress: function(event) {
+          if (event.lengthComputable) {
+            $('progress').attr({
+              value: event.loaded,
+              max: event.total
+            });
+          }
+        },
+        
+        beforeSend: function() {
+          contentContainer.empty();
+          contentContainer.append("<progress></progress>");
+        },
+        
+        success: function(savedPicture) {
+          contentContainer.empty();
+          contentContainer.append("<img src='" + savedPicture.medium_url
+            + "' alt='Uploaded Picture' data-picture-id='" + savedPicture.id
+            + "' />"
+          );
+        },
+        
+        error: function(jqXHR, textStatus, errorThrown) {},
+        
+        complete: function(jqXHR, textStatus ) {}
+      });
+    }
   }
 });

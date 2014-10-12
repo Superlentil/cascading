@@ -10,7 +10,9 @@ input[type="file"],
 input[type="password"],
 input[type="textfield"],
 input[type="textarea"],
-select {  
+select,
+.textfield,
+.textarea {  
   display: inline-block;
   vertical-align: middle;
   

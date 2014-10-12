@@ -32,9 +32,9 @@ button:hover, .button-default:hover {
   color: #fff;
   background-color: #428bca;
   border-color: #357ebd;
-}
-
-.button-primary:hover {
-  background-color: #3071a9;
-  border-color: #285e8e;
+  
+  &:hover {
+    background-color: #3071a9;
+    border-color: #285e8e;
+  }
 }

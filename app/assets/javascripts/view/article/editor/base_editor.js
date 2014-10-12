@@ -19,25 +19,25 @@ View.Article.Editor.BaseEditor = Backbone.View.extend({
   
   
   events: {
-    "click .Move_Up_Button": "moveUpEditor",
-    "click .Move_Down_Button": "moveDownEditor",
-    "click .Remove_Button": "removeEditor"
+    "click .article-editor-move-up-button": "moveUpEditor",
+    "click .article-editor-move-down-button": "moveDownEditor",
+    "click .article-editor-remove-button": "removeEditor"
   },
 
 
   moveUpEditor: function(event) {
     event.preventDefault();
     event.stopPropagation();
-    var editor = $(event.currentTarget).parent();
-    editor.prev("div.Article_Editor").before(editor);
+    var thisEditor = this.$el;
+    thisEditor.prev("div.Article_Editor").before(thisEditor);
   },
   
   
   moveDownEditor: function(event) {
     event.preventDefault();
     event.stopPropagation();
-    var editor = $(event.currentTarget).parent();
-    editor.next("div.Article_Editor").after(editor);
+    var thisEditor = this.$el;
+    thisEditor.next("div.Article_Editor").after(thisEditor);
   },
   
   
