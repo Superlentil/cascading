@@ -45,8 +45,7 @@ View.Article.Editor.BaseEditor = Backbone.View.extend({
     event.preventDefault();
     event.stopPropagation();
     if (confirm("Are you sure to remove this paragraph?")) {
-      var editor = $(event.currentTarget).parent();
-      editor.remove();
+      this.$el.remove();
     }
   }
 });
