@@ -18,6 +18,7 @@
 //= require jquery_transit
 
 //= require initializer/_INDEXER_
+//= require utility/_INDEXER_
 //= require model/_INDEXER_
 //= require collection/_INDEXER_
 //= require template/_INDEXER_
