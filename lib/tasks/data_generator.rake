@@ -36,12 +36,13 @@ namespace :data_generator do
     
     
     # get all sample pictures
-    allPictureNames = Dir.entries(Rails.root.join("resource", "pictures"))
+    picturePath = GlobalConstant::Resource::Picture::DATA_GENERATOR_PATH
+    allPictureNames = Dir.entries(picturePath)
     allPicturePaths = []
     
     allPictureNames.each do |picName|
       if picName != "." && picName != ".."
-        allPicturePaths.push(Rails.root.join("resource", "pictures", picName))
+        allPicturePaths.push("#{picturePath}/#{picName}")
       end
     end
     

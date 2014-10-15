@@ -17,4 +17,12 @@ class GlobalConstant
     ADMINISTRATOR = 0
     FREE_USER = 1
   end
+  
+  
+  class Resource
+    class Picture
+      DATA_GENERATOR_PATH = Rails.root.join("resource", "picture", "data_generator")
+      DEFAULT_USER_AVATAR_PATH = Rails.root.join("resource", "picture", "default_user_avatar.jpg")
+    end
+  end
 end

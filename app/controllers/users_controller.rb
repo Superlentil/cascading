@@ -31,7 +31,13 @@ class UsersController < ApplicationController
 
 
   def create
-    @user = User.new(userParams)
+    inputParams = userParams
+    @user = User.new(inputParams)
+    if inputParams["avatar"].nil?   # use a default avatar picture if user didn't provide an avatar picture
+      file = File.open(GlobalConstant::Resource::Picture::DEFAULT_USER_AVATAR_PATH)
+      @user.avatar = file
+      file.close
+    end
     if @user.save
       setUserLoginSession(@user)
       respond_with @user
@@ -65,7 +71,7 @@ class UsersController < ApplicationController
   
 private
   def userParams
-    params.require(:user).permit(:email, :password, :nickname, :avatar)
+    params.require(:user).permit(:email, :password, :nickname, :avatar, :tier)
   end
 
 end
