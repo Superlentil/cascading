@@ -7,21 +7,25 @@
       
       <h3 class="row">Email</h3>
       <div class="row"><input id="user-new-email" type="email"></div>
+      <div class="hide user-new-error-info"><small>The format of the input email is not correct.</small></div>
       
       <div class="empty-row"></div>
       
       <h3 class="row">Password</h3>
       <div class="row"><input id="user-new-password" type="password"></div>
+      <div class="hide user-new-error-info"><small>The password should be made by at least 6 and at most 50 characters.</small></div>
       
       <div class="empty-row"></div>
       
       <h3 class="row">Repeat Password</h3>
       <div class="row"><input id="user-new-repeat-password" type="password"></div>
+      <div class="hide user-new-error-info"><small>The passwords input twice are not the same, or the password is invalid.</small></div>
       
       <div class="empty-row"></div>
       
       <h3 class="row">Nickname</h3>
       <div class="row"><input id="user-new-nickname" type="textfield"></div>
+      <div class="hide user-new-error-info"><small>The nickname should be made by at least 3 and at most 10 letters, numbers, or Asian characters.</small></div>
       
       <div class="empty-row"></div>
       
@@ -35,6 +39,7 @@
         <span class="inline-block col-8 padding-s-lr"><input id="user-new-save" class="button button-primary" type="button" value="Submit"></span>
         <span class="inline-block col-4 padding-s-lr"><input id="user-new-cancel" class="button button-default" type="button" value="Cancel"></span>
       </div>
+      <div id="user-new-save-error" class="hide user-new-error-info"><small>You may have some invalid input above.</small></div>
       
       <div class="empty-row"></div>
     </div>

@@ -29,8 +29,11 @@ View.User.New = Backbone.View.extend({
   onSave: function(event) {
     event.preventDefault();
     
+    var errorInfoContainer = $("#user-new-save-error");
     if (this.validateEmail() && this.validateRepeatPassword() && this.validateNickname()) {
       var that = this;
+      
+      errorInfoContainer.hide(500);
       
       var formData = new FormData();
       formData.append("user[email]", $("#user-new-email").val());
@@ -55,7 +58,7 @@ View.User.New = Backbone.View.extend({
         complete: function(jqXHR, textStatus ) {}
       });
     } else {
-      alert("invalid inputs");
+      errorInfoContainer.show(500);
     }
   },
   
@@ -85,11 +88,19 @@ View.User.New = Backbone.View.extend({
   
   validate: function(input, validator) {
     var value = input.val();
+    var errorInfoContainer = input.parent().next();
     if (validator(value)) {
       this.markValid(input);
+      errorInfoContainer.hide(500);
       return true;
     } else {
-      value ? this.markInvalid(input) : this.removeMark(input);
+      if (value) {
+        this.markInvalid(input);
+        errorInfoContainer.show(500);
+      } else {
+        this.removeMark(input);
+        errorInfoContainer.hide(500);
+      }
       return false;
     }
   },
@@ -103,31 +114,36 @@ View.User.New = Backbone.View.extend({
   
   validatePassword: function(event) {
     var input = $("#user-new-password");
-    var validPassword = this.validate(input, GlobalValidator.Password);
+    var isValid = this.validate(input, GlobalValidator.Password);
     this.validateRepeatPassword();
-    return validPassword;
+    return isValid;
   },
 
 
   validateRepeatPassword: function(event) {
     var repeatPasswordInput = $("#user-new-repeat-password");
+    var errorInfoContainer = repeatPasswordInput.parent().next();
     if (repeatPasswordInput.val()) {
       var passwordInput = $("#user-new-password");
       var password = passwordInput.val();
       if (GlobalValidator.Password(password)) {
         if (repeatPasswordInput.val() === password) {
           this.markValid(repeatPasswordInput);
+          errorInfoContainer.hide(500);
           return true;
         } else {
           this.markInvalid(repeatPasswordInput);
+          errorInfoContainer.show(500);
           return false;
         }
       } else {
         this.markInvalid(repeatPasswordInput);
+        errorInfoContainer.show(500);
         return false;
       }
     } else {
       this.removeMark(repeatPasswordInput);
+      errorInfoContainer.hide(500);
       return false;
     }
   },
