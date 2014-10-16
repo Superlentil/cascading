@@ -1,6 +1,10 @@
 View.User.New = Backbone.View.extend({
   initialize: function(options) {   
     this.signInHandler = options.signInHandler;
+    
+    this.emailValid = false;
+    this.repeatPasswordValid = false;
+    this.nicknameValid = false;
   },
   
   
@@ -29,11 +33,11 @@ View.User.New = Backbone.View.extend({
   onSave: function(event) {
     event.preventDefault();
     
-    var errorInfoContainer = $("#user-new-save-error");
+    var saveErrorContainer = $("#user-new-save-error");
     if (this.validateEmail() && this.validateRepeatPassword() && this.validateNickname()) {
       var that = this;
       
-      errorInfoContainer.hide(500);
+      saveErrorContainer.hide(500);
       
       var formData = new FormData();
       formData.append("user[email]", $("#user-new-email").val());
@@ -58,7 +62,7 @@ View.User.New = Backbone.View.extend({
         complete: function(jqXHR, textStatus ) {}
       });
     } else {
-      errorInfoContainer.show(500);
+      saveErrorContainer.show(500);
     }
   },
   
@@ -106,9 +110,18 @@ View.User.New = Backbone.View.extend({
   },
   
   
+  refreshSaveError: function() {
+    if (this.emailValid && this.repeatPasswordValid && this.nicknameValid) {
+      $("#user-new-save-error").hide(500);
+    }
+  },
+  
+  
   validateEmail: function(event) {
     var input = $("#user-new-email");
-    return this.validate(input, GlobalValidator.Email);
+    this.emailValid = this.validate(input, GlobalValidator.Email);
+    this.refreshSaveError();
+    return this.emailValid;
   },
   
   
@@ -116,6 +129,7 @@ View.User.New = Backbone.View.extend({
     var input = $("#user-new-password");
     var isValid = this.validate(input, GlobalValidator.Password);
     this.validateRepeatPassword();
+    this.refreshSaveError();
     return isValid;
   },
 
@@ -123,6 +137,7 @@ View.User.New = Backbone.View.extend({
   validateRepeatPassword: function(event) {
     var repeatPasswordInput = $("#user-new-repeat-password");
     var errorInfoContainer = repeatPasswordInput.parent().next();
+    var isValid = false;
     if (repeatPasswordInput.val()) {
       var passwordInput = $("#user-new-password");
       var password = passwordInput.val();
@@ -130,27 +145,33 @@ View.User.New = Backbone.View.extend({
         if (repeatPasswordInput.val() === password) {
           this.markValid(repeatPasswordInput);
           errorInfoContainer.hide(500);
-          return true;
+          isValid = true;
         } else {
           this.markInvalid(repeatPasswordInput);
           errorInfoContainer.show(500);
-          return false;
+          isValid = false;
         }
       } else {
         this.markInvalid(repeatPasswordInput);
         errorInfoContainer.show(500);
-        return false;
+        isValid = false;
       }
     } else {
       this.removeMark(repeatPasswordInput);
       errorInfoContainer.hide(500);
-      return false;
+      isValid = false;
     }
+    
+    this.repeatPasswordValid = isValid;
+    this.refreshSaveError();
+    return isValid;
   },
 
 
   validateNickname: function(event) {
     var input = $("#user-new-nickname");
-    return this.validate(input, GlobalValidator.Nickname);
+    this.nicknameValid = this.validate(input, GlobalValidator.Nickname);
+    this.refreshSaveError();
+    return this.nicknameValid;
   }
 });
