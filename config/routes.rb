@@ -16,7 +16,12 @@ Rails.application.routes.draw do
   # Example resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
   resources :tiers
-  resources :users
+  resources :users do
+    collection do
+      get "emailAvailable"
+    end
+  end
+  
   resources :articles do
     collection do
       get "inCategory"

@@ -69,6 +69,11 @@ class UsersController < ApplicationController
   end
   
   
+  def emailAvailable
+    @available = !User.exists?(email: params[:email])
+  end
+  
+  
 private
   def userParams
     params.require(:user).permit(:email, :password, :nickname, :avatar, :tier)
