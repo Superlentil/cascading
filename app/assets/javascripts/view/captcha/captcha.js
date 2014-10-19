@@ -246,7 +246,7 @@ View.Captcha = Backbone.View.extend({
     if (!pickedCorrectly) {
       event.stopImmediatePropagation();
       var that = this;
-      that.$el.find(".captcha-description").html("<strong><big>Incorrect and please try again ...</big></strong>");
+      that.$el.find(".captcha-description").html("<strong><big>Please try again ...</big></strong>");
       that.$el.append("<div class='captcha-incorrect-pick'></div>");
       setTimeout(function(){
         that.render();
