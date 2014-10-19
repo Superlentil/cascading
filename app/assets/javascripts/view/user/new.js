@@ -5,6 +5,7 @@ View.User.New = Backbone.View.extend({
     this.emailValid = false;
     this.repeatPasswordValid = false;
     this.nicknameValid = false;
+    this.captchaValid = false;
   },
   
   
@@ -28,7 +29,9 @@ View.User.New = Backbone.View.extend({
     this.repeatPasswordError = $("#user-new-repeat-password-error");
     this.nickname = $("#user-new-nickname");
     this.nicknameError = $("#user-new-nickname-error");
-    
+    this.avatar = $("#user-new-avatar");
+    this.captcha = $("#user-new-captcha");
+    this.captchaError = $("#user-new-captcha-error");
     this.saveError = $("#user-new-save-error");
   },
   
@@ -40,7 +43,9 @@ View.User.New = Backbone.View.extend({
     "blur #user-new-email": "validateEmail",
     "blur #user-new-password": "validatePassword",
     "blur #user-new-repeat-password": "validateRepeatPassword",
-    "blur #user-new-nickname": "validateNickname"
+    "blur #user-new-nickname": "validateNickname",
+    "blur #user-new-avatar": "validateAvatar",
+    "click #user-new-captcha": "validateCaptcha"
   },
   
   
@@ -133,7 +138,7 @@ View.User.New = Backbone.View.extend({
   
   
   refreshSaveError: function() {
-    if (this.emailValid && this.repeatPasswordValid && this.nicknameValid) {
+    if (this.emailValid && this.repeatPasswordValid && this.nicknameValid && this.captchaValid) {
       this.saveError.hide(500);
     }
   },
@@ -221,5 +226,31 @@ View.User.New = Backbone.View.extend({
   validateNickname: function(event) {
     this.nicknameValid = this.validate(this.nickname, this.nicknameError, GlobalValidator.Nickname);
     this.refreshSaveError();
+  },
+  
+  
+  validateAvatar: function(event) {
+    if (this.avatar.val()) {
+      this.markValid(this.avatar);
+    } else {
+      this.removeMark(this.avatar);
+    }
+  },
+  
+  
+  validateCaptcha: function(event) {
+    var captchaContainer = this.captcha;
+    var captchaErrorInfoContainer = this.captchaError;
+    if (this.viewCaptcha.hasPassedCaptcha()) {
+      this.markValid(captchaContainer);
+      captchaErrorInfoContainer.hide(500);
+      this.captchaValid = true;
+      this.refreshSaveError();
+    } else {
+      this.markInvalid(captchaContainer);
+      captchaErrorInfoContainer.show(500);
+      this.captchaValid = false;
+    }
+    return this.captchaValid;
   }
 });

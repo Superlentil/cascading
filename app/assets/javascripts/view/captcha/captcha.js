@@ -1,7 +1,7 @@
 View.Captcha = Backbone.View.extend({
   initialize: function(options) {
     totalTokenCount = 4;
-    correctTokenCount = 2;
+    correctTokenCount = 1;
     if (options) {
       if (options.totalTokenCount) {
         totalTokenCount = options.totalTokenCount;
@@ -72,11 +72,11 @@ View.Captcha = Backbone.View.extend({
   render: function() {
     this.pickTokens();
     
-    var correctTokenHtml = "<div>Please pick out: ";
+    var correctTokenHtml = "<div><p class='captcha-description'>Please pick out the letter: &#160; ";
     for (var index in this.correctToken) {
-      correctTokenHtml += "<span> " + this.CHARS.charAt(this.correctToken[index]) + " </span>";
+      correctTokenHtml += "<strong><big> " + this.CHARS.charAt(this.correctToken[index]) + " </big></strong>";
     }
-    correctTokenHtml += "</div>";
+    correctTokenHtml += "</p></div>";
     
     var captchaElementWidthPercentage = 100.0 / this.totalTokenCount - 0.000001;
     var totalTokenHtml = "<div class='captcha-container'>";
@@ -87,6 +87,10 @@ View.Captcha = Backbone.View.extend({
     
     this.$el.html(correctTokenHtml + totalTokenHtml);
     
+    $(function() {
+      $(".captcha-challenge").show(1000); 
+    });
+    
     return this;
   },
   
@@ -94,7 +98,7 @@ View.Captcha = Backbone.View.extend({
   noiseString: function(length) {
     var noiseStr = "";
     for (var index = 0; index < length; ++ index) {
-      if (Math.floor(Math.random() * 2) === 0) {
+      if (Math.floor(Math.random() * 5) > 0) {
         noiseStr += " ";
       } else {
         noiseStr += "*";
@@ -128,31 +132,36 @@ View.Captcha = Backbone.View.extend({
       for (var index = 0; index < dotWidth; ++index) {
         noiseLine += " ";
       }
-      var noiseLinePosition = Math.floor(Math.random() * (dotHeight + 1));
+      var noiseLinePosition = Math.floor(Math.random() * (dotHeight - 1)) + 1;
       dot.splice(noiseLinePosition, 0, noiseLine);
+      dotHeight = dot.length;
     }
     
     if (verticalNoiseLineCount > 0) {
-      var noiseLinePosition = Math.floor(Math.random() * (dotWidth + 1));
+      var noiseLinePosition = Math.floor(Math.random() * (dotWidth - 1)) + 1;
       for (var index = 0; index < dotHeight; ++index) {
         var originalLine = dot[index];
         dot[index] = originalLine.substring(0, noiseLinePosition) + " " + originalLine.substring(noiseLinePosition);
       }
+      dotWidth = dot[0].length;
     }
     
+    var emptyLine = this.noiseString(dotWidth).replace(/\*/g, " ");
     var topMarginDot = [];
     for (var index = 0; index < topMargin; ++index) {
       topMarginDot.push(this.noiseString(dotWidth));
     }
+    topMarginDot.push(emptyLine);
     dot = topMarginDot.concat(dot);
     
+    dot.push(emptyLine);
     for (var index = 0; index < bottomMargin; ++index) {
       dot.push(this.noiseString(dotWidth));
     }
     
     dotHeight = dot.length;
     for (var index = 0; index < dotHeight; ++index) {
-      dot[index] = this.noiseString(leftMargin) + dot[index] + this.noiseString(rightMargin);
+      dot[index] = this.noiseString(leftMargin) + " " + dot[index] + " " + this.noiseString(rightMargin);
     }
     
     return dot;
@@ -215,9 +224,7 @@ View.Captcha = Backbone.View.extend({
   },
   
   
-  validatePick: function(event) {
-    event.preventDefault();
-    
+  validatePick: function(event) {    
     var captchaElement = $(event.currentTarget);
     var elementId = parseInt(captchaElement.data("elementId")) - this.secretKey;
     
@@ -227,17 +234,24 @@ View.Captcha = Backbone.View.extend({
     var passCaptcha = true;
     for (var index in correctToken) {
       if (correctToken[index] === elementId) {
+        pickedCorrectly = true;
         if (!correctTokenPicked[index]) {
           correctTokenPicked[index] = true;
-          pickedCorrectly = true;
-          captchaElement.addClass("captcha-pick-correctly");
+          captchaElement.addClass("captcha-correct-pick");
         }
       }
       passCaptcha &= correctTokenPicked[index];
     }
     this.passCaptcha = passCaptcha;
     if (!pickedCorrectly) {
-      this.render();
+      event.stopImmediatePropagation();
+      var that = this;
+      that.$el.find(".captcha-description").html("<strong><big>Incorrect and please try again ...</big></strong>");
+      that.$el.append("<div class='captcha-incorrect-pick'></div>");
+      setTimeout(function(){
+        that.render();
+        that.$el.trigger("click");   // keep propagate "click" event.
+      }, 500);
     }
   },
   

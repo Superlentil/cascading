@@ -1,8 +1,9 @@
 @import "compass";
+@import "html/setting";
 
 
 .captcha-container {
-  width: 100%;
+  position: relative;
   
   &:before, &:after {
     content: " ";
@@ -16,12 +17,14 @@
 
 
 .captcha-challenge {
+  z-index: 0;
   marging: 0;
   border: 0;
   padding: 4px;
   position: relative;
   min-height: 1px;
   float: left;
+  display: none;
 }
 
 
@@ -43,6 +46,19 @@
 }
 
 
-.captcha-pick-correctly {
-  background: rgba(115, 233, 102, 0.6);
+.captcha-correct-pick {
+  background: $SUCCESS_BOX_SHADOW_COLOR;
+}
+
+
+.captcha-incorrect-pick {
+  position: absolute;
+  top: 0;
+  z-index: 1000;
+  opacity: 0.3;
+  height: 100%;
+  left: 0;
+  width: 100%;
+  background: $FAIL_BOX_SHADOW_COLOR;
+  @include border-radius(4px);
 }
