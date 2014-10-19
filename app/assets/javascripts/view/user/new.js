@@ -17,6 +17,9 @@ View.User.New = Backbone.View.extend({
   render: function() {
     this.$el.html(this.template());
     
+    this.viewCaptcha = new View.Captcha();
+    $("#user-new-captcha").append(this.viewCaptcha.render().$el);
+    
     this.email = $("#user-new-email");
     this.emailError = $("#user-new-email-error");
     this.password = $("#user-new-password");
@@ -48,7 +51,12 @@ View.User.New = Backbone.View.extend({
     var email = this.email.val();
     var password = this.password.val();
     var nickname = this.nickname.val();
-    if (validator.Email(email) && validator.Password(password) && password === this.repeatPassword.val() && validator.Nickname(nickname)) {
+    if (validator.Email(email) 
+        && validator.Password(password) 
+        && password === this.repeatPassword.val() 
+        && validator.Nickname(nickname)
+        && this.viewCaptcha.hasPassedCaptcha())
+    {
       var that = this;
       
       this.saveError.hide(500);

@@ -1,0 +1,48 @@
+@import "compass";
+
+
+.captcha-container {
+  width: 100%;
+  
+  &:before, &:after {
+    content: " ";
+    display: table;
+  }
+
+  &:after {
+    clear: both;
+  }
+}
+
+
+.captcha-challenge {
+  marging: 0;
+  border: 0;
+  padding: 4px;
+  position: relative;
+  min-height: 1px;
+  float: left;
+}
+
+
+.captcha-element {
+  width: 100%;
+  padding: 6px;
+  color: #000;
+  text-align: center;
+  @include border-radius(4px);
+}
+
+
+.captcha-element-text {
+  font-family: "Courier New", monospace;
+  font-size: 6px;
+  font-weight: bold;
+  letter-spacing: -1px;
+  line-height: 3px;
+}
+
+
+.captcha-pick-correctly {
+  background: rgba(115, 233, 102, 0.6);
+}
