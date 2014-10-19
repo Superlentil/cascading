@@ -110,6 +110,15 @@ View.Captcha = Backbone.View.extend({
   
   complicateDot: function(dotIndex) {
     var dot = this.DOTS[dotIndex].slice(0);   // copy value
+    var dotWidth = dot[0].length;
+    var dotHeight = dot.length;
+    
+    var oddDotHorizontalPosition = Math.floor(Math.random() * dotHeight);
+    var oddDotVerticalPosition = Math.floor(Math.random() * dotWidth);
+    var oddDotLine = dot[oddDotHorizontalPosition];
+    var originalOddDot = oddDotLine.charAt(oddDotVerticalPosition);
+    var oddDot = (originalOddDot === '*') ? ' ' : '*';
+    dot[oddDotHorizontalPosition] = oddDotLine.substring(0, oddDotVerticalPosition) + oddDot + oddDotLine.substring(oddDotVerticalPosition + 1);
     
     var horizontalNoiseLineCount = 0;
     var verticalNoiseLineCount = 0;
@@ -120,8 +129,6 @@ View.Captcha = Backbone.View.extend({
       ++verticalNoiseLineCount;
     }
     
-    var dotWidth = dot[0].length;
-    var dotHeight = dot.length;
     var topMargin = Math.floor(Math.random() * (dotHeight + 1 - horizontalNoiseLineCount));
     var bottomMargin = dotHeight - horizontalNoiseLineCount - topMargin;
     var leftMargin = Math.floor(Math.random() * (dotWidth + 1 - verticalNoiseLineCount));
