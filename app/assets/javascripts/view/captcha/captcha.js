@@ -65,7 +65,7 @@ View.Captcha = Backbone.View.extend({
     this.pickTokens();
     var html ="<div class='captcha-row captcha-refresh-reminder'><i><small>Click Picture to Change One</small></i></div>"
         + this.makeDotCaptcha(this.combineTokens())
-        +"<div class='captcha-row'>Please Type Letters Shown Above:</div><div class='captcha-row'><input type='textfield' class='captcha-answer'></div>";
+        +"<div class='captcha-row'>Please Type Letters Shown Above (Case Insensitive):</div><div class='captcha-row'><input type='textfield' class='captcha-answer'></div>";
     this.$el.html(html);
     $(function() {
       $(".captcha-challenge").show(1000);
@@ -239,6 +239,9 @@ View.Captcha = Backbone.View.extend({
     var that = this;
     
     $(".captcha-challenge").remove();
+    var answerInput = $(".captcha-answer");
+    answerInput.val("");
+    answerInput.trigger("keyup");
     that.pickTokens();
     $(".captcha-refresh-reminder").after(that.makeDotCaptcha(this.combineTokens()));
     $(function() {
@@ -270,13 +273,12 @@ View.Captcha = Backbone.View.extend({
       }
     }
     var passCaptcha = goodAnswerInputTillNow && correctAnswerLength;
+    answerInput.removeClass("captcha-correct-answer captcha-incorrect-answer");
     if (goodAnswerInputTillNow) {
-      answerInput.removeClass("captcha-incorrect-answer");
       if (passCaptcha) {
         answerInput.addClass("captcha-correct-answer");
       }
     } else {
-      answerInput.removeClass("captcha-correct-answer");
       answerInput.addClass("captcha-incorrect-answer");
     }
     this.passCaptcha = passCaptcha;
