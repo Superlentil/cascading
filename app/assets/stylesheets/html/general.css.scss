@@ -84,13 +84,13 @@ html {
 }
 
 
-@media (max-width: $XS_MAX_WIDTH) {
-  .hidden-only-xs {
+@media (max-width: $SM_MAX_WIDTH) {
+  .hidden-sm-and-smaller {
     display: none !important;
   }
 }
-@media (min-width: $SM_MIN_WIDTH) {
-  .hidden-sm-and-larger {
+@media (min-width: $MD_MIN_WIDTH) {
+  .hidden-md-and-larger {
     display: none !important;
   }
 }

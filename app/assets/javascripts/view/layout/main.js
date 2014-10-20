@@ -242,10 +242,10 @@ View.Layout.Main = Backbone.View.extend({
   
   renderUserAvatar: function() {
     if ($.cookie("user_id")) {
-      this.userAvatar.removeClass("hidden-sm-and-larger");
+      this.userAvatar.removeClass("hidden-md-and-larger");
       this.userAvatar.html("<img id='layout-userAvatar-img' src='" + $.cookie("user_avatar_url") +"'>");
     } else {
-      this.userAvatar.addClass("hidden-sm-and-larger");
+      this.userAvatar.addClass("hidden-md-and-larger");
       this.userAvatar.html("<div id='layout-userAvatar-notLogin'></div>");
     }
   },

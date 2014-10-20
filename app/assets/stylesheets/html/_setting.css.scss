@@ -1,13 +1,14 @@
 /* Adopt from the Bootstrap */
-/* xs: extra small devices (phones, screen width less than 768px) */
-/* sm: small devices (tablets, screen width from 768px to 991px) */
-$SM_MIN_WIDTH: 768px;
-/* md: medium devices (desktops, screen width from 992px and 1119px) */
-$MD_MIN_WIDTH: 992px;
-/* lg: large devices (large desktops, screen width 1200px and up) */
-$LG_MIN_WIDTH: 768px;
+/* xs: extra small devices (phones, screen width less than 480px) */
+/* sm: small devices (screen width from 480px to 768px) */
+$SM_MIN_WIDTH: 480px;
+/* md: medium devices (tablets, screen width from 768px to 991px) */
+$MD_MIN_WIDTH: 768px;
+/* lg: large devices (desktops, screen width from 992px and 1119px) */
+$LG_MIN_WIDTH: 992px;
+/* xl: large devices (large desktops, screen width 1200px and up) */
 
-$XS_MAX_WIDTH: $SM_MIN_WIDTH - 1px;
+$SM_MAX_WIDTH: $MD_MIN_WIDTH - 1px;
 
 
 // Grid System

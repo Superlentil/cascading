@@ -1,7 +1,8 @@
 View.Captcha = Backbone.View.extend({
   initialize: function(options) {
-    totalTokenCount = 4;
-    correctTokenCount = 1;
+    var totalTokenCount = 4;
+    var correctTokenCount = 1;
+    var tokenCssClass = "col-xs-6 col-sm-3";   // set the number of tokens displayed each line
     if (options) {
       if (options.totalTokenCount) {
         totalTokenCount = options.totalTokenCount;
@@ -9,9 +10,13 @@ View.Captcha = Backbone.View.extend({
       if (options.correctTokenCount) {
         correctTokenCount = options.correctTokenCount;
       }
+      if (options.tokenCssClass) {
+        tokenCssClass = options.tokenCssClass;
+      }
     }
     this.totalTokenCount = totalTokenCount;
     this.correctTokenCount = correctTokenCount;
+    this.tokenCssClass = tokenCssClass;
     this.totalToken = [];
     this.correctToken = [];
     this.correctTokenPicked = [];
@@ -78,10 +83,9 @@ View.Captcha = Backbone.View.extend({
     }
     correctTokenHtml += "</p></div>";
     
-    var captchaElementWidthPercentage = 100.0 / this.totalTokenCount - 0.000001;
     var totalTokenHtml = "<div class='captcha-container'>";
     for (var index in this.totalToken) {
-      totalTokenHtml += "<div class='captcha-challenge' style='width: " + captchaElementWidthPercentage + "%;'>" + this.dotCaptcha(this.totalToken[index]) + "</div>";
+      totalTokenHtml += "<div class='captcha-challenge " + this.tokenCssClass + "'>" + this.dotCaptcha(this.totalToken[index]) + "</div>";
     }
     totalTokenHtml += "</div>";
     
@@ -253,7 +257,7 @@ View.Captcha = Backbone.View.extend({
     if (!pickedCorrectly) {
       event.stopImmediatePropagation();
       var that = this;
-      that.$el.find(".captcha-description").html("<strong><big>Please try again ...</big></strong>");
+      that.$el.find(".captcha-description").html("<strong><big>&#160;Please try again ... </big></strong>");
       that.$el.append("<div class='captcha-incorrect-pick'></div>");
       setTimeout(function(){
         that.render();

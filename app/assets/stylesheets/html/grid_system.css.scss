@@ -3,4 +3,10 @@
 
 
 // Default Grid System
-@include gridGenerator($GRID_COLUMN_COUNT, "col");
+@include gridGenerator($GRID_COLUMN_COUNT, "col-xs");
+
+
+// Grid System for Wide Screen
+@media (min-width: $SM_MIN_WIDTH) {
+  @include gridGenerator($GRID_COLUMN_COUNT, "col-sm");
+}

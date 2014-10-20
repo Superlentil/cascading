@@ -1,10 +1,10 @@
 <div class="row">
-  <div class="col-12 layout-leftNav-row">
+  <div class="col-xs-12 layout-leftNav-row">
     <a class="layout-leftNav-closeNav" href="#">Home</a>
   </div>
 
   <% _.each(categories, function(category) { %>
-    <div class="col-12 layout-leftNav-row">
+    <div class="col-xs-12 layout-leftNav-row">
       <a class="layout-leftNav-closeNav" href="#/articles/category/<%= category.get("id") %>"><%= category.get("name") %></a>
     </div>
   <% }); %>
