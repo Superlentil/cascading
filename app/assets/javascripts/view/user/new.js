@@ -49,6 +49,22 @@ View.User.New = Backbone.View.extend({
   },
   
   
+  delegateEvents: function() {
+    Backbone.View.prototype.delegateEvents.call(this);
+    if (this.viewCaptcha) {
+      this.viewCaptcha.delegateEvents();
+    }
+  },
+  
+  
+  undelegateEvents: function() {
+    Backbone.View.prototype.undelegateEvents.call(this);
+    if (this.viewCaptcha) {
+      this.viewCaptcha.undelegateEvents();
+    }
+  },
+  
+  
   onSave: function(event) {
     event.preventDefault();
     
@@ -252,5 +268,12 @@ View.User.New = Backbone.View.extend({
       this.captchaValid = false;
     }
     return this.captchaValid;
+  },
+  
+  
+  remove: function() {
+    this.viewCaptcha.remove();
+    
+    Backbone.View.prototype.remove.call(this);
   }
 });

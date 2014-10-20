@@ -143,15 +143,13 @@ View.Layout.Main = Backbone.View.extend({
     event.preventDefault();
     event.stopPropagation();
     
-    var leftNavOn = this.leftNavOn;
-    this.closeNav();
-
-    this.viewHeader.undelegateEvents();
-    this.viewContent.undelegateEvents();
-    this.mainBody.on("click", this.closeNav);
-    
-    if (!leftNavOn) {
+    if (this.leftNavOn) {
+      this.closeNav();
+    } else {
       this.leftNavOn = true;
+      this.viewHeader.undelegateEvents();
+      this.viewContent.undelegateEvents();
+      this.mainBody.on("click", this.closeNav);
       this.leftNav.transition({x: this.leftNavWidthInPx}, 500, "ease");
       this.menuIcon.transition({rotate: "360deg"}, 500, "ease");
     }
@@ -162,15 +160,13 @@ View.Layout.Main = Backbone.View.extend({
     event.preventDefault();
     event.stopPropagation();
     
-    var rightNavOn = this.rightNavOn;
-    this.closeNav();
-
-    this.viewHeader.undelegateEvents();
-    this.viewContent.undelegateEvents();
-    this.mainBody.on("click", this.closeNav);
-    
-    if (!rightNavOn) {
+    if (this.rightNavOn) {
+      this.closeNav();
+    } else {
       this.rightNavOn = true;
+      this.viewHeader.undelegateEvents();
+      this.viewContent.undelegateEvents();
+      this.mainBody.on("click", this.closeNav);
       this.rightNav.transition({x: -this.rightNavWidthInPx}, 500, "ease");
       this.userAvatar.transition({rotate: "-360deg"}, 500, "ease");
     }
