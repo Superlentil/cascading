@@ -2,6 +2,8 @@ View.User.New = Backbone.View.extend({
   initialize: function(options) {   
     this.signInHandler = options.signInHandler;
     
+    _.bindAll(this, "validateCaptcha");
+    
     this.emailValid = false;
     this.repeatPasswordValid = false;
     this.nicknameValid = false;
@@ -18,7 +20,7 @@ View.User.New = Backbone.View.extend({
   render: function() {
     this.$el.html(this.template());
     
-    this.viewCaptcha = new View.Captcha();
+    this.viewCaptcha = new View.Captcha({validateCallback: this.validateCaptcha});
     $("#user-new-captcha").append(this.viewCaptcha.render().$el);
     
     this.email = $("#user-new-email");
@@ -44,8 +46,7 @@ View.User.New = Backbone.View.extend({
     "blur #user-new-password": "validatePassword",
     "blur #user-new-repeat-password": "validateRepeatPassword",
     "blur #user-new-nickname": "validateNickname",
-    "blur #user-new-avatar": "validateAvatar",
-    "click #user-new-captcha": "validateCaptcha"
+    "blur #user-new-avatar": "validateAvatar"
   },
   
   
@@ -254,20 +255,18 @@ View.User.New = Backbone.View.extend({
   },
   
   
-  validateCaptcha: function(event) {
+  validateCaptcha: function(passCaptchaValidate) {
     var captchaContainer = this.captcha;
     var captchaErrorInfoContainer = this.captchaError;
-    if (this.viewCaptcha.hasPassedCaptcha()) {
+    this.captchaValid = passCaptchaValidate;
+    if (passCaptchaValidate) {
       this.markValid(captchaContainer);
       captchaErrorInfoContainer.hide(500);
-      this.captchaValid = true;
       this.refreshSaveError();
     } else {
       this.markInvalid(captchaContainer);
       captchaErrorInfoContainer.show(500);
-      this.captchaValid = false;
     }
-    return this.captchaValid;
   },
   
   

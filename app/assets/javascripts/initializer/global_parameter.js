@@ -4,7 +4,7 @@ var Collection = {};
 var View = {};
 
 
-var GlobalConstant = {
+var GlobalConstant = { 
   ArticleStatus: {   // If this enumeration needs to be modified, please modify the corresponding one in the "Ruby on Rails" code together.
     INITIAL_TEMPORARILY_CREATED: 0,
     DRAFT: 1,

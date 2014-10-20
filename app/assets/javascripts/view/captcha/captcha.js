@@ -1,26 +1,13 @@
 View.Captcha = Backbone.View.extend({
   initialize: function(options) {
-    var totalTokenCount = 4;
-    var correctTokenCount = 1;
-    var tokenCssClass = "col-xs-6 col-sm-3";   // set the number of tokens displayed each line
-    if (options) {
-      if (options.totalTokenCount) {
-        totalTokenCount = options.totalTokenCount;
-      }
-      if (options.correctTokenCount) {
-        correctTokenCount = options.correctTokenCount;
-      }
-      if (options.tokenCssClass) {
-        tokenCssClass = options.tokenCssClass;
-      }
+    this.validateCallback = null;
+    if (options && options.validateCallback) {
+      this.validateCallback = options.validateCallback;
     }
-    this.totalTokenCount = totalTokenCount;
-    this.correctTokenCount = correctTokenCount;
-    this.tokenCssClass = tokenCssClass;
-    this.totalToken = [];
-    this.correctToken = [];
-    this.correctTokenPicked = [];
-    this.secretKey = 0;
+    
+    this.maxTokenCount = 4;
+    this.token = [];
+    this.tokenDot = [];
     this.passCaptcha = false;
     
     this.CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -76,25 +63,13 @@ View.Captcha = Backbone.View.extend({
   
   render: function() {
     this.pickTokens();
-    
-    var correctTokenHtml = "<div><p class='captcha-description'>Please pick out the letter: &#160; ";
-    for (var index in this.correctToken) {
-      correctTokenHtml += "<strong><big> " + this.CHARS.charAt(this.correctToken[index]) + " </big></strong>";
-    }
-    correctTokenHtml += "</p></div>";
-    
-    var totalTokenHtml = "<div class='captcha-container'>";
-    for (var index in this.totalToken) {
-      totalTokenHtml += "<div class='captcha-challenge " + this.tokenCssClass + "'>" + this.dotCaptcha(this.totalToken[index]) + "</div>";
-    }
-    totalTokenHtml += "</div>";
-    
-    this.$el.html(correctTokenHtml + totalTokenHtml);
-    
+    var html ="<div class='captcha-row captcha-refresh-reminder'><i><small>Click Picture to Change One</small></i></div>"
+        + this.makeDotCaptcha(this.combineTokens())
+        +"<div class='captcha-row'>Please Type Letters Shown Above:</div><div class='captcha-row'><input type='textfield' class='captcha-answer'></div>";
+    this.$el.html(html);
     $(function() {
-      $(".captcha-challenge").show(1000); 
+      $(".captcha-challenge").show(1000);
     });
-    
     return this;
   },
   
@@ -102,7 +77,7 @@ View.Captcha = Backbone.View.extend({
   noiseString: function(length) {
     var noiseStr = "";
     for (var index = 0; index < length; ++ index) {
-      if (Math.floor(Math.random() * 5) > 0) {
+      if (Math.floor(Math.random() * 20) > 0) {
         noiseStr += " ";
       } else {
         noiseStr += "*";
@@ -179,11 +154,9 @@ View.Captcha = Backbone.View.extend({
   },
   
   
-  dotCaptcha: function(dotIndex) {
-    var dot = this.complicateDot(dotIndex);
+  makeDotCaptcha: function(dot) {
     var lineCount = dot.length;
-    var elementId = dotIndex + this.secretKey;
-    var dotCaptchaHtml = "<div class='captcha-element' data-element-id='" + elementId + "'><div class='captcha-element-text'>";
+    var dotCaptchaHtml = "<div class='captcha-challenge'><div class='captcha-challenge-text'>";
     for (var index = 0; index < lineCount; ++index) {
       dotCaptchaHtml += dot[index].replace(/ /g, "&#160;") + "&#160;&#160;<br>";
     }
@@ -193,76 +166,122 @@ View.Captcha = Backbone.View.extend({
   
   
   pickTokens: function() {
-    var totalToken = this.randomSubset(this.DOTS.length, this.totalTokenCount);
-    var correctTokenIndex = this.randomSubset(totalToken.length, this.correctTokenCount);
-    var correctToken = [];
-    var correctTokenPicked = [];
-    for (var index in correctTokenIndex) {
-      correctToken.push(totalToken[correctTokenIndex[index]]);
-      correctTokenPicked.push(false);
-    }
     this.passCaptcha = false;
-    this.totalToken = totalToken;
-    this.correctToken = correctToken;
-    this.correctTokenPicked = correctTokenPicked;
-    this.secretKey = Math.floor(Math.random() * 1000000);
-  },
-  
-  
-  randomSubset: function(setLength, subsetLength) {
-    var subset = [];
-    var count = subsetLength;
-    while (count > 0) {
-      var randomIndex = Math.floor(Math.random() * setLength);
+    
+    var tokenCount = Math.floor(Math.random() * (this.maxTokenCount - 1)) + 2;
+    
+    var allTokensCount = this.DOTS.length;
+    var tokenSubset = [];
+    while (tokenCount > 0) {
+      var randomIndex = Math.floor(Math.random() * allTokensCount);
       var available = true;
-      for (var index in subset) {
-        if (subset[index] === randomIndex) {
+      for (var index in tokenSubset) {
+        if (tokenSubset[index] === randomIndex) {
           available = false;
           break;
         }
       }
       if (available) {
-        subset.push(randomIndex);
-        --count;
+        tokenSubset.push(randomIndex);
+        --tokenCount;
       }
     }
-    return subset;
+    
+    this.token = tokenSubset;
+    var tokenDot = [];
+    for (var index in tokenSubset) {
+      tokenDot.push(this.complicateDot(tokenSubset[index]));
+    }
+    this.tokenDot = tokenDot;
+  },
+  
+  
+  combineTokens: function() {
+    var tokenDot = this.tokenDot;
+    var tokenCount = tokenDot.length;
+    var noiseTokenCount = this.maxTokenCount - tokenCount;
+    if (noiseTokenCount > 0) {
+      var noiseWidth = noiseTokenCount * tokenDot[0].length;
+      var usedNoiseWidth = 0;
+      for (var index in tokenDot) {
+        usedNoiseWidth = Math.floor(Math.random() * (noiseWidth + 1));
+        noiseWidth = noiseWidth - usedNoiseWidth;
+        for (var line in tokenDot[index]) {
+          tokenDot[index][line] += this.noiseString(usedNoiseWidth);
+        }
+      }
+      for (var line in tokenDot[0]) {
+        tokenDot[0][line] = this.noiseString(noiseWidth) + tokenDot[0][line];
+      }
+    }
+    var combinedDot = [];
+    var lineCount = tokenDot[0].length;
+    for(var line = 0; line < lineCount; ++line) {
+      var lineDot = "";
+      for (var index in tokenDot) {
+        lineDot += tokenDot[index][line];
+      }
+      combinedDot.push(lineDot);
+    }
+    return combinedDot;
   },
   
   
   events: {
-    "click .captcha-element": "validatePick"
+    "click .captcha-challenge": "refreshChallenge",
+    "keyup .captcha-answer": "validateAnswer"
   },
   
   
-  validatePick: function(event) {    
-    var captchaElement = $(event.currentTarget);
-    var elementId = parseInt(captchaElement.data("elementId")) - this.secretKey;
+  refreshChallenge: function(event) {
+    event.stopImmediatePropagation();
     
-    var correctToken = this.correctToken;
-    var correctTokenPicked = this.correctTokenPicked;
-    var pickedCorrectly = false;
-    var passCaptcha = true;
-    for (var index in correctToken) {
-      if (correctToken[index] === elementId) {
-        pickedCorrectly = true;
-        if (!correctTokenPicked[index]) {
-          correctTokenPicked[index] = true;
-          captchaElement.addClass("captcha-correct-pick");
+    var that = this;
+    
+    $(".captcha-challenge").remove();
+    that.pickTokens();
+    $(".captcha-refresh-reminder").after(that.makeDotCaptcha(this.combineTokens()));
+    $(function() {
+      $(".captcha-challenge").show(1000);
+      that.$el.trigger("click");   // keep propagate "click" event.
+    });
+  },
+  
+  
+  validateAnswer: function(event) {
+    var answerInput = $(event.currentTarget);
+    var answer = answerInput.val().toLowerCase();
+    var answerLength = answer.length;
+    var tokenLength = this.token.length;
+    var correctAnswerLength = false;
+    if (answerLength === tokenLength) {
+      correctAnswerLength = true;
+    }
+    var goodAnswerInputTillNow = true;
+    if (answerLength > tokenLength) {
+      goodAnswerInputTillNow = false;
+    } else {
+      var letterStartCode = "a".charCodeAt(0);
+      for (var index = 0; index < answerLength; ++index) {
+        if ((answer.charCodeAt(index) - letterStartCode) != this.token[index]) {
+          goodAnswerInputTillNow = false;
+          break;
         }
       }
-      passCaptcha &= correctTokenPicked[index];
+    }
+    var passCaptcha = goodAnswerInputTillNow && correctAnswerLength;
+    if (goodAnswerInputTillNow) {
+      answerInput.removeClass("captcha-incorrect-answer");
+      if (passCaptcha) {
+        answerInput.addClass("captcha-correct-answer");
+      }
+    } else {
+      answerInput.removeClass("captcha-correct-answer");
+      answerInput.addClass("captcha-incorrect-answer");
     }
     this.passCaptcha = passCaptcha;
-    if (!pickedCorrectly) {
-      event.stopImmediatePropagation();
-      var that = this;
-      that.$el.find(".captcha-description").html("<strong><big>&#160;Please try again ... </big></strong>");
-      that.$el.append("<div class='captcha-incorrect-pick'></div>");
-      setTimeout(function(){
-        that.render();
-        that.$el.trigger("click");   // keep propagate "click" event.
-      }, 500);
+    if (this.validateCallback) {
+      this.validateCallback(passCaptcha);
     }
   },
   
