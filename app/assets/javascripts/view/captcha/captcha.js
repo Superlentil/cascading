@@ -13,6 +13,8 @@ View.Captcha = Backbone.View.extend({
     this.token = [];
     this.tokenDot = [];
     this.passCaptcha = false;
+    this.incorrectAnswerCount = 0;
+    this.maxIncorrectAnswerCount = 10;
     
     this.CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     this.DOTS = [
@@ -177,6 +179,7 @@ View.Captcha = Backbone.View.extend({
   
   pickTokens: function() {
     this.passCaptcha = false;
+    this.incorrectAnswerCount = 0;
     
     var tokenCount = Math.floor(Math.random() * (this.maxTokenCount - 1)) + 2;
     
@@ -244,7 +247,9 @@ View.Captcha = Backbone.View.extend({
   
   
   refreshChallenge: function(event) {
-    event.stopImmediatePropagation();
+    if (event) {
+      event.stopImmediatePropagation();
+    }
     
     var that = this;
     
@@ -258,7 +263,9 @@ View.Captcha = Backbone.View.extend({
     challengeContainer.append(newCaptcha);
     $(function() {
       newCaptcha.show(1000);
-      that.$el.trigger("click");   // keep propagate "click" event.
+      if (event) {
+        that.$el.trigger(event.type);   // keep propagate trigger event.
+      }
     });
   },
   
@@ -275,28 +282,36 @@ View.Captcha = Backbone.View.extend({
     var goodAnswerInputTillNow = true;
     if (answerLength > tokenLength) {
       goodAnswerInputTillNow = false;
+      ++this.incorrectAnswerCount;
     } else {
       var letterStartCode = "a".charCodeAt(0);
       for (var index = 0; index < answerLength; ++index) {
         if ((answer.charCodeAt(index) - letterStartCode) != this.token[index]) {
           goodAnswerInputTillNow = false;
+          ++this.incorrectAnswerCount;
           break;
         }
       }
     }
 
     this.passCaptcha = goodAnswerInputTillNow && correctAnswerLength;
-    answerInput.removeClass("captcha-correct-answer captcha-incorrect-answer");
-    if (goodAnswerInputTillNow) {
-      if (correctAnswerLength) {
-        answerInput.addClass("captcha-correct-answer");
-        this.validateCallback(2);
-      } else {
-        this.validateCallback(1);
-      }
+    
+    if (this.incorrectAnswerCount > this.maxIncorrectAnswerCount) {
+      this.incorrectAnswerCount = 0;
+      this.refreshChallenge();
     } else {
-      answerInput.addClass("captcha-incorrect-answer");
-      this.validateCallback(0);
+      answerInput.removeClass("captcha-correct-answer captcha-incorrect-answer");
+      if (goodAnswerInputTillNow) {
+        if (correctAnswerLength) {
+          answerInput.addClass("captcha-correct-answer");
+          this.validateCallback(2);
+        } else {
+          this.validateCallback(1);
+        }
+      } else {
+        answerInput.addClass("captcha-incorrect-answer");
+        this.validateCallback(0);
+      }
     }
   },
   

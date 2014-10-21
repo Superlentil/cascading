@@ -2,7 +2,7 @@ View.User.New = Backbone.View.extend({
   initialize: function(options) {   
     this.signInHandler = options.signInHandler;
     
-    _.bindAll(this, "validateCaptcha");
+    _.bindAll(this, "markCaptchaStatus");
     
     this.emailValid = false;
     this.repeatPasswordValid = false;
@@ -20,7 +20,7 @@ View.User.New = Backbone.View.extend({
   render: function() {
     this.$el.html(this.template());
     
-    this.viewCaptcha = new View.Captcha({validateCallback: this.validateCaptcha});
+    this.viewCaptcha = new View.Captcha({validateCallback: this.markCaptchaStatus});
     $("#user-new-captcha").append(this.viewCaptcha.render().$el);
     
     this.email = $("#user-new-email");
@@ -255,7 +255,7 @@ View.User.New = Backbone.View.extend({
   },
   
   
-  validateCaptcha: function(statusCode) {
+  markCaptchaStatus: function(statusCode) {
     var captchaContainer = this.captcha;
     var captchaErrorInfoContainer = this.captchaError;
     this.captchaValid = false;
