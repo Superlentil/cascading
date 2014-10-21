@@ -24,6 +24,7 @@ View.User.New = Backbone.View.extend({
     $("#user-new-captcha").append(this.viewCaptcha.render().$el);
     
     this.email = $("#user-new-email");
+    this.emailValue = "";
     this.emailError = $("#user-new-email-error");
     this.password = $("#user-new-password");
     this.passwordError = $("#user-new-password-error");
@@ -169,29 +170,32 @@ View.User.New = Backbone.View.extend({
     
     if (email) {
       if (GlobalValidator.Email(email)) {
-        var that = this;
-
-        this.removeMark(input);
-        inputError.html("<small style='color: blue'>Check the availablity for this email ...</small>");
-        inputError.show(500);
-        
-        $.ajax({
-          url: "/users/emailAvailable",
-          dataType: "json",
-          data: {email: input.val()},
-          success: function(returnedData) {
-            if (returnedData.available) {
-              that.markValid(input);
-              inputError.hide(500);
-              that.emailValid = true;
-              that.refreshSaveError();
-            } else {
-              that.markInvalid(input);
-              inputError.html("<small>This email has been registered.</small>");
-              this.emailValid = false;
+        if (email !== this.emailValue) {
+          var that = this;
+  
+          this.removeMark(input);
+          inputError.html("<small style='color: blue'>Check the availablity for this email ...</small>");
+          inputError.show(500);
+          
+          $.ajax({
+            url: "/users/emailAvailable",
+            dataType: "json",
+            data: {email: input.val()},
+            success: function(returnedData) {
+              if (returnedData.available) {
+                that.emailValue = email;
+                that.markValid(input);
+                inputError.hide(500);
+                that.emailValid = true;
+                that.refreshSaveError();
+              } else {
+                that.markInvalid(input);
+                inputError.html("<small>This email has been registered.</small>");
+                this.emailValid = false;
+              }
             }
-          }
-        });
+          });
+        }
       } else {
         this.markInvalid(input);
         inputError.html("<small>The format of the input email is not correct.</small>");
@@ -275,7 +279,9 @@ View.User.New = Backbone.View.extend({
   
   
   remove: function() {
-    this.viewCaptcha.remove();
+    if (this.viewCaptcha) {
+      this.viewCaptcha.remove();
+    }
     
     Backbone.View.prototype.remove.call(this);
   }
