@@ -255,14 +255,18 @@ View.User.New = Backbone.View.extend({
   },
   
   
-  validateCaptcha: function(passCaptchaValidate) {
+  validateCaptcha: function(statusCode) {
     var captchaContainer = this.captcha;
     var captchaErrorInfoContainer = this.captchaError;
-    this.captchaValid = passCaptchaValidate;
-    if (passCaptchaValidate) {
+    this.captchaValid = false;
+    if (statusCode === 2) {
+      this.captchaValid = true;
       this.markValid(captchaContainer);
       captchaErrorInfoContainer.hide(500);
       this.refreshSaveError();
+    } else if (statusCode === 1) {
+      this.removeMark(captchaContainer);
+      captchaErrorInfoContainer.hide(500);
     } else {
       this.markInvalid(captchaContainer);
       captchaErrorInfoContainer.show(500);

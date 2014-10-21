@@ -1,6 +1,10 @@
 View.Captcha = Backbone.View.extend({
   initialize: function(options) {
-    this.validateCallback = null;
+    this.validateCallback = function(statusCode) {
+      // statusCode === 0 : fail validation
+      // statusCode === 1 : inputing, and haven't passed validation yet, but all current inputs are correct
+      // statusCode === 2 : pass validation
+    };   
     if (options && options.validateCallback) {
       this.validateCallback = options.validateCallback;
     }
@@ -62,15 +66,21 @@ View.Captcha = Backbone.View.extend({
   
   
   render: function() {
-    this.pickTokens();
+    var that = this;
+    
+    that.pickTokens();
     var html ="<div class='captcha-row captcha-refresh-reminder'><i><small>Click Picture to Change One</small></i></div>"
-        + this.makeDotCaptcha(this.combineTokens())
+        + "<div class='captcha-challenge'>" + that.makeDotCaptcha(that.combineTokens()) + "</div>"
         +"<div class='captcha-row'>Please Type Letters Shown Above (Case Insensitive):</div><div class='captcha-row'><input type='textfield' class='captcha-answer'></div>";
-    this.$el.html(html);
+    that.$el.html(html);
+    
     $(function() {
-      $(".captcha-challenge").show(1000);
+      var challengeContainer = that.$el.find(".captcha-challenge");
+      var challengeContainerHeight = challengeContainer.outerHeight();
+      challengeContainer.css("height", challengeContainerHeight + "px");
     });
-    return this;
+    
+    return that;
   },
   
   
@@ -156,11 +166,11 @@ View.Captcha = Backbone.View.extend({
   
   makeDotCaptcha: function(dot) {
     var lineCount = dot.length;
-    var dotCaptchaHtml = "<div class='captcha-challenge'><div class='captcha-challenge-text'>";
+    var dotCaptchaHtml = "<div class='captcha-challenge-text'>";
     for (var index = 0; index < lineCount; ++index) {
       dotCaptchaHtml += dot[index].replace(/ /g, "&#160;") + "&#160;&#160;<br>";
     }
-    dotCaptchaHtml += "</div></div>";
+    dotCaptchaHtml += "</div>";
     return dotCaptchaHtml;
   },
   
@@ -238,14 +248,16 @@ View.Captcha = Backbone.View.extend({
     
     var that = this;
     
-    $(".captcha-challenge").remove();
+    var challengeContainer = $(".captcha-challenge");
+    challengeContainer.empty();
     var answerInput = $(".captcha-answer");
     answerInput.val("");
     answerInput.trigger("keyup");
     that.pickTokens();
-    $(".captcha-refresh-reminder").after(that.makeDotCaptcha(this.combineTokens()));
+    var newCaptcha = $(that.makeDotCaptcha(this.combineTokens())).hide();
+    challengeContainer.append(newCaptcha);
     $(function() {
-      $(".captcha-challenge").show(1000);
+      newCaptcha.show(1000);
       that.$el.trigger("click");   // keep propagate "click" event.
     });
   },
@@ -272,18 +284,19 @@ View.Captcha = Backbone.View.extend({
         }
       }
     }
-    var passCaptcha = goodAnswerInputTillNow && correctAnswerLength;
+
+    this.passCaptcha = goodAnswerInputTillNow && correctAnswerLength;
     answerInput.removeClass("captcha-correct-answer captcha-incorrect-answer");
     if (goodAnswerInputTillNow) {
-      if (passCaptcha) {
+      if (correctAnswerLength) {
         answerInput.addClass("captcha-correct-answer");
+        this.validateCallback(2);
+      } else {
+        this.validateCallback(1);
       }
     } else {
       answerInput.addClass("captcha-incorrect-answer");
-    }
-    this.passCaptcha = passCaptcha;
-    if (this.validateCallback) {
-      this.validateCallback(passCaptcha);
+      this.validateCallback(0);
     }
   },
   

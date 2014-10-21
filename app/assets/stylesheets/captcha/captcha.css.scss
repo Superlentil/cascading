@@ -2,6 +2,11 @@
 @import "html/setting";
 
 
+.captcha-hide {
+  display: none;
+}
+
+
 .captcha-container {
   position: relative;
 }
@@ -24,7 +29,6 @@
   color: #000;
   text-align: center;
   @include border-radius(4px);
-  display: none;
 }
 
 
