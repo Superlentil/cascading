@@ -1,13 +1,31 @@
-<div>
-  <h3><%= user.get("nickname") %></h3>
-  <p><img src="<%= user.get("avatar_url") %>" /></p>
-  <p>UserID: <%= user.get("id") %></p>
-  <p>Email: <%= user.get("email") %></p>
-  <br />
-  <a href="#/user/<%= user.get("id") %>/edit">edit</a>
-  
-  <br><br><br>
-  
-  <a href="#/articles/user/<%= user.get("id") %>">All My Articles</a><br><br>
-  <a href="#/articles/new">Write a New Article</a>
+<div id="user-show-container">
+  <div class="one-central-column-container">
+    <div class="central-column">
+      <div id="user-show-header" class="row">
+        <div class="left"><img src="<%= user.get("avatar_url") %>" /></div>
+        <div class="left"><div id="user-show-nickname">welcome, <strong><%= user.get("nickname") %></strong></div></div>
+      </div>
+      
+      <div class="row user-show-option-group">
+        <div class="user-show-option">
+          <a href="#/user/<%= user.get("id") %>/edit">Edit My Profile</a>
+        </div>
+        <div class="user-show-option">
+          <a href="#/user/<%= user.get("id") %>/edit">Edit My Password</a>
+        </div>
+      </div>
+      
+      <div class="row user-show-option-group">
+        <div class="user-show-option">
+          <a href="#/articles/user/<%= user.get("id") %>">All My Published Articles</a>
+        </div>
+        <div class="user-show-option">
+          <a href="#/articles/user/<%= user.get("id") %>">All My Drafts</a>
+        </div>
+        <div class="user-show-option">
+          <a href="#/articles/new">Write a New Article</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
