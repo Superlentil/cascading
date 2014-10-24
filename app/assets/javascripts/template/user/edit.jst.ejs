@@ -1,9 +1,43 @@
-<h3>Edit User</h3>
-<div>
-  Email: <input id="edit_user_email_input" type="text" value="<%= user.get("email") %>" /><br />
-  Nickname: <input id="edit_user_nickname_input" type="text" value="<%= user.get("nickname") %>" /><br />
-  Avatar: <img src="<%= user.get("avatar_url") %>" /><br />
-  <input id="edit_user_avatar_input" type="file" /><br />
-  <input id="edit_user_save_button" type="button" value="save" />
-  <input id="edit_user_cancel_button" type="button" value="cancel" />
+<div id="user-edit-container">
+  <div class="one-central-column-container">
+    <div class="central-column">
+      <h1 class="row">Edit <i><%= user.get("nickname") %>'s</i> Profile</h1>
+      
+      <div class="empty-row"></div>
+      
+      <h3 class="row">Email</h3>
+      <div class="row"><input id="user-edit-email" type="email" value="<%= user.get("email") %>"></div>
+      <div id="user-edit-email-error" class="hide"></div>
+      
+      <div class="empty-row"></div>
+      
+      <h3 class="row">Nickname</h3>
+      <div class="row"><input id="user-edit-nickname" type="textfield" value="<%= user.get("nickname") %>"></div>
+      <div id="user-edit-nickname-error" class="hide"><small>The nickname should be made by at least 3 and at most 10 letters, numbers, or Asian characters.</small></div>
+      
+      <div class="empty-row"></div>
+      
+      <h3 class="row">Current Avatar</h3>
+      <div class="row" style="padding-left:30px;"><img src="<%= user.get("avatar_url") %>"></div>
+      <div class="row"><small>Change Another One</small></div>
+      <div class="row"><input id="user-edit-avatar" type="file"></div>
+      
+      <div class="empty-row"></div>
+      
+      <h3 class="row">Verify Your Identity</h3>
+      <div class="row"><small>Please Type Your Password</small></div>
+      <div class="row"><input id="user-edit-verify-password" type="password"></div>
+      
+      <div class="empty-row"></div>
+      <div class="empty-row"></div>
+      
+      <div class="row">
+        <span class="inline-block col-xs-12 col-sm-8 padding-s-lr"><input id="user-edit-save" class="button button-primary" type="button" value="Save"></span>
+        <span class="inline-block col-xs-12 col-sm-4 padding-s-lr"><input id="user-edit-cancel" class="button button-default" type="button" value="Cancel"></span>
+      </div>
+      <div id="user-edit-save-error" class="hide"><small>You may type an incorrect password, or still have some invalid input above.</small></div>
+      
+      <div class="empty-row"></div>
+    </div>
+  </div>
 </div>

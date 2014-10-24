@@ -1,9 +1,4 @@
-View.User.Edit = Backbone.View.extend({
-  initialize: function(options) {   
-    this.signInHandler = options.signInHandler;
-  },
-  
-  
+View.User.Edit = View.User.ModifyUserInputValidator.extend({
   el: "#layout-content",
   
   
@@ -20,6 +15,17 @@ View.User.Edit = Backbone.View.extend({
           if (response.id) {
             that.model = fetchedUser;
             that.$el.html(that.template({user: fetchedUser}));
+            
+            that.captchaValid = true;
+            that.email = $("#user-edit-email");
+            that.emailValue = "";
+            that.oldEmail = fetchedUser.get("email");
+            that.emailError = $("#user-edit-email-error");
+            that.password = $("#user-edit-verify-password");
+            that.nickname = $("#user-edit-nickname");
+            that.nicknameError = $("#user-edit-nickname-error");
+            that.avatar = $("#user-edit-avatar");
+            that.saveError = $("#user-edit-save-error");
           } else {
             Backbone.history.loadUrl("forbidden");
           }
@@ -30,42 +36,61 @@ View.User.Edit = Backbone.View.extend({
   
   
   events: {
-    "click #edit_user_save_button": "onSave",
-    "click #edit_user_cancel_button": "onCancel"
+    "click #user-edit-save": "onSave",
+    "click #user-edit-cancel": "onCancel",
+    
+    "blur #user-edit-email": "validateEmail",
+    "blur #user-edit-nickname": "validateNickname",
+    "blur #user-edit-avatar": "validateAvatar"
   },
   
   
   onSave: function(event) {
     event.preventDefault();
     
-    var that = this;
-    
-    var formData = new FormData();
-    var userId = that.model.get("id");
-    formData.append("user[id]", userId);
-    formData.append("user[email]", $("#edit_user_email_input").val());
-    formData.append("user[nickname]", $("#edit_user_nickname_input").val());
-    if ($("#edit_user_avatar_input").val() !== "") {
-      formData.append("user[avatar]", $("#edit_user_avatar_input").get(0).files[0]);
+    var validator = GlobalValidator;
+    var email = this.email.val();
+    var password = this.password.val();
+    var nickname = this.nickname.val();
+    if (validator.Email(email) 
+        && validator.Password(password) 
+        && validator.Nickname(nickname))
+    {
+      var that = this;
+      
+      that.saveError.hide(500);
+  
+      var formData = new FormData();
+      var userId = that.model.get("id");
+      formData.append("user[id]", userId);
+      formData.append("user[email]", email);
+      formData.append("user[nickname]", nickname);
+      formData.append("user[password]", password);
+      if ($("#user-edit-avatar").val() !== "") {
+        formData.append("user[avatar]", $("#user-edit-avatar").get(0).files[0]);
+      }
+      
+      var user = new Model.User.User();
+      
+      user.save(formData, {    
+        success: function(savedUser) {
+          that.signInHandler(null, null, true);
+          Backbone.history.navigate("user/" + savedUser.id, {trigger: true});
+        },
+        
+        error: function(unsavedUser, response) {
+          that.saveError.show(500);
+          that.validateEmail(null, true);
+        }
+      }, "PUT", "/" + that.model.urlRoot + "/" + userId);
+    } else {
+      this.saveError.show(500);
     }
-    
-    var user = new Model.User.User();
-    
-    user.save(formData, {    
-      success: function(savedUser) {
-        that.signInHandler(null, null, true);
-        Backbone.history.navigate("user/" + savedUser.id, {trigger: true});
-      },
-      
-      error: function(jqXHR, textStatus, errorThrown) {},
-      
-      complete: function(jqXHR, textStatus ) {}
-    }, "PUT", "/" + that.model.urlRoot + "/" + userId);
   },
   
   
   onCancel: function(event) {
     event.preventDefault();
-    Backbone.history.navigate("", {trigger: true});
+    Backbone.history.navigate("user/" + this.model.get("id"), {trigger: true});
   }
 });

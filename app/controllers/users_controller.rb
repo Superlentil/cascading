@@ -49,11 +49,16 @@ class UsersController < ApplicationController
 
   def update
     @user = User.find(params[:id])
-    if @user.update(userParams)
-      setUserLoginSession(@user)
-      respond_with @user
+    if @user.password == params[:user][:password]
+      params[:user].delete(:password)
+      if @user.update(userParams)
+        setUserLoginSession(@user)
+        respond_with @user
+      else
+        setResponseMessage("error", "Fail to update user!")
+      end
     else
-      setResponseMessage("error", "Fail to update user!")
+      setResponseMessage("error", "Password is not correct!")
     end
   end
 
