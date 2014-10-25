@@ -1,4 +1,4 @@
-View.User.New = View.User.ModifyUserInputValidator.extend({
+View.User.New = View.User.ModifyInputValidator.extend({
   el: "#layout-content",
   
   
@@ -7,6 +7,8 @@ View.User.New = View.User.ModifyUserInputValidator.extend({
   
   render: function() {
     this.$el.html(this.template());
+    
+    this.resetIndicators(false);
     
     this.viewCaptcha = new View.Captcha({validateCallback: this.markCaptchaStatus});
     $("#user-new-captcha").append(this.viewCaptcha.render().$el);

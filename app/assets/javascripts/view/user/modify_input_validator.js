@@ -1,15 +1,18 @@
-View.User.ModifyUserInputValidator = Backbone.View.extend({
+View.User.ModifyInputValidator = Backbone.View.extend({
   initialize: function(options) {
     if(options && options.signInHandler) {
       this.signInHandler = options.signInHandler;
     }
     
     _.bindAll(this, "markCaptchaStatus");
-    
-    this.emailValid = false;
-    this.repeatPasswordValid = false;
-    this.nicknameValid = false;
-    this.captchaValid = false;
+  },
+  
+  
+  resetIndicators: function(value) {
+    this.emailValid = value;
+    this.repeatPasswordValid = value;
+    this.nicknameValid = value;
+    this.captchaValid = value;
   },
   
   

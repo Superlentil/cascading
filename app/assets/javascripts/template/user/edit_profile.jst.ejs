@@ -1,24 +1,24 @@
-<div id="user-edit-container">
+<div id="user-modify-container">
   <div class="one-central-column-container">
     <div class="central-column">
-      <h1 class="row">Edit <i><%= user.get("nickname") %>'s</i> Profile</h1>
+      <h1 class="row">Edit <i><%= nickname %>'s</i> Profile</h1>
       
       <div class="empty-row"></div>
       
       <h3 class="row">Email</h3>
-      <div class="row"><input id="user-edit-email" type="email" value="<%= user.get("email") %>"></div>
+      <div class="row"><input id="user-edit-email" type="email" value="<%= email %>"></div>
       <div id="user-edit-email-error" class="hide"></div>
       
       <div class="empty-row"></div>
       
       <h3 class="row">Nickname</h3>
-      <div class="row"><input id="user-edit-nickname" type="textfield" value="<%= user.get("nickname") %>"></div>
+      <div class="row"><input id="user-edit-nickname" type="textfield" value="<%= nickname %>"></div>
       <div id="user-edit-nickname-error" class="hide"><small>The nickname should be made by at least 3 and at most 10 letters, numbers, or Asian characters.</small></div>
       
       <div class="empty-row"></div>
       
       <h3 class="row">Current Avatar</h3>
-      <div class="row" style="padding-left:30px;"><img src="<%= user.get("avatar_url") %>"></div>
+      <div class="row" style="padding-left:30px;"><img src="<%= avatarUrl %>"></div>
       <div class="row"><small>Change Another One</small></div>
       <div class="row"><input id="user-edit-avatar" type="file"></div>
       
@@ -27,6 +27,7 @@
       <h3 class="row">Verify Your Identity</h3>
       <div class="row"><small>Please Type Your Password</small></div>
       <div class="row"><input id="user-edit-verify-password" type="password"></div>
+      <div id="user-edit-verify-password-error" class="hide"><small>Password is incorrect.</small></div>
       
       <div class="empty-row"></div>
       <div class="empty-row"></div>

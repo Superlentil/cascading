@@ -1,6 +1,7 @@
 module LoginSessionsHelper
   def setUserLoginSession(user)
     cookies[:user_id] = user.id
+    cookies[:user_email] = user.email
     cookies[:user_nickname] = user.nickname
     cookies[:user_avatar_url] = user.avatar.url(:thumb)
     cookies[:user_login_status] = "success"
