@@ -2,16 +2,18 @@ Router = Backbone.Router.extend({
   routes: {
     "forbidden": "forbiddenAccess",
     
-    "": "articles",
+    "": "allArticles",
     "articles/category/:category_id": "articlesInCategory",
     "articles/user/:user_id": "articlesByUser",
+    "articles/user/:user_id/category/:category_id": "articlesByUserAndCategory",
     "articles/new": "newArticle",
     "article/:id": "showArticle",
     "article/:id/edit": "editArticle",
     
-    "categories": "categories",
+    "categories": "allCategories",
+    "categories/user/:user_id": "categoriesByUser",
     
-    "users": "users",
+    "users": "allUsers",
     "users/new": "newUser",
     "user/:id": "showUser",
     "user/:id/edit/profile": "editUserProfile",
@@ -44,7 +46,7 @@ Router = Backbone.Router.extend({
   },
 
   
-  articles: function() {
+  allArticles: function() {
     var viewIndex = new View.Article.Index();
     viewIndex.render();
     return viewIndex;
@@ -52,16 +54,23 @@ Router = Backbone.Router.extend({
   
   
   articlesInCategory: function(categoryId) {
-    var viewInCategory = new View.Article.InCategory({categoryId: categoryId});
-    viewInCategory.render();
-    return viewInCategory;
+    var viewArticlesInCategory = new View.Article.InCategory({categoryId: categoryId});
+    viewArticlesInCategory.render();
+    return viewArticlesInCategory;
   },
   
   
   articlesByUser: function(userId) {
-    var viewByUser = new View.Article.ByUser({userId: userId});
-    viewByUser.render();
-    return viewByUser;
+    var viewArticlesByUser = new View.Article.ByUser({userId: userId});
+    viewArticlesByUser.render();
+    return viewArticlesByUser;
+  },
+  
+  
+  articlesByUserAndCategory: function(userId, categoryId) {
+    var viewArticlesByUserAndCategory = new View.Article.ByUserAndCategory({userId: userId, categoryId: categoryId});
+    viewArticlesByUserAndCategory.render();
+    return viewArticlesByUserAndCategory;
   },
   
   
@@ -94,14 +103,21 @@ Router = Backbone.Router.extend({
   },
   
   
-  categories: function() {
+  allCategories: function() {
     var viewCategories = new View.Category.Index();
     viewCategories.render();
     return viewCategories;
   },
   
   
-  users: function() {
+  categoriesByUser: function(userId) {
+    var viewCategoriesByUser = new View.Category.ByUser({userId: userId});
+    viewCategoriesByUser.render();
+    return viewCategoriesByUser;
+  },
+  
+  
+  allUsers: function() {
 
   },
   

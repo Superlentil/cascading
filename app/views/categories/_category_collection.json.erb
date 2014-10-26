@@ -1,0 +1,12 @@
+[
+  <% unless allCategories.nil? %>
+    <% lastIndex = allCategories.length - 1 %>
+    <% allCategories.each_with_index do |category, index| %>
+      <% if index == lastIndex %>
+        <%= render partial: "category", locals: {category: category} %>
+      <% else %>
+        <%= render partial: "category", locals: {category: category} %>,
+      <% end %>
+    <% end %>
+  <% end %>
+]

@@ -1,4 +1,9 @@
 Collection.Article.InCategory = Backbone.Collection.extend({
+  initialize: function(options) {
+    this.categoryId = options.categoryId;
+  },
+  
+  
   model: Model.Article,
   
   
@@ -7,10 +12,9 @@ Collection.Article.InCategory = Backbone.Collection.extend({
   },
   
   
-  fetchBatch: function(batch, articlesPerBatch, categoryId, options) {
+  fetchBatch: function(batch, articlesPerBatch, options) {
     this.batch = batch;
     this.articlesPerBatch = articlesPerBatch;
-    this.categoryId = categoryId;
     
     this.fetch(options);
   }

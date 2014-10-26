@@ -1,8 +1,9 @@
-// define the view InCategory
-View.Article.InCategory = Backbone.View.extend({
+// define the view ByUserAndCategory
+View.Article.ByUserAndCategory = Backbone.View.extend({
   initialize: function(options) {
     _.bindAll(this, "articleFetchFunction");
     
+    this.userId = options.userId;
     this.categoryId = options.categoryId;
   },
   
@@ -10,7 +11,7 @@ View.Article.InCategory = Backbone.View.extend({
   el: "#layout-content",
   
   
-  template: JST["template/article/in_category"],
+  template: JST["template/article/by_user_and_category"],
   
   
   render: function() {
@@ -24,7 +25,7 @@ View.Article.InCategory = Backbone.View.extend({
   
   
   articleFetchFunction: function(batchToLoad, countPerBatch, options) {
-    var articles = new Collection.Article.InCategory({categoryId: this.categoryId});
+    var articles = new Collection.Article.ByUserAndCategory({userId: this.userId, categoryId: this.categoryId});
     articles.fetchBatch(batchToLoad, countPerBatch, options);
   },
 

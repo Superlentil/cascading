@@ -1,6 +1,7 @@
-Collection.Article.ByUser = Backbone.Collection.extend({
+Collection.Article.ByUserAndCategory = Backbone.Collection.extend({
   initialize: function(options) {
     this.userId = options.userId;
+    this.categoryId = options.categoryId;
   },
   
   
@@ -8,7 +9,11 @@ Collection.Article.ByUser = Backbone.Collection.extend({
   
   
   url: function() {
-    return "/articles/byUser/?" + $.param({batch: this.batch, articles_per_batch: this.articlesPerBatch, user_id: this.userId});
+    return "/articles/byUserAndCategory/?" + $.param({batch: this.batch,
+      articles_per_batch: this.articlesPerBatch,
+      user_id: this.userId,
+      category_id: this.categoryId
+    });
   },
   
   

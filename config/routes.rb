@@ -26,12 +26,14 @@ Rails.application.routes.draw do
     collection do
       get "inCategory"
       get "byUser"
+      get "byUserAndCategory"
     end
   end
 
   resources :categories do
     collection do
       get "predefined"
+      get "byUser"
     end
   end
 

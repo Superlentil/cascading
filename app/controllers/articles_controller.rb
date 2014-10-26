@@ -33,6 +33,16 @@ class ArticlesController < ApplicationController
     return
   end
   
+  
+  def byUserAndCategory
+    batch = params[:batch].to_i
+    articlesPerBatch = params[:articles_per_batch].to_i
+    queryConditions = {user_id: params[:user_id].to_i, category_id: params[:category_id].to_i}
+    
+    queryArticlesByBatch(batch, articlesPerBatch, queryConditions)
+    return
+  end
+  
 
   def show
     @article = Article.find(params[:id])
