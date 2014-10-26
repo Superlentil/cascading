@@ -17,7 +17,7 @@ View.Article.Index = Backbone.View.extend({
   
   
   articleFetchFunction: function(batchToLoad, countPerBatch, options) {
-    var articles = new Collection.Article.Article();
+    var articles = new Collection.Article.All();
     articles.fetchBatch(batchToLoad, countPerBatch, options);
   },
 

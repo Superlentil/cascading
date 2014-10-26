@@ -51,7 +51,7 @@ View.User.EditPassword = View.User.ModifyInputValidator.extend({
       formData.append("user[password]", password);
       formData.append("user[verify_password]", that.verifyPassword.val());
       
-      var user = new Model.User.User();
+      var user = new Model.User();
       
       user.save(formData, {    
         success: function(response) {
@@ -80,7 +80,7 @@ View.User.EditPassword = View.User.ModifyInputValidator.extend({
   
   onCancel: function(event) {
     event.preventDefault();
-    Backbone.history.navigate("user/" + this.model.get("id"), {trigger: true});
+    Backbone.history.navigate("user/" + this.userId, {trigger: true});
   },
   
   

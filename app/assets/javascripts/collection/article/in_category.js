@@ -1,5 +1,5 @@
-Collection.Article.ArticleInCategory = Backbone.Collection.extend({
-  model: Model.Article.Article,
+Collection.Article.InCategory = Backbone.Collection.extend({
+  model: Model.Article,
   
   
   url: function() {

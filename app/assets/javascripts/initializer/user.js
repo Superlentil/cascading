@@ -1,3 +1,1 @@
-Model.User = {};
-
 View.User = {};

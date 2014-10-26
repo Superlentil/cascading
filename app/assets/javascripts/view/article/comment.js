@@ -13,7 +13,7 @@ View.Article.Comment = Backbone.View.extend({
   render: function() {
     var that = this;
     
-    var comments = new Collection.Article.Comment();
+    var comments = new Collection.ArticleComment.All();
     comments.fetchForArticle(this.articleId, {
       success: function(fetchedComments) {
         that.$el.html(that.template({comments: fetchedComments.models}));
@@ -33,7 +33,7 @@ View.Article.Comment = Backbone.View.extend({
     
     var that = this;
     
-    var comment = new Model.Article.Comment();
+    var comment = new Model.Comment();
     comment.save("comment", {
       content: $("#comment_input").val(),
       article_id: that.articleId,

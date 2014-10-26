@@ -16,11 +16,31 @@ View.Article.Edit = Backbone.View.extend({
   render: function(article) {
     var that = this;
 
-    that.$el.html(that.template({allCategories: GlobalVariable.Article.AllCategories.models}));
+    var allCategories = GlobalVariable.Article.AllCategories;
+    if (allCategories) {
+      that.$el.html(that.template({allCategories: allCategories.models}));
+      that.populateData(article);
+    } else {
+      allCategories = new Collection.Category.All();
+      allCategories.fetch({
+        success: function(fetchedCategories) {
+          that.$el.html(that.template({allCategories: allCategories.models}));
+          that.populateData(article);
+        }
+      });
+    }
     
-    article = article || new Model.Article.Article();
+    return that;
+  },
+  
+  
+  populateData: function(article) {
+    var that = this;
+    
+    article = article || new Model.Article();
     article.unset("created_at", { silent: true });
     article.unset("updated_at", { silent: true });
+    that.model = article; 
     
     $("#article-edit-title").val(article.get("title"));
     $("#article_author").val(article.get("author"));
@@ -44,9 +64,6 @@ View.Article.Edit = Backbone.View.extend({
         }
       }
     });
-    that.model = article;    
-    
-    return that;
   },
   
   
@@ -54,7 +71,7 @@ View.Article.Edit = Backbone.View.extend({
     var that = this;
       
     if ($.cookie("user_id")) {  
-      var article = new Model.Article.Article();
+      var article = new Model.Article();
       article.set({
         "author": $.cookie("user_nickname"),
         "user_id": $.cookie("user_id")
@@ -74,7 +91,7 @@ View.Article.Edit = Backbone.View.extend({
   editArticle: function(id) {
     var that = this;
     
-    var article = new Model.Article.Article({id: id});
+    var article = new Model.Article({id: id});
     article.fetch({
       success: function(fetchedArticle) {
         that.render(fetchedArticle);

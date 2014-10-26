@@ -1,4 +1,4 @@
-Model.User.User = Backbone.Model.extend({
+Model.User = Backbone.Model.extend({
   urlRoot: "users",
   
   

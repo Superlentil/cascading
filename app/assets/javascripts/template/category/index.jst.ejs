@@ -1,0 +1,8 @@
+<div class="row category-container">
+<% _.each(allCategories, function(category) { %>
+  <div class="left category-container-element">
+    <div><img src="<%= category.get("cover_picture") %>"></div>
+    <div><strong><%= category.get("name") %></strong></div>
+  </div>
+<% }); %>
+</div>

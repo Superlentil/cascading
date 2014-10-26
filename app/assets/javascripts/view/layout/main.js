@@ -211,7 +211,7 @@ View.Layout.Main = Backbone.View.extend({
       this.viewRightNav.render();
     } else {
       var that = this;
-      var loginSession = new Model.Layout.LoginSession();
+      var loginSession = new Model.LoginSession();
       loginSession.save("login_session", {"type": "log in", "email": email, "password": password}, {
         success: function() {
           that.renderUserAvatar();
@@ -226,7 +226,7 @@ View.Layout.Main = Backbone.View.extend({
   signOut: function() {
     var that = this;
     
-    var loginSession = new Model.Layout.LoginSession();
+    var loginSession = new Model.LoginSession();
     loginSession.save("login_session", {"type": "log out"}, {
       success: function() {
         that.renderUserAvatar();

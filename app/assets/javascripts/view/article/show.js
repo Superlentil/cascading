@@ -15,7 +15,7 @@ View.Article.Show = Backbone.View.extend({
     var that = this;
     
     if (options.id) {
-      var article = new Model.Article.Article({id: options.id});
+      var article = new Model.Article({id: options.id});
       article.fetch({
         success: function(fetchedArticle) {
           that.$el.html(that.template({article: fetchedArticle, contentJsonToHtml: that.contentJsonToHtml, preview: options.preview}));
@@ -39,7 +39,7 @@ View.Article.Show = Backbone.View.extend({
     event.preventDefault();
     
     var id = $(event.currentTarget).data("articleId");
-    var article = new Model.Article.Article({id: id});
+    var article = new Model.Article({id: id});
     article.destroy({
       success: function() {
         Backbone.history.navigate("", {trigger: true});

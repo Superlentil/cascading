@@ -1,0 +1,7 @@
+{
+  <% unless category.nil? %>
+    "id": <%= category.id %>,
+    "name": <%= raw(category.name.to_json) %>,
+    "cover_picture": <%= raw(category.cover_picture.url(:medium).to_json) %>
+  <% end %>
+}

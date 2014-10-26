@@ -9,7 +9,7 @@ View.User.Show = Backbone.View.extend({
     var that = this;
     
     if (options.id) {
-      var user = new Model.User.User({id: options.id});
+      var user = new Model.User({id: options.id});
       user.fetch({
         success: function(fetchedUser, response) {
           if (response.id) {

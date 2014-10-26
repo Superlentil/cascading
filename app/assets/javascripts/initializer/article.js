@@ -1,4 +1,3 @@
-Model.Article = {};
 Collection.Article = {};
 
 View.Article = {};

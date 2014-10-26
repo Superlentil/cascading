@@ -1,8 +1,8 @@
 {
   <% unless user.nil? %>
     "id": <%= user.id %>,
-    "email": "<%= user.email %>",
-    "nickname": "<%= user.nickname %>",
-    "avatar_url": "<%= user.avatar.url(:thumb) %>"
+    "email": <%= raw(user.email.to_json) %>,
+    "nickname": <%= raw(user.nickname.to_json) %>,
+    "avatar_url": <%= raw(user.avatar.url(:thumb).to_json) %>
   <% end %>
 }

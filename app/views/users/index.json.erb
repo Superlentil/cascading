@@ -1,7 +1,7 @@
-{[
+[
   <% unless @users.nil? %>
     <% lastIndex = @users.length - 1 %>
-    <% @users.each do |user, index| %>
+    <% @users.each_with_index do |user, index| %>
       <% if index == lastIndex %>
         <%= render partial: "user", locals: {user: user} %>
       <% else %>
@@ -9,4 +9,4 @@
       <% end %>
     <% end %>
   <% end %>
-]}
+]

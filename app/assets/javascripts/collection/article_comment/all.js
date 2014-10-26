@@ -1,5 +1,5 @@
-Collection.Article.Comment = Backbone.Collection.extend({
-  model: Model.Article.Comment,
+Collection.ArticleComment.All = Backbone.Collection.extend({
+  model: Model.Comment,
   
   
   url: function() {

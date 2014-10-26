@@ -57,7 +57,7 @@ namespace :data_generator do
         User.create({
           email: "example_user_" + count.to_s + "@example.com",
           password: "example_user_" + count.to_s + "_password",
-          nickname: "example_user_" + count.to_s,
+          nickname: "ExampleUser" + count.to_s,
           avatar: file
         })
         file.close
@@ -69,11 +69,14 @@ namespace :data_generator do
     categoryCount = Category.count
     if minCountOfCategory > categoryCount
       for count in (categoryCount + 1)..minCountOfCategory
+        file = File.open(allPicturePaths[randInt.rand(0..allPicturePathsLastIndex)])
         Category.create({
           name: "example_category_" + count.to_s,
           group: GlobalConstant::ArticleCategoryType::PREDEFINED,
-          description: "example_category_" + count.to_s + "_description"
+          description: "example_category_" + count.to_s + "_description",
+          cover_picture: file
         })
+        file.close
       end
     end
 

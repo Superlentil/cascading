@@ -1,3 +1,1 @@
-Model.Layout = {};
-
 View.Layout = {};

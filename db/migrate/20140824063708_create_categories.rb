@@ -5,6 +5,7 @@ class CreateCategories < ActiveRecord::Migration
       t.integer :group, default: GlobalConstant::ArticleCategoryType::CUSTOMIZED
       t.string :description, default: ""
       t.integer :article_count, default: 0
+      t.attachment :cover_picture
 
       t.timestamps
     end

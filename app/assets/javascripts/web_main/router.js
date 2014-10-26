@@ -9,12 +9,13 @@ Router = Backbone.Router.extend({
     "article/:id": "showArticle",
     "article/:id/edit": "editArticle",
     
+    "categories": "categories",
+    
     "users": "users",
     "users/new": "newUser",
     "user/:id": "showUser",
     "user/:id/edit/profile": "editUserProfile",
-    "user/:id/edit/password": "editUserPassword",
-    "user/:id/articles": "userArticles"
+    "user/:id/edit/password": "editUserPassword"
   },
   
   
@@ -93,6 +94,13 @@ Router = Backbone.Router.extend({
   },
   
   
+  categories: function() {
+    var viewCategories = new View.Category.Index();
+    viewCategories.render();
+    return viewCategories;
+  },
+  
+  
   users: function() {
 
   },
@@ -123,10 +131,5 @@ Router = Backbone.Router.extend({
     var viewEditPassword = new View.User.EditPassword({signInHandler: this.layout.signIn});
     viewEditPassword.render({id: id});
     return viewEditPassword;
-  },
-  
-  
-  userArticles: function() {
-    
   }
 });

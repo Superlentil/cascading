@@ -26,7 +26,7 @@ View.Article.Editor.PictureEditor = View.Article.Editor.BaseEditor.extend({
       formData.append("picture[article_id]", that.articleId);
       formData.append("picture[src]", pictureUploader.get(0).files[0]);
       
-      var picture = new Model.Article.Picture();
+      var picture = new Model.Picture();
       
       picture.save(formData, {
         progress: function(event) {

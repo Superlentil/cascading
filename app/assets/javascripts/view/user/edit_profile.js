@@ -66,7 +66,7 @@ View.User.EditProfile = View.User.ModifyInputValidator.extend({
         formData.append("user[avatar]", $("#user-edit-avatar").get(0).files[0]);
       }
       
-      var user = new Model.User.User();
+      var user = new Model.User();
       
       user.save(formData, {    
         success: function(response) {
@@ -95,7 +95,7 @@ View.User.EditProfile = View.User.ModifyInputValidator.extend({
   
   onCancel: function(event) {
     event.preventDefault();
-    Backbone.history.navigate("user/" + this.model.get("id"), {trigger: true});
+    Backbone.history.navigate("user/" + this.userId, {trigger: true});
   },
   
   

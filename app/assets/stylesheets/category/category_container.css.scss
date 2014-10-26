@@ -1,0 +1,62 @@
+@import "html/setting";
+
+
+$PICTURE_WIDTH: 280px;
+$PICTURE_HEIGHT: 210px;
+$ELEMENT_PADDING: 30px;
+$ELEMENT_WIDTH: $PICTURE_WIDTH + 2 * $ELEMENT_PADDING;
+
+
+@media (max-width: $ELEMENT_WIDTH * 2 + 29px) {
+  .category-container {
+    width: 100% !important;
+    max-width: $PICTURE_WIDTH + 1px !important;
+  }
+  .category-container-element {
+    max-width: $PICTURE_WIDTH !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+@media (min-width: $ELEMENT_WIDTH * 2 + 30px) {
+  .category-container {
+    width: $ELEMENT_WIDTH * 2 + 1px !important;
+  }
+}
+@media (min-width: $ELEMENT_WIDTH * 3 + 30px) {
+  .category-container {
+    width: $ELEMENT_WIDTH * 3 + 1px !important;
+  }
+}
+@media (min-width: $ELEMENT_WIDTH * 4 + 30px) {
+  .category-container {
+    width: $ELEMENT_WIDTH * 4 + 1px !important;
+  }
+}
+@media (min-width: $ELEMENT_WIDTH * 5 + 30px) {
+  .category-container {
+    width: $ELEMENT_WIDTH * 5 + 1px !important;
+  }
+}
+
+
+.category-container {
+  margin: 0 auto;
+}
+
+
+.category-container-element {
+  width: 100%;
+  max-width: $ELEMENT_WIDTH;
+  padding: $ELEMENT_PADDING;
+  
+  div {
+    width: 100%;
+    text-align: center;
+  }
+  
+  img {
+    width: 100%;
+    max-height: $PICTURE_HEIGHT;
+  }
+}

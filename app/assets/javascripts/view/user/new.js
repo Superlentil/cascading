@@ -68,7 +68,7 @@ View.User.New = View.User.ModifyInputValidator.extend({
       }
       formData.append("user[tier]", GlobalConstant.UserTier.FREE_USER);
       
-      var user = new Model.User.User();
+      var user = new Model.User();
       
       user.save(formData, {
         success: function(savedUser) {

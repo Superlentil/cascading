@@ -153,7 +153,7 @@ View.Article.Publish = Backbone.View.extend({
     formData.append("picture[article_id]", that.article.get("id"));
     formData.append("picture[src]", $("#new_cover_picture").get(0).files[0]);
     
-    var picture = new Model.Article.Picture();
+    var picture = new Model.Picture();
     var progressBar = $("<progress></progress>");
     var uploadPreviewContainer = $("#upload_preview");
     

@@ -1,5 +1,5 @@
 // define the model "Article"
-Model.Article.Article = Backbone.Model.extend({
+Model.Article = Backbone.Model.extend({
   defaults: {
     "title": "",
     "author": "",

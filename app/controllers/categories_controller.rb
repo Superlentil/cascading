@@ -9,7 +9,7 @@ class CategoriesController < ApplicationController
     
   
   def index
-    @categories = Category.all.order(:article_count)
+    @categories = Category.all.order(:name)
     respond_with @categories
   end
 
