@@ -6,7 +6,7 @@ View.User.EditPassword = View.User.ModifyInputValidator.extend({
   
   
   render: function(options) {
-    var userId = parseInt(options.id);
+    var userId = parseInt(options.userId);
     if (userId === parseInt($.cookie("user_id"))) {
       this.userId = userId;
       this.resetIndicators(true);

@@ -14,6 +14,14 @@ class ArticlesController < ApplicationController
   end
   
   
+  def draftByUser
+    @articleDrafts = Article.where(user_id: params[:user_id], status: GlobalConstant::ArticleStatus::DRAFT)
+      .select("id, cover_picture_url, title, category_name, category_id, created_at, content")
+      .order(id: :desc)
+    respond_with @articleDrafts
+  end
+  
+  
   def inCategory
     batch = params[:batch].to_i
     articlesPerBatch = params[:articles_per_batch].to_i
@@ -59,6 +67,7 @@ class ArticlesController < ApplicationController
       @article = Article.new(inputParams)
       @article.save
       respond_with @article
+      Article.where("id < ? AND user_id = ? AND status = ?", @article.id, inputParams[:user_id].to_i, GlobalConstant::ArticleStatus::INITIAL_TEMPORARILY_CREATED).destroy_all
     end
     return
   end

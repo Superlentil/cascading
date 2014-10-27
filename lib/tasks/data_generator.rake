@@ -56,7 +56,7 @@ namespace :data_generator do
         file = File.open(allPicturePaths[randInt.rand(0..allPicturePathsLastIndex)])
         User.create({
           email: "example_user_" + count.to_s + "@example.com",
-          password: "example_user_" + count.to_s + "_password",
+          password: "password_" + count.to_s,
           nickname: "ExampleUser" + count.to_s,
           avatar: file
         })

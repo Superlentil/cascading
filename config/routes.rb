@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   
   resources :articles do
     collection do
+      get "draftByUser"
       get "inCategory"
       get "byUser"
       get "byUserAndCategory"

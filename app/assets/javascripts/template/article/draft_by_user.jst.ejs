@@ -1,0 +1,13 @@
+<div class="row">
+<% _.each(allDrafts, function(draft) { %>
+  <div>
+    id: <%= draft.get("id") %><br>
+    cover_picture_url: <%= draft.get("cover_picture_url") %><br>
+    title: <%= draft.get("title") %><br>
+    category_name: <%= draft.get("category_name") %><br>
+    category_id: <%= draft.get("category_id") %><br>
+    created_at: <%= draft.get("created_at") %><br>
+    content: <%= draft.get("content") %><br><br><br>
+  </div>
+<% }); %>
+</div>

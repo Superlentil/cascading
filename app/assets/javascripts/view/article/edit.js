@@ -170,11 +170,16 @@ View.Article.Edit = Backbone.View.extend({
     });
     
     var categorySelector = $("#article-edit-category");
+    var categoryId = parseInt(categorySelector.val());
+    var categoryName = "";
+    if (categoryId > 0) {
+      categoryName = categorySelector.children(":selected").text();
+    }
     
     this.model.set({
       "title": $("#article-edit-title").val(),
-      "category_id": parseInt(categorySelector.val()),
-      "category_name": categorySelector.children(":selected").text(),
+      "category_id": categoryId,
+      "category_name": categoryName,
       "content": JSON.stringify(articleContent),
       "status": GlobalConstant.ArticleStatus.DRAFT
     });

@@ -3,6 +3,7 @@ Router = Backbone.Router.extend({
     "forbidden": "forbiddenAccess",
     
     "": "allArticles",
+    "articles/draft/user/:user_id": "draftArticlesByUser",
     "articles/category/:category_id": "articlesInCategory",
     "articles/user/:user_id": "articlesByUser",
     "articles/user/:user_id/category/:category_id": "articlesByUserAndCategory",
@@ -50,6 +51,13 @@ Router = Backbone.Router.extend({
     var viewIndex = new View.Article.Index();
     viewIndex.render();
     return viewIndex;
+  },
+  
+  
+  draftArticlesByUser: function(userId) {
+    var viewDraftArticlesByUser = new View.Article.DraftByUser({userId: userId});
+    viewDraftArticlesByUser.render();
+    return viewDraftArticlesByUser;
   },
   
   
@@ -138,14 +146,14 @@ Router = Backbone.Router.extend({
   
   editUserProfile: function(id) {
     var viewEditProfile = new View.User.EditProfile({signInHandler: this.layout.signIn});
-    viewEditProfile.render({id: id});
+    viewEditProfile.render({userId: id});
     return viewEditProfile;
   },
   
   
   editUserPassword: function(id) {
     var viewEditPassword = new View.User.EditPassword({signInHandler: this.layout.signIn});
-    viewEditPassword.render({id: id});
+    viewEditPassword.render({userId: id});
     return viewEditPassword;
   }
 });
