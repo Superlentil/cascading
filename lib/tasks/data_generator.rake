@@ -55,7 +55,7 @@ namespace :data_generator do
       for count in (userCount + 1)..minCountOfUser
         file = File.open(allPicturePaths[randInt.rand(0..allPicturePathsLastIndex)])
         User.create({
-          email: "example_user_" + count.to_s + "@example.com",
+          email: "user_" + count.to_s + "@example.com",
           password: "password_" + count.to_s,
           nickname: "ExampleUser" + count.to_s,
           avatar: file
