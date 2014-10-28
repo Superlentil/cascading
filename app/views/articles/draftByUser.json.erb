@@ -1,0 +1,12 @@
+[
+  <% unless @articleDrafts.nil? %>
+    <% lastIndex = @articleDrafts.length - 1 %>
+    <% @articleDrafts.each_with_index do |draft, index| %>
+      <% if index == lastIndex %>
+        <%= render partial: "article_draft", locals: {articleDraft: draft} %>
+      <% else %>
+        <%= render partial: "article_draft", locals: {articleDraft: draft} %>,
+      <% end %>
+    <% end %>
+  <% end %>
+]

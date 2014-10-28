@@ -1,0 +1,47 @@
+@import "html/setting";
+
+
+.article-draft-list {
+  width: 100%;
+  max-width: 1000px;
+  min-width: $MIN_VIEWPORT_WIDTH;
+  margin: auto;
+  padding: 20px;
+}
+
+
+.article-draft {
+  padding: 20px;
+  margin-bottom: 20px;
+  background-color: #e3e3e5;
+  
+  
+  div {
+    width: 100%;
+    padding: 5px;
+    text-align: justify;
+    white-space: normal;
+    word-wrap: break-word;
+  }
+  
+  
+  small {
+    display: inline-block;
+    width: 100px;
+  }
+  
+  
+  img {
+    width: 100%;
+    max-width: 230px;
+    padding: 0 15px 15px 15px;
+  }
+}
+
+
+.article-draft-edit,
+.article-draft-delete {
+  display: inline-block;
+  width: 80px;
+  font-style: italic;
+}

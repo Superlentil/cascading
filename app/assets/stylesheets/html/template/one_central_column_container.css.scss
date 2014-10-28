@@ -4,7 +4,7 @@
 .one-central-column-container {
   width: 100%;
   max-width: 1000px;
-  min-width: 280px;
+  min-width: $MIN_VIEWPORT_WIDTH;
   
   margin: 0 auto;
  

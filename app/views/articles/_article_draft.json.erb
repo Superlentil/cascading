@@ -1,0 +1,9 @@
+{
+  <% unless articleDraft.nil? %>
+    "id": <%= articleDraft.id %>,
+    "title": <%= raw(articleDraft.title.to_json) %>,
+    "cover_picture_url": <%= raw(articleDraft.cover_picture_url.to_json) %>,
+    "content": <%= raw(articleDraft.content.to_json) %>,
+    "created_at": <%= articleDraft.created_at.to_i %>
+  <% end %>
+}

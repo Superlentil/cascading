@@ -16,7 +16,7 @@ class ArticlesController < ApplicationController
   
   def draftByUser
     @articleDrafts = Article.where(user_id: params[:user_id], status: GlobalConstant::ArticleStatus::DRAFT)
-      .select("id, cover_picture_url, title, category_name, category_id, created_at, content")
+      .select("id, cover_picture_url, title, created_at, content")
       .order(id: :desc)
     respond_with @articleDrafts
   end
@@ -112,7 +112,7 @@ private
 
 
   def articleParams
-    params.require(:article).permit(:id, :cover_picture_id, :cover_picture_url, :cover_picture_height, :imported_cover_picture, :title, :author, :content, :category_name, :category_id, :views, :like, :status, :user_id, :created_at, :updated_at)
+    params.require(:article).permit(:id, :cover_picture_id, :cover_picture_url, :cover_picture_height, :cover_picture_imported, :title, :author, :content, :category_name, :category_id, :views, :like, :status, :user_id, :created_at, :updated_at)
   end
   
   
@@ -172,7 +172,7 @@ private
           if coverPicture.save
             inputParams[:cover_picture_id] = coverPicture.id
             inputParams[:cover_picture_url] = coverPicture.src.url(:thumb)
-            inputParams[:imported_cover_picture] = true
+            inputParams[:cover_picture_imported] = true
           end
         end
       end
@@ -180,7 +180,7 @@ private
       coverPicture = Picture.find(pictureIds.sample)
       inputParams[:cover_picture_id] = coverPicture.id
       inputParams[:cover_picture_url] = coverPicture.src.url(:thumb)
-      inputParams[:imported_cover_picture] = false
+      inputParams[:cover_picture_imported] = false
     end
   end
   

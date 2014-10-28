@@ -1,13 +1,12 @@
-<div class="row">
+<div class="article-draft-list">
 <% _.each(allDrafts, function(draft) { %>
-  <div>
-    id: <%= draft.get("id") %><br>
-    cover_picture_url: <%= draft.get("cover_picture_url") %><br>
-    title: <%= draft.get("title") %><br>
-    category_name: <%= draft.get("category_name") %><br>
-    category_id: <%= draft.get("category_id") %><br>
-    created_at: <%= draft.get("created_at") %><br>
-    content: <%= draft.get("content") %><br><br><br>
+  <div class="article-draft">
+    <% var title = draft.get("title") %>
+    <% var id = draft.get("id") %>
+    <div><big><%= title.length === 0 ? "< no title >" : "<strong>" + title + "</strong>" %></big></div>
+    <div><p class="text-align-right"><i><%= GlobalFormater.LocalDate.Chinese(draft.get("created_at") * 1000) %></i></p></div>
+    <div class="row"><img src="<%= getPictureUrl(draft) %>" class="left"><%= getText(draft) %></div>
+    <div><p class="text-align-right"><big><a class="article-draft-edit" href="#/article/<%= id %>/edit">edit</a><a href="#" class="article-draft-delete" data-article-id="<%= id %>">delete</a></big></p></div>
   </div>
 <% }); %>
 </div>

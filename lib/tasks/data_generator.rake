@@ -118,7 +118,7 @@ namespace :data_generator do
         file = File.open(allPicturePaths[randInt.rand(0..allPicturePathsLastIndex)])
         coverPicture = Picture.create({src: file, article_id: articleId})
         file.close
-        article.imported_cover_picture = true
+        article.cover_picture_imported = true
       else
         coverPicture = articlePictures[randInt.rand(0..articlePicturesLastIndex)]
       end

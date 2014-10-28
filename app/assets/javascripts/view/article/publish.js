@@ -10,7 +10,7 @@ View.Article.Publish = Backbone.View.extend({
   resetCoverPicture: function() {
     this.coverPictureId = -1;
     this.coverPictureUrl = "";
-    this.importedCoverPicture = false;
+    this.coverPictureImported = false;
   },
   
   
@@ -27,7 +27,7 @@ View.Article.Publish = Backbone.View.extend({
     this.$el.html(this.template({
       coverPictureId: this.article.get("cover_picture_id"),
       coverPictureUrl: this.article.get("cover_picture_url"),
-      importedCoverPicture: (this.article.get("imported_cover_picture") ? "yes" : "no"),
+      coverPictureImported: (this.article.get("cover_picture_imported") ? "yes" : "no"),
       contentPictures: allContentPictures
     }));
     
@@ -71,7 +71,7 @@ View.Article.Publish = Backbone.View.extend({
       article.set("status", GlobalConstant.ArticleStatus.PUBLIC_PUBLISHED);
       article.set("cover_picture_id", this.coverPictureId);
       article.set("cover_picture_url", this.coverPictureUrl);
-      article.set("imported_cover_picture", this.importedCoverPicture);
+      article.set("cover_picture_imported", this.coverPictureImported);
       article.save(article.toJSON(), {
         success: function(savedArticle) {
           Backbone.history.navigate("article/" + savedArticle.get("id"), {trigger: true});
@@ -117,7 +117,7 @@ View.Article.Publish = Backbone.View.extend({
       if (previewPicture.length > 0) {
         this.coverPictureId = previewPicture.data("pictureId");
         this.coverPictureUrl = previewPicture.attr("src");
-        this.importedCoverPicture = true;
+        this.coverPictureImported = true;
       } else {
         this.resetCoverPicture();
       }
@@ -134,7 +134,7 @@ View.Article.Publish = Backbone.View.extend({
     var picture = $(event.currentTarget);
     that.coverPictureUrl = picture.attr("src");
     that.coverPictureId = picture.data("pictureId");
-    that.importedCoverPicture = (picture.data("imported") === "yes");
+    that.coverPictureImported = (picture.data("imported") === "yes");
     alert(picture.data("imported") + "   " + (picture.data("imported") === "yes"));
     that.mode = "choose";
     $(".Article_Picture").css({"margin-bottom": "1em", "border": "0px none"});
@@ -180,7 +180,7 @@ View.Article.Publish = Backbone.View.extend({
         );
         that.coverPictureUrl = savedPicture.thumb_url;
         that.coverPictureId = savedPicture.id;
-        that.importedCoverPicture = true;
+        that.coverPictureImported = true;
         that.mode = "upload";
       },
       
