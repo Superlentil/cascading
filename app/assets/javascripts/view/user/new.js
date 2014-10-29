@@ -26,6 +26,8 @@ View.User.New = View.User.ModifyInputValidator.extend({
     this.captcha = $("#user-new-captcha");
     this.captchaError = $("#user-new-captcha-error");
     this.saveError = $("#user-new-save-error");
+    
+    return this;
   },
   
   

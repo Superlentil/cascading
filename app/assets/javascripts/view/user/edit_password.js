@@ -8,21 +8,30 @@ View.User.EditPassword = View.User.ModifyInputValidator.extend({
   render: function(options) {
     var userId = parseInt(options.userId);
     if (userId === parseInt($.cookie("user_id"))) {
-      this.userId = userId;
-      this.resetIndicators(true);
-  
-      this.$el.html(this.template({nickname: $.cookie("user_nickname")}));
-  
-      this.oldPassword = 
-      this.verifyPassword = $("#user-edit-verify-password");
-      this.verifyPasswordError = $("#user-edit-verify-password-error");
-      this.password = $("#user-edit-password");
-      this.passwordError = $("#user-edit-password-error");
-      this.repeatPassword = $("#user-edit-repeat-password");
-      this.repeatPasswordError = $("#user-edit-repeat-password-error");
-      this.saveError = $("#user-edit-save-error");
+      var that = this;
+      var user = new Model.User({id: userId});
+      user.fetch({
+        success: function(fetchedUser) {
+          that.userId = userId;
+          that.resetIndicators(true);
+      
+          that.$el.html(that.template({nickname: fetchedUser.get("nickname")}));
+      
+          that.oldPassword = 
+          that.verifyPassword = $("#user-edit-verify-password");
+          that.verifyPasswordError = $("#user-edit-verify-password-error");
+          that.password = $("#user-edit-password");
+          that.passwordError = $("#user-edit-password-error");
+          that.repeatPassword = $("#user-edit-repeat-password");
+          that.repeatPasswordError = $("#user-edit-repeat-password-error");
+          that.saveError = $("#user-edit-save-error");
+          
+          return that;
+        }
+      });
     } else {
       Backbone.history.loadUrl("forbidden");
+      return this;
     }
   },
   

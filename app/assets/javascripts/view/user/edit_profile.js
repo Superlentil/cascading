@@ -8,28 +8,38 @@ View.User.EditProfile = View.User.ModifyInputValidator.extend({
   render: function(options) {
     var userId = parseInt(options.userId);
     if (userId === parseInt($.cookie("user_id"))) {
-      this.userId = userId;
-      this.resetIndicators(true);
-      var oldEmail = $.cookie("user_email");
-  
-      this.$el.html(this.template({
-        nickname: $.cookie("user_nickname"),
-        email: oldEmail,
-        avatarUrl: $.cookie("user_avatar_url")
-      }));
-  
-      this.email = $("#user-edit-email");
-      this.emailValue = "";
-      this.oldEmail = oldEmail;
-      this.emailError = $("#user-edit-email-error");
-      this.verifyPassword = $("#user-edit-verify-password");
-      this.verifyPasswordError = $("#user-edit-verify-password-error");
-      this.nickname = $("#user-edit-nickname");
-      this.nicknameError = $("#user-edit-nickname-error");
-      this.avatar = $("#user-edit-avatar");
-      this.saveError = $("#user-edit-save-error");
+      var that = this;
+      
+      var user = new Model.User({id: userId});
+      user.fetch({
+        success: function(fetchedUser) {
+          that.userId = fetchedUser.get("id");
+          that.resetIndicators(true);
+          var oldEmail = fetchedUser.get("email");
+
+          that.$el.html(that.template({
+            nickname: fetchedUser.get("nickname"),
+            email: oldEmail,
+            avatarUrl: fetchedUser.get("avatar_url")
+          }));
+      
+          that.email = $("#user-edit-email");
+          that.emailValue = "";
+          that.oldEmail = oldEmail;
+          that.emailError = $("#user-edit-email-error");
+          that.verifyPassword = $("#user-edit-verify-password");
+          that.verifyPasswordError = $("#user-edit-verify-password-error");
+          that.nickname = $("#user-edit-nickname");
+          that.nicknameError = $("#user-edit-nickname-error");
+          that.avatar = $("#user-edit-avatar");
+          that.saveError = $("#user-edit-save-error");
+          
+          return that;
+        }
+      });
     } else {
       Backbone.history.loadUrl("forbidden");
+      return this;
     }
   },
   
