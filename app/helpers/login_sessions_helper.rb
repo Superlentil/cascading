@@ -1,13 +1,12 @@
 module LoginSessionsHelper
   def setUserLoginSession(user)
-    cookies[:user_id] = user.id
-    cookies[:user_email] = user.email
+    cookies[:user_id] = user.id.to_i
     cookies[:user_nickname] = user.nickname
     cookies[:user_avatar_url] = user.avatar.url(:thumb)
     cookies[:user_login_status] = "success"
     
-    session[:user_id] = user.id
-    session[:user_tier] = user.tier
+    session[:user_id] = user.id.to_i
+    session[:user_tier] = user.tier.to_i
   end
   
   
@@ -28,7 +27,7 @@ module LoginSessionsHelper
   
   
   def administrator?
-    return session.has_key?(:user_tier) && session[:user_tier].to_i == GlobalConstant::UserTier::ADMINISTRATOR
+    return session.has_key?(:user_tier) && session[:user_tier] == GlobalConstant::UserTier::ADMINISTRATOR
   end
   
   
@@ -38,6 +37,6 @@ module LoginSessionsHelper
   
   
   def correctLoggedInUser?(userId)
-    return session.has_key?(:user_id) && session[:user_id].to_i == userId.to_i
+    return session.has_key?(:user_id) && session[:user_id] == userId.to_i
   end
 end
