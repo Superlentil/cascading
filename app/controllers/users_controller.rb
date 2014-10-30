@@ -19,7 +19,6 @@ class UsersController < ApplicationController
   def show
     if correctLoggedInUser?(params[:id])
       @user = User.find(params[:id])
-      respond_with @user
     else
       if loggedIn?
         setResponseMessage("warning", "You don't have the privilege to access the page.")
@@ -27,6 +26,12 @@ class UsersController < ApplicationController
         setResponseMessage("warning", "Please log in first and try to access the page again.")
       end
     end
+  end
+  
+  
+  def publicInfo
+    @user = User.find(params[:id])
+    @user.email = ""   # private info
   end
 
 
@@ -40,7 +45,6 @@ class UsersController < ApplicationController
     end
     if @user.save
       setUserLoginSession(@user)
-      respond_with @user
     else
       setResponseMessage("error", "Fail to create user!")
     end
@@ -54,7 +58,6 @@ class UsersController < ApplicationController
         params[:user].delete(:verify_password)
         if @user.update(userParams)
           setUserLoginSession(@user)
-          respond_with @user
         else
           setResponseMessage("error", "Fail to update user!")
         end
@@ -70,7 +73,6 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     if @user.destroy
       clearUserLoginSession
-      respond_with @user
     else
       setResponseMessage("error", "Fail to destroy user!")
     end

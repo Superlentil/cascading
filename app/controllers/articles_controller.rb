@@ -9,7 +9,7 @@ class ArticlesController < ApplicationController
     batch = params[:batch].to_i
     articlesPerBatch = params[:articles_per_batch].to_i
     
-    queryArticlesByBatch(batch, articlesPerBatch, {})
+    respond_with queryArticlesByBatch(batch, articlesPerBatch, {})
     return
   end
   
@@ -18,7 +18,6 @@ class ArticlesController < ApplicationController
     @articleDrafts = Article.where(user_id: params[:user_id], status: GlobalConstant::ArticleStatus::DRAFT)
       .select("id, cover_picture_url, title, created_at, content")
       .order(id: :desc)
-    respond_with @articleDrafts
   end
   
   
@@ -27,8 +26,7 @@ class ArticlesController < ApplicationController
     articlesPerBatch = params[:articles_per_batch].to_i
     queryConditions = {category_id: params[:category_id].to_i}
     
-    queryArticlesByBatch(batch, articlesPerBatch, queryConditions)
-    return
+    respond_with queryArticlesByBatch(batch, articlesPerBatch, queryConditions)
   end
   
   
@@ -37,8 +35,7 @@ class ArticlesController < ApplicationController
     articlesPerBatch = params[:articles_per_batch].to_i
     queryConditions = {user_id: params[:user_id].to_i}
     
-    queryArticlesByBatch(batch, articlesPerBatch, queryConditions)
-    return
+    respond_with queryArticlesByBatch(batch, articlesPerBatch, queryConditions)
   end
   
   
@@ -47,8 +44,7 @@ class ArticlesController < ApplicationController
     articlesPerBatch = params[:articles_per_batch].to_i
     queryConditions = {user_id: params[:user_id].to_i, category_id: params[:category_id].to_i}
     
-    queryArticlesByBatch(batch, articlesPerBatch, queryConditions)
-    return
+    respond_with queryArticlesByBatch(batch, articlesPerBatch, queryConditions)
   end
   
 
@@ -118,10 +114,9 @@ private
   
   def queryArticlesByBatch(batch, articlesPerBatch, queryConditions)
     queryConditions[:status] = GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED;
-    @articles = Article.where(queryConditions)
+    return Article.where(queryConditions)
       .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, author, user_id, category_name, category_id")
       .limit(articlesPerBatch).offset(batch * articlesPerBatch).order(id: :desc)
-    respond_with @articles
   end
   
   

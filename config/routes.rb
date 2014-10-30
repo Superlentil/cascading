@@ -20,6 +20,9 @@ Rails.application.routes.draw do
     collection do
       get "emailAvailable"
     end
+    member do
+      get "publicInfo"
+    end
   end
   
   resources :articles do

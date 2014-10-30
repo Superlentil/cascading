@@ -18,8 +18,6 @@ class LoginSessionsController < ApplicationController
     when "log out"
       clearUserLoginSession
     end
-    
-    return
   end
   
 

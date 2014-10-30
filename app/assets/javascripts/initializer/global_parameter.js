@@ -55,6 +55,9 @@ var GlobalVariable = {
   PageCache: {},
   
   
+  UserCache: {},
+  
+  
   Article: {
     AllCategories: null   // should be a Backbone Collection object
   }

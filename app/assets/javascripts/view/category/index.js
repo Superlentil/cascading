@@ -10,12 +10,12 @@ View.Category.Index = Backbone.View.extend({
     
     var allCategories = GlobalVariable.Article.AllCategories;
     if (allCategories) {
-      that.$el.html(that.template({allCategories: allCategories.models}));
+      that.$el.html(that.template({allCategories: allCategories.models, userId: null}));
     } else {
       allCategories = new Collection.Category.All();
       allCategories.fetch({
         success: function(fetchedCategories) {
-          that.$el.html(that.template({allCategories: allCategories.models}));
+          that.$el.html(that.template({allCategories: allCategories.models, userId: null}));
         }
       });
     }

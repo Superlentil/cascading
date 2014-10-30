@@ -1,8 +1,16 @@
 <div class="row category-container">
+
+<% var linkRoot = "#/articles/" %>
+<% if (userId) { %>
+  <% linkRoot += "user/" + userId + "/" %>
+<% } %>
+<% linkRoot += "category/" %>
+
 <% _.each(allCategories, function(category) { %>
+  <% var link = linkRoot + category.get("id") %>    
   <div class="left category-container-element">
-    <div><a href="#/articles/category/<%= category.get("id") %>"><img src="<%= category.get("cover_picture") %>"></a></div>
-    <div><strong><a href="#/articles/category/<%= category.get("id") %>"><%= category.get("name") %></a></strong></div>
+    <div><a href="<%= link %>"><img src="<%= category.get("cover_picture") %>"></a></div>
+    <div><strong><a href="<%= link %>"><%= category.get("name") %></a></strong></div>
   </div>
 <% }); %>
 </div>

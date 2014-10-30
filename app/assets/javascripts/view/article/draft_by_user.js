@@ -59,7 +59,7 @@ View.Article.DraftByUser = Backbone.View.extend({
       if (pictureUrl) {
         pictureUrl = pictureUrl.src.url.replace("/medium/", "/thumb/");
       } else {
-        pictureUrl = "/assets/default_article_draft_picture.jpg";
+        pictureUrl = PrecompiledAsset.Picture.DefaultArticleDraftPicture;
       }
     }
     return pictureUrl;
