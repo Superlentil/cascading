@@ -1,6 +1,12 @@
 @import "compass";
 
 
+a {
+  text-decoration: none;
+  outline: 0;
+}
+
+
 a.haigy-logo {
   display: inline-block;
   max-width: 80px;
@@ -9,8 +15,6 @@ a.haigy-logo {
   vertical-align: middle;
   
   @include link-colors(#5e5e5e, red, red, #5e5e5e);
-  text-decoration: none;
-  outline: 0;
   
   font: italic normal 800 25px arial, sans-serif;
 }

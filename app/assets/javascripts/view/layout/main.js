@@ -209,6 +209,7 @@ View.Layout.Main = Backbone.View.extend({
       this.renderUserAvatar();
       this.viewHeader.render();
       this.viewRightNav.render();
+      Backbone.history.loadUrl();
     } else {
       var that = this;
       var loginSession = new Model.LoginSession();
@@ -217,6 +218,7 @@ View.Layout.Main = Backbone.View.extend({
           that.renderUserAvatar();
           that.viewHeader.render();
           that.viewRightNav.render();
+          Backbone.history.loadUrl();
         }
       });
     }
@@ -235,6 +237,7 @@ View.Layout.Main = Backbone.View.extend({
         }        
         that.viewHeader.render();
         that.viewRightNav.render();
+        Backbone.history.loadUrl();
       }
     });
   },

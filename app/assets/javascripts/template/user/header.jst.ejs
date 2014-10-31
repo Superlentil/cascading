@@ -1,3 +1,14 @@
-<%= user.get("id") %><br>
-<%= user.get("nickname") %><br>
-<img src="<%= user.get("avatar_url") %>">
+<div class="user-header">
+    <% var userId = user.get("id") %>
+    <% var userName = (parseInt(userId) === parseInt($.cookie("user_id"))) ? "My" : user.get("nickname") + "'s" %>
+    <div class="row">
+      <div class="left"><img src="<%= user.get("avatar_url") %>"></div>
+      <div class="left user-header-nickname">
+        <strong><%= user.get("nickname") %></strong>
+      </div>
+    </div>
+    <div class="row user-header-link">
+      <div class="col-xs-12 col-sm-6"><a href="#/articles/user/<%= userId %>">All <%= userName %> Articles</a></div>
+      <div class="col-xs-12 col-sm-6"><a href="#/categories/user/<%= userId %>">All <%= userName %> Categories</a></div>
+    </div>
+</div>
