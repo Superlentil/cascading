@@ -18,14 +18,12 @@ View.Article.Edit = Backbone.View.extend({
 
     var allCategories = GlobalVariable.Article.AllCategories;
     if (allCategories) {
-      that.$el.html(that.template({allCategories: allCategories.models}));
-      that.populateData(article);
+      that.renderHelper(article, allCategories);
     } else {
       allCategories = new Collection.Category.All();
       allCategories.fetch({
         success: function(fetchedCategories) {
-          that.$el.html(that.template({allCategories: allCategories.models}));
-          that.populateData(article);
+          that.renderHelper(article, allCategories);
         }
       });
     }
@@ -34,8 +32,18 @@ View.Article.Edit = Backbone.View.extend({
   },
   
   
-  populateData: function(article) {
+  renderHelper: function(article, allCategories) {
     var that = this;
+    
+    that.$el.html(that.template({allCategories: allCategories.models}));
+    var addEditorContainer = $("#article-edit-add-editor-container");
+    var viewAddEditor = new View.Article.Editor.AddEditor({
+      articleEditView: this,
+      enableMinimize: false,
+      addBeforeElement: addEditorContainer
+    });
+    that.allSubviews.push(viewAddEditor);
+    addEditorContainer.html(viewAddEditor.render().$el);
     
     article = article || new Model.Article();
     article.unset("created_at", { silent: true });
@@ -47,20 +55,12 @@ View.Article.Edit = Backbone.View.extend({
     var articleCategoryId = article.get("category_id") || -1;
     $("#article-edit-category").val(articleCategoryId);
     var articleContent = JSON.parse(article.get("content"));
-    $("#article-edit-content").empty();
     _.each(articleContent, function(articleParagraph) {
       if (articleParagraph.src) {
         if (articleParagraph.type === "text") {
-          var textEditor = new View.Article.Editor.TextEditor();
-          that.allSubviews.push(textEditor);   // prevent view memory leak
-          $("#article-edit-content").append(textEditor.render(articleParagraph.src).el);
+          that.addText(addEditorContainer, articleParagraph.src);
         } else if (articleParagraph.type === "picture") {
-          var pictureEditor = new View.Article.Editor.PictureEditor({
-            parentView: that,
-            articleId: article.get("id")
-          });
-          that.allSubviews.push(pictureEditor);   // prevent view memory leak
-          $("#article-edit-content").append(pictureEditor.render(articleParagraph.src).el);
+          that.addPicture(addEditorContainer, articleParagraph.src);
         }
       }
     });
@@ -101,39 +101,30 @@ View.Article.Edit = Backbone.View.extend({
   
   
   events: {
-    "click #article-edit-add-text": "addText",
-    "click #article-edit-add-picture": "addPicture",
- 
     "click #article-edit-save": "save",
     "click #article-edit-save-preview": "saveAndPreview",
     "click #article-edit-save-publish": "saveAndPublish"
   },
   
   
-  addText: function(event) {
-    event.preventDefault();
-    
-    var textEditor = new View.Article.Editor.TextEditor();
+  addText: function(addBeforeElement, content) {
+    var textEditor = new View.Article.Editor.TextEditor({
+      articleEditView: this
+    });
     this.allSubviews.push(textEditor);   // prevent view memory leak
     
-    $(function() {
-      $("#article-edit-content").append(textEditor.render().el);
-    });
+    addBeforeElement.before(textEditor.render(content).el);
   },
   
   
-  addPicture: function(event) {
-    event.preventDefault();
-    
+  addPicture: function(addBeforeElement, content) {
     var pictureEditor = new View.Article.Editor.PictureEditor({
-      parentView: this,
+      articleEditView: this,
       articleId: this.model.get("id")
     });
     this.allSubviews.push(pictureEditor);   // prevent view memory leak
     
-    $(function() {
-      $("#article-edit-content").append(pictureEditor.render().el);
-    });
+    addBeforeElement.before(pictureEditor.render(content).el);
   },
   
   

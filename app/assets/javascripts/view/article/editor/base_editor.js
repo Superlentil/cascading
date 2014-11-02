@@ -2,8 +2,10 @@
 View.Article.Editor.BaseEditor = Backbone.View.extend({
   initialize: function(options) {
     if (options) {
-      this.parentView = options.parentView;
-      this.articleId = options.articleId;
+      this.articleEditView = options.articleEditView;
+      if (options.articleId) {
+        this.articleId = options.articleId;
+      }
     }
   },
   
@@ -13,7 +15,13 @@ View.Article.Editor.BaseEditor = Backbone.View.extend({
   
   
   render: function(content) {
-    this.$el.html(this.template({"content": content}));
+    this.viewAddEditor = new View.Article.Editor.AddEditor({
+      articleEditView: this.articleEditView,
+      enableMinimize: true,
+      addBeforeElement: this.$el
+    });
+    this.$el.append(this.viewAddEditor.render().$el);
+    this.$el.append(this.template({"content": content}));
     return this;
   },
   
@@ -47,5 +55,11 @@ View.Article.Editor.BaseEditor = Backbone.View.extend({
     if (confirm("Are you sure to remove this paragraph?")) {
       this.$el.remove();
     }
+  },
+  
+  
+  remove: function() {
+    this.viewAddEditor.remove();
+    Backbone.View.prototype.remove.call(this);
   }
 });

@@ -9,6 +9,40 @@
 }
 
 
+.article-edit-add-editor {
+  width: 100%;
+}
+
+.article-edit-add-editor-head {
+  width: 100%;
+  text-align: center;
+  font-size: small;
+  font-style: italic;
+  color: #a9afaf;
+  margin: 5px 0;
+}
+
+.article-edit-add-editor-body {
+  width: 100%;
+  padding: 10px;
+  display: none;
+  text-align: center;
+  
+  
+  img {
+    width: 100px;
+    height: 125px;
+    display: inline-block;
+    border: 1px dashed #cdd5d5;
+  }
+  
+  
+  img + img {
+    margin-left: 10px;
+  }
+}
+
+
 .article-editor-move-up-button {
   max-width: 20px;
   
