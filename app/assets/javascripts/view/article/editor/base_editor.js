@@ -11,7 +11,7 @@ View.Article.Editor.BaseEditor = Backbone.View.extend({
   
   
   tagName: "div",
-  className: "Article_Editor",
+  className: "article-edit-editor-container",
   
   
   render: function(content) {
@@ -21,7 +21,9 @@ View.Article.Editor.BaseEditor = Backbone.View.extend({
       addBeforeElement: this.$el
     });
     this.$el.append(this.viewAddEditor.render().$el);
-    this.$el.append(this.template({"content": content}));
+    var editor = $("<div class='article-edit-editor'></div>");
+    editor.html(this.template({"content": content}));
+    this.$el.append(editor);
     return this;
   },
   
@@ -37,7 +39,7 @@ View.Article.Editor.BaseEditor = Backbone.View.extend({
     event.preventDefault();
     event.stopPropagation();
     var thisEditor = this.$el;
-    thisEditor.prev("div.Article_Editor").before(thisEditor);
+    thisEditor.prev("div.article-edit-editor-container").before(thisEditor);
   },
   
   
@@ -45,7 +47,7 @@ View.Article.Editor.BaseEditor = Backbone.View.extend({
     event.preventDefault();
     event.stopPropagation();
     var thisEditor = this.$el;
-    thisEditor.next("div.Article_Editor").after(thisEditor);
+    thisEditor.next("div.article-edit-editor-container").after(thisEditor);
   },
   
   

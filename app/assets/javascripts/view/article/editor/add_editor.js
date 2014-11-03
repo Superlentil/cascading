@@ -43,10 +43,10 @@ View.Article.Editor.AddEditor = Backbone.View.extend({
   onClickHead: function(event) {
     event.preventDefault();
     if (this.body.is(":visible")) {
-      this.minimize();
+      this.minimize(500);
     } else {
       this.head.html(this.headText02);
-      this.body.show(500);
+      this.body.slideDown(500);
     }
   },
   
@@ -67,10 +67,11 @@ View.Article.Editor.AddEditor = Backbone.View.extend({
   },
   
   
-  minimize: function() {
+  minimize: function(animationDuration) {
     if (this.enableMinimize) {
       this.head.html(this.headText01);
-      this.body.hide(500);
+      var duration = animationDuration || 0;
+      this.body.slideUp(duration);
     }
   }
 });

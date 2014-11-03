@@ -1,3 +1,6 @@
+@import "compass";
+
+
 #article-edit-container {
   .one-central-column-container {
     max-width: 1000px;
@@ -6,6 +9,13 @@
       max-width: 800px;
     }
   }
+}
+
+
+.article-edit-editor {
+  background-color: #f0f0f0;
+  padding: 10px;
+  @include border-radius(4px);
 }
 
 
@@ -19,7 +29,7 @@
   font-size: small;
   font-style: italic;
   color: #a9afaf;
-  margin: 5px 0;
+  padding: 10px 0;
 }
 
 .article-edit-add-editor-body {

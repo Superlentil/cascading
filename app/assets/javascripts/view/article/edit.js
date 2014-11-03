@@ -130,7 +130,7 @@ View.Article.Edit = Backbone.View.extend({
   
   getArticle: function() {    
     var articleContent = [];
-    $(".Article_Editor").each(function(index) {
+    $(".article-edit-editor").each(function(index) {
       var editor = $(this);
       var paragraph = editor.children(".Paragraph");
       var type = paragraph.data("type");
@@ -146,16 +146,19 @@ View.Article.Edit = Backbone.View.extend({
         }
       }
       else if (type === "picture") {
-        var img = paragraph.children("img");
-        if (img.length > 0) {
-          var paragraphJSON = {
-            "type": type,
-            "src": {
-              "id": img.data("pictureId"),
-              "url": img.attr("src")
-            }
-          };
-          articleContent.push(paragraphJSON);
+        var allImages = paragraph.children("img");
+        if (allImages.length > 0) {
+          allImages.each(function() {
+            var img = $(this);
+            var paragraphJSON = {
+              "type": type,
+              "src": {
+                "id": img.data("pictureId"),
+                "url": img.attr("src")
+              }
+            };
+            articleContent.push(paragraphJSON);
+          });
         }
       }
     });
@@ -180,7 +183,7 @@ View.Article.Edit = Backbone.View.extend({
   
   
   uploadAllPictures: function() {
-    $(".Article_Editor").each(function(index) {
+    $(".article-edit-editor").each(function(index) {
       var editor = $(this);
       var paragraph = editor.children(".Paragraph");
       var type = paragraph.data("type");
@@ -200,7 +203,7 @@ View.Article.Edit = Backbone.View.extend({
   
   allPicturesUploaded: function() {
     var allUploaded = true;
-    $(".Article_Editor").each(function(index) {
+    $(".article-edit-editor").each(function(index) {
       var editor = $(this);
       var paragraph = editor.children(".Paragraph");
       var type = paragraph.data("type");

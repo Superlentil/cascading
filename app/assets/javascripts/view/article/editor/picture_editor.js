@@ -19,42 +19,48 @@ View.Article.Editor.PictureEditor = View.Article.Editor.BaseEditor.extend({
     var that = this;
     var pictureUploader = $(event.currentTarget);
     var contentContainer = pictureUploader.prev("div.Paragraph");
-    contentContainer.empty();
     
-    if (pictureUploader.val() !== "") {   
-      var formData = new FormData();
-      formData.append("picture[article_id]", that.articleId);
-      formData.append("picture[src]", pictureUploader.get(0).files[0]);
+    if (pictureUploader.val() !== "") {
+      contentContainer.empty();
       
-      var picture = new Model.Picture();
+      var files = pictureUploader.get(0).files;
+      var length = files.length;
       
-      picture.save(formData, {
-        progress: function(event) {
-          if (event.lengthComputable) {
-            $('progress').attr({
-              value: event.loaded,
-              max: event.total
-            });
-          }
-        },
+      for (var index = 0; index < length; ++index) {
+        var formData = new FormData();
+        formData.append("picture[article_id]", that.articleId);
+        formData.append("picture[src]", files[index]);
         
-        beforeSend: function() {
-          contentContainer.empty();
-          contentContainer.append("<progress></progress>");
-        },
+        var picture = new Model.Picture();
+        var progressBar = $("<progress></progress>");
         
-        success: function(savedPicture) {
-          contentContainer.empty();
-          contentContainer.append("<img src='" + savedPicture.medium_url
-            + "' alt='Uploaded Picture' data-picture-id='" + savedPicture.id
-            + "' />"
-          );
-        },
-        
-        error: function(jqXHR, textStatus, errorThrown) {},
-        
-        complete: function(jqXHR, textStatus ) {}
-      });
+        picture.save(formData, {
+          progress: function(event) {
+            if (event.lengthComputable) {
+                progressBar.attr({
+                value: event.loaded,
+                max: event.total
+              });
+            }
+          },
+          
+          beforeSend: function() {
+            contentContainer.append(progressBar);
+          },
+          
+          success: function(savedPicture) {
+            progressBar.remove();
+            contentContainer.append("<img src='" + savedPicture.medium_url
+              + "' alt='Uploaded Picture' data-picture-id='" + savedPicture.id
+              + "' />"
+            );
+          },
+          
+          error: function(jqXHR, textStatus, errorThrown) {},
+          
+          complete: function(jqXHR, textStatus ) {}
+        });
+      }
     }
   }
 });
