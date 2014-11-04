@@ -114,6 +114,8 @@ View.Article.Edit = Backbone.View.extend({
     this.allSubviews.push(textEditor);   // prevent view memory leak
     
     addBeforeElement.before(textEditor.render(content).el);
+    
+    return textEditor;
   },
   
   
@@ -125,6 +127,8 @@ View.Article.Edit = Backbone.View.extend({
     this.allSubviews.push(pictureEditor);   // prevent view memory leak
     
     addBeforeElement.before(pictureEditor.render(content).el);
+    
+    return pictureEditor;
   },
   
   
@@ -146,19 +150,16 @@ View.Article.Edit = Backbone.View.extend({
         }
       }
       else if (type === "picture") {
-        var allImages = paragraph.children("img");
-        if (allImages.length > 0) {
-          allImages.each(function() {
-            var img = $(this);
-            var paragraphJSON = {
-              "type": type,
-              "src": {
-                "id": img.data("pictureId"),
-                "url": img.attr("src")
-              }
-            };
-            articleContent.push(paragraphJSON);
-          });
+        var img = paragraph.children("img");
+        if (img.length > 0) {
+          var paragraphJSON = {
+            "type": type,
+            "src": {
+              "id": img.data("pictureId"),
+              "url": img.attr("src")
+            }
+          };
+          articleContent.push(paragraphJSON);
         }
       }
     });

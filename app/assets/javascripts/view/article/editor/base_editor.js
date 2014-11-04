@@ -21,7 +21,7 @@ View.Article.Editor.BaseEditor = Backbone.View.extend({
       addBeforeElement: this.$el
     });
     this.$el.append(this.viewAddEditor.render().$el);
-    var editor = $("<div class='article-edit-editor'></div>");
+    var editor = $("<div class='article-edit-editor article-edit-new-editor'></div>");
     editor.html(this.template({"content": content}));
     this.$el.append(editor);
     return this;
@@ -31,7 +31,8 @@ View.Article.Editor.BaseEditor = Backbone.View.extend({
   events: {
     "click .article-editor-move-up-button": "moveUpEditor",
     "click .article-editor-move-down-button": "moveDownEditor",
-    "click .article-editor-remove-button": "removeEditor"
+    "click .article-editor-remove-button": "removeEditor",
+    "click .article-edit-new-editor": "removeNewEditorMark"
   },
 
 
@@ -57,6 +58,11 @@ View.Article.Editor.BaseEditor = Backbone.View.extend({
     if (confirm("Are you sure to remove this paragraph?")) {
       this.$el.remove();
     }
+  },
+  
+  
+  removeNewEditorMark: function(event) {
+    this.$el.find(".article-edit-editor").removeClass("article-edit-new-editor");
   },
   
   
