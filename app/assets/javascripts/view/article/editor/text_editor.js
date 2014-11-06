@@ -29,15 +29,17 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
     }
 
     if (pasteText.length > 0) {
-      var restoredSelectRange = this.restoreSelection(oldSelectRange);
+      var restoredSelection = this.restoreSelection(oldSelectRange);
       var pasted = false;
-      if (restoredSelectRange) {
+      if (restoredSelection) {
         if (window.getSelection) {
-          restoredSelectRange.deleteContents();
-          restoredSelectRange.insertNode(document.createTextNode(pasteText));
+          var range = restoredSelection.getRangeAt(0);
+          range.deleteContents();
+          range.insertNode(document.createTextNode(pasteText));
+          this.restoreSelection(range).collapseToEnd();
           pasted = true;
         } else if (document.selection) {
-          restoredSelectRange.text = pasteText;
+          restoredSelection.text = pasteText;
           pasted = true;
         }
       }
@@ -68,6 +70,7 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   // }
   
   
+  // returns "range" for "window.getSelection"
   saveSelection: function() {
     if (window.getSelection) {
       var selection = window.getSelection();
@@ -86,13 +89,14 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   },
   
   
+  // returns "selection" for "window.getSelection"
   restoreSelection: function(oldSelectRange) {
     if (oldSelectRange) {
       if (window.getSelection) {
         var selection = window.getSelection();
         selection.removeAllRanges();
         selection.addRange(oldSelectRange);
-        return selection.getRangeAt(0);
+        return selection;
       } else if (document.selection && oldSelectRange.select) {
         oldSelectRange.select();
         return oldSelectRange;
