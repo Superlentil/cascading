@@ -20,21 +20,26 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
       pasteText = clipboard.getData("text/plain");
     } else if (window.clipboardData) {
       pasteText = window.clipboardData.getData("Text");
-    } else {
-      prompt("For security purpose, please paste here:");
+    }
+    
+    if (pasteText.length === 0) {
+      pasteText = prompt("Please paste here. Your browser may not support direct secure paste.");
     }
 
     if (window.getSelection) {
       var selection = window.getSelection();
       if (selection.rangeCount) {
         selection.getRangeAt(0).deleteContents();
-        selection.getRangeAt(0).insertNode(document.createTextNode("***" + pasteText + "***"));
+        selection.getRangeAt(0).insertNode(document.createTextNode(pasteText));
       }
     } else if (document.selection) {
       if (document.selection.type === "Text") {
         var range = document.selection.createRange();
-        range.text = "---" + pasteText + "---";
+        range.text = pasteText;
       }
+    } else {
+      var input = $(event.currentTarget);
+      input.html(input.html() + pasteText);
     }
   }
   
