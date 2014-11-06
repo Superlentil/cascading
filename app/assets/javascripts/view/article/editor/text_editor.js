@@ -13,6 +13,17 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   
   onPaste: function(event) {
     event.preventDefault();
+
+    var windowSelection = window.getSelection;
+    var documentSelection = document.selection;
+    var selection = null;
+    if (windowSelection) {
+      selection = windowSelection();
+    } else if (documentSelection) {
+      if (documentSelection.type === "Text") {
+        selection = documentSelection.createRange();
+      }
+    }
     
     var pasteText = "";
     var clipboard = (event.originalEvent || event).clipboardData;
@@ -23,19 +34,17 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
     }
     
     if (pasteText.length === 0) {
-      pasteText = prompt("Please paste here. Your browser may not support direct secure paste.");
+      pasteText = prompt("Please paste here. Your browser may not support direct secure paste.") || "";
     }
 
-    if (window.getSelection) {
-      var selection = window.getSelection();
+    if (windowSelection) {
       if (selection.rangeCount) {
         selection.getRangeAt(0).deleteContents();
         selection.getRangeAt(0).insertNode(document.createTextNode(pasteText));
       }
     } else if (document.selection) {
-      if (document.selection.type === "Text") {
-        var range = document.selection.createRange();
-        range.text = pasteText;
+      if (selection) {
+        selection.text = pasteText;
       }
     } else {
       var input = $(event.currentTarget);
