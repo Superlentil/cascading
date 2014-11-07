@@ -30,21 +30,12 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
 
     if (pasteText.length > 0) {
       var restoredSelection = this.restoreSelection(oldSelectRange);
-      var pasted = false;
       if (restoredSelection) {
-        if (window.getSelection) {
-          var range = restoredSelection.getRangeAt(0);
-          range.deleteContents();
-          range.insertNode(document.createTextNode(pasteText));
-          this.restoreSelection(range).collapseToEnd();
-          pasted = true;
-        } else if (document.selection) {
-          restoredSelection.text = pasteText;
-          pasted = true;
-        }
-      }
-
-      if (!pasted) {
+        var range = restoredSelection.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(document.createTextNode(pasteText));
+        this.restoreSelection(range).collapseToEnd();
+      } else {
         var input = $(event.currentTarget);
         input.html(input.html() + pasteText);
       }
@@ -70,37 +61,25 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   // }
   
   
-  // returns "range" for "window.getSelection"
+  // returns "range"
   saveSelection: function() {
     if (window.getSelection) {
       var selection = window.getSelection();
       if (selection.getRangeAt && selection.rangeCount) {
         return selection.getRangeAt(0);
       }
-    } else {
-      var documentSelection = document.selection;
-      if (documentSelection && documentSelection.createRange) {
-        if (documentSelection.type === "Text") {
-          return documentSelection.createRange();
-        }
-      }
     }
     return null;
   },
   
   
-  // returns "selection" for "window.getSelection"
+  // returns "selection"
   restoreSelection: function(oldSelectRange) {
-    if (oldSelectRange) {
-      if (window.getSelection) {
-        var selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(oldSelectRange);
-        return selection;
-      } else if (document.selection && oldSelectRange.select) {
-        oldSelectRange.select();
-        return oldSelectRange;
-      }
+    if (oldSelectRange && window.getSelection) {
+      var selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(oldSelectRange);
+      return selection;
     }
     return null;
   }

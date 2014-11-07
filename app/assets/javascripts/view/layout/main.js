@@ -143,9 +143,9 @@ View.Layout.Main = Backbone.View.extend({
     event.preventDefault();
     event.stopPropagation();
     
-    if (this.leftNavOn) {
-      this.closeNav();
-    } else {
+    var leftNavOn = this.leftNavOn;
+    this.closeNav();
+    if (!leftNavOn) {
       this.leftNavOn = true;
       this.viewHeader.undelegateEvents();
       this.viewContent.undelegateEvents();
@@ -160,9 +160,9 @@ View.Layout.Main = Backbone.View.extend({
     event.preventDefault();
     event.stopPropagation();
     
-    if (this.rightNavOn) {
-      this.closeNav();
-    } else {
+    var rightNavOn = this.rightNavOn;
+    this.closeNav();
+    if (!rightNavOn) {
       this.rightNavOn = true;
       this.viewHeader.undelegateEvents();
       this.viewContent.undelegateEvents();
