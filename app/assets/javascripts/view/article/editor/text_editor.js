@@ -5,8 +5,10 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   
   events: function() {
     return _.extend({}, View.Article.Editor.BaseEditor.prototype.events, {
-      "paste .Paragraph": "onPaste"
-      // "click .article-editor-text-bold": "onBold",
+      "paste .Paragraph": "onPaste",
+      "blur .Paragraph": "onBlur",
+      "click .article-editor-text-bold": "onBold",
+      "click .article-editor-text-italic": "onItalic"
     });
   },
   
@@ -43,22 +45,68 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   },
   
   
-  // onBold: function(event) {
-    // if (window.getSelection) {
-      // var selection = window.getSelection();
-      // if (selection.rangeCount) {
-        // var content = selection.getRangeAt(0).cloneContents();
-        // selection.getRangeAt(0).deleteContents();
-        // selection.getRangeAt(0).insertNode(document.createTextNode("<strong>" + content + "</strong>"));
-      // }
-    // } else if (document.selection) {
-      // if (document.selection.type === "Text") {
-        // var range = document.selection.createRange();
-        // var content = range.htmlText;
-        // range.text = "<strong>" + content + "</strong>";
-      // }
-    // }
-  // }
+  onBlur: function(event) {
+    this.selectedRange = this.saveSelection();
+  },
+  
+  
+  onBold: function(event) {
+    var selectedRange = this.selectedRange;
+    if (selectedRange) {
+      var restoredSelection = this.restoreSelection(selectedRange);
+      if (restoredSelection) {
+        var range = restoredSelection.getRangeAt(0);
+        var parentNode = $(range.commonAncestorContainer);
+        var tagName = (parentNode.prop("tagName") || "").toLowerCase();
+        var needChange = true;
+        while (tagName !== "pre") {
+          console.log(tagName);
+          parentNode = parentNode.parent();
+          tagName = (parentNode.prop("tagName") || "").toLowerCase();
+          if (tagName === "strong") {
+            needChange = false;
+          }
+        }
+        if (needChange) {
+          var fragment = $("<strong></strong>").append(range.extractContents());
+          this.stripSubTag(fragment, "strong");
+          range.insertNode(fragment[0]);
+          this.restoreSelection(range);
+        }
+      }
+    }
+  },
+  
+  
+  onItalic: function(event) {
+    var selectedRange = this.selectedRange;
+    if (selectedRange) {
+      var restoredSelection = this.restoreSelection(selectedRange);
+      if (restoredSelection) {
+        var range = restoredSelection.getRangeAt(0);
+        var fragment = $("<em></em>").append(range.extractContents());
+        console.log(fragment);
+        // this.stripSubTag(fragment, "em");
+        range.insertNode(fragment[0]);
+        this.restoreSelection(range);
+      }
+    }
+  },
+  
+  
+  stripSubTag: function(jQueryElement, tagName) {
+    var that = this;
+    
+    var children = jQueryElement.children(tagName);
+    if (children.length > 0) {
+      children.each(function(index, child) {
+        var childElement = $(child);       
+        that.stripSubTag(childElement, tagName);
+        childElement.after(childElement.html());
+        childElement.remove();
+      });
+    }
+  },
   
   
   // returns "range"
