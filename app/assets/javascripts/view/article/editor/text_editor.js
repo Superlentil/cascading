@@ -3,10 +3,16 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   template: JST["template/article/editor/text_editor"],
   
   
+  renderHelper: function() {
+    this.editor = this.$el.find(".Paragraph");
+  },
+  
+  
   events: function() {
     return _.extend({}, View.Article.Editor.BaseEditor.prototype.events, {
       "paste .Paragraph": "onPaste",
       "blur .Paragraph": "onBlur",
+      "click .article-editor-text-clear-format": "clearFormat",
       "click .article-editor-text-bold": "onBold",
       "click .article-editor-text-italic": "onItalic"
     });
@@ -47,6 +53,33 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   
   onBlur: function(event) {
     this.selectedRange = this.saveSelection();
+  },
+  
+  
+  clearFormat: function(event) {
+    var selectedRange = this.selectedRange;
+    if (selectedRange) {
+      var restoredSelection = this.restoreSelection(selectedRange);
+      if (restoredSelection) {
+        var range = restoredSelection.getRangeAt(0);
+        var unformattedNode = document.createTextNode($(range.extractContents()).text());
+        
+        var editor = this.editor;
+        range.setStart(editor.first()[0], 0);
+        var beforeContent = $(range.extractContents());
+        if (editor.text().length === 0) {
+          editor.empty();
+        }
+        
+        range.insertNode(unformattedNode);
+        if (beforeContent.text().length > 0) {
+          range.insertNode(beforeContent[0]);
+        }
+        range.setStart(unformattedNode, 0);
+        
+        this.restoreSelection(range);
+      }
+    }
   },
   
   
@@ -113,7 +146,7 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   saveSelection: function() {
     if (window.getSelection) {
       var selection = window.getSelection();
-      if (selection.getRangeAt && selection.rangeCount) {
+      if (selection.rangeCount) {
         return selection.getRangeAt(0);
       }
     }

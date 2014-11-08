@@ -24,7 +24,12 @@ View.Article.Editor.BaseEditor = Backbone.View.extend({
     var editor = $("<div class='article-edit-editor article-edit-new-editor'></div>");
     editor.html(this.template({"content": content}));
     this.$el.append(editor);
+    this.renderHelper();
     return this;
+  },
+  
+  
+  renderHelper: function() {
   },
   
   
