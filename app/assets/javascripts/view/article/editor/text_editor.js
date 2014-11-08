@@ -93,7 +93,6 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
         var tagName = (parentNode.prop("tagName") || "").toLowerCase();
         var needChange = true;
         while (tagName !== "pre") {
-          console.log(tagName);
           parentNode = parentNode.parent();
           tagName = (parentNode.prop("tagName") || "").toLowerCase();
           if (tagName === "strong") {
@@ -101,10 +100,22 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
           }
         }
         if (needChange) {
-          var fragment = $("<strong></strong>").append(range.extractContents());
-          this.stripSubTag(fragment, "strong");
-          range.insertNode(fragment[0]);
+          var formattedNode = $("<strong></strong>").append(range.extractContents());
+          this.stripSubTag(formattedNode, "strong");
+          range.insertNode(formattedNode[0]);
           this.restoreSelection(range);
+          
+          var previousNode = formattedNode.prev();
+          console.log(previousNode);
+          if (previousNode.length > 0 && previousNode.text().length === 0) {
+            previousNode.remove();
+          }
+          
+          var nextNode = formattedNode.next();
+          console.log(nextNode);
+          if (nextNode.length > 0 && nextNode.text().length === 0) {
+            nextNode.remove();
+          }
         }
       }
     }
