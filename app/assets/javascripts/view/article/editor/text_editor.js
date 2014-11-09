@@ -12,9 +12,11 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
     return _.extend({}, View.Article.Editor.BaseEditor.prototype.events, {
       "paste .Paragraph": "onPaste",
       "blur .Paragraph": "onBlur",
-      "click .article-editor-text-clear-format": "clearFormat",
-      "click .article-editor-text-bold": "onBold",
-      "click .article-editor-text-italic": "onItalic"
+      "click .m-clear-format": "clearFormat",
+      "click .m-bold": "bold",
+      "click .m-italic": "italic",
+      "click .m-large-font": "largeFont",
+      "click .m-small-font": "smallFont"
     });
   },
   
@@ -65,7 +67,7 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
         var unformattedNode = document.createTextNode($(range.extractContents()).text());
         
         var editor = this.editor;
-        range.setStart(editor.first()[0], 0);
+        range.setStart(editor[0], 0);
         var beforeContent = $(range.extractContents());
         if (editor.text().length === 0) {
           editor.empty();
@@ -75,7 +77,7 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
         if (beforeContent.text().length > 0) {
           range.insertNode(beforeContent[0]);
         }
-        range.setStart(unformattedNode, 0);
+        range.setStartBefore(unformattedNode);
         
         this.restoreSelection(range);
       }
@@ -83,20 +85,126 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   },
   
   
-  htmlTag: function(jQuerySelector) {
-    return (jQuerySelector.prop("tagName") || "").toLowerCase();
+  bold: function(event) {
+    var that = this;
+    that.addFormat("<strong></strong>", function(jQueryElement, vagueMatch) {
+      return that.htmlTag(jQueryElement) === "strong";
+    });
   },
   
   
-  mergeAdjoinNode: function(currentNode, selectedRange, leftAdjoinNode) {
+  italic: function(event) {
+    var that = this;
+    that.addFormat("<em></em>", function(jQueryElement, vagueMatch) {
+      return that.htmlTag(jQueryElement) === "em";
+    });
+  },
+  
+  
+  largeFont: function(event) {
+    var that = this;
+    that.addFormat("<span style=\"font-size:1.42857em\"></span>", function(jQueryElement, vagueMatch) {
+      if (that.htmlTag(jQueryElement) === "span") {
+        var style = jQueryElement.attr("style");
+        if (style) {
+          if (vagueMatch) {
+            return style.match(/font-size/i);
+          } else {
+            return style.match(/font-size:1.42857em/i);
+          }
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    });
+  },
+  
+  
+  smallFont: function(event) {
+    var that = this;
+    that.addFormat("<span style=\"font-size:0.7em\"></span>", function(jQueryElement, vagueMatch) {
+      if (that.htmlTag(jQueryElement) === "span") {
+        var style = jQueryElement.attr("style");
+        if (style) {
+          if (vagueMatch) {
+            return style.match(/font-size/i);
+          } else {
+            return style.match(/font-size:0.7em/i);
+          }
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    });
+  },
+  
+  
+  addFormat: function(htmlFormat, htmlFormatMatcher) {
+    var selectedRange = this.selectedRange;
+    if (selectedRange) {
+      var restoredSelection = this.restoreSelection(selectedRange);
+      if (restoredSelection) {
+        var range = restoredSelection.getRangeAt(0);
+        var parentNode = $(range.commonAncestorContainer);
+        var tagName = this.htmlTag(parentNode);
+        var needChange = true;
+        while (tagName !== "pre") {
+          if (htmlFormatMatcher(parentNode, true)) {
+            if (htmlFormatMatcher(parentNode)) {
+              needChange = false;
+            } else {
+              
+            }
+            break;
+          }
+          parentNode = parentNode.parent();
+          tagName = this.htmlTag(parentNode);
+        }
+        if (needChange) {
+          var formattedNode = $(htmlFormat).append(range.extractContents());
+          this.stripSubTag(formattedNode.children(), htmlFormatMatcher);
+          var selectStartMark = $("<span></span>");
+          var selectEndMark = $("<span></span>");
+          formattedNode.prepend(selectStartMark);
+          formattedNode.append(selectEndMark);
+          
+          range.insertNode(formattedNode[0]);
+          
+          this.mergeAdjoinNode(formattedNode, range, true, htmlFormatMatcher);
+          this.mergeAdjoinNode(formattedNode, range, false, htmlFormatMatcher);
+          
+          this.stripSubTag(formattedNode.children(), htmlFormatMatcher);
+          
+          range.setStartAfter(selectStartMark[0]);
+          selectStartMark.remove();
+          range.setEndBefore(selectEndMark[0]);
+          selectEndMark.remove();
+          this.restoreSelection(range);
+        }
+      }
+    }
+    console.log(this.editor.html());
+  },
+  
+  
+  htmlTag: function(jQueryElement) {
+    return (jQueryElement.prop("tagName") || "").toLowerCase();
+  },
+  
+  
+  mergeAdjoinNode: function(currentNode, selectedRange, isPreviousNode, htmlFormatMatcher) {
     var merge = false;
-    var adjoinNode = leftAdjoinNode ? currentNode.prev() : currentNode.next();
-    console.log(adjoinNode);
-    if (adjoinNode.length > 0) {
+    var adjoinNode = isPreviousNode ? currentNode.prev() : currentNode.next();
+    while (adjoinNode.length > 0) {
       if (adjoinNode.text().length === 0) {
         adjoinNode.remove();
+        adjoinNode = isPreviousNode ? currentNode.prev() : currentNode.next();
       } else {
-        if (leftAdjoinNode) {
+        if (isPreviousNode) {
           selectedRange.setStartBefore(adjoinNode[0]);
           selectedRange.setEndBefore(currentNode[0]);
         } else {
@@ -122,7 +230,7 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
           
           if (realChildCount === 1) {
             children = $(children[realChildIndex]);
-            if (this.htmlTag(children) === "strong") {
+            if (htmlFormatMatcher(children)) {
               merge = true;
               break;
             }
@@ -131,88 +239,29 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
             break;
           }
         }
+        
+        break;
       }
     }
     
     if (merge) {
       adjoinNode.detach();
-      if (leftAdjoinNode) {
+      if (isPreviousNode) {
         currentNode.prepend(adjoinNode);
       } else {
         currentNode.append(adjoinNode);
       }
-      return adjoinNode;
-    } else {
-      return null;
     }
   },
   
   
-  onBold: function(event) {
-    var selectedRange = this.selectedRange;
-    if (selectedRange) {
-      var restoredSelection = this.restoreSelection(selectedRange);
-      if (restoredSelection) {
-        var range = restoredSelection.getRangeAt(0);
-        var parentNode = $(range.commonAncestorContainer);
-        var tagName = this.htmlTag(parentNode);
-        var needChange = true;
-        while (tagName !== "pre") {
-          if (tagName === "strong") {
-            needChange = false;
-            break;
-          }
-          parentNode = parentNode.parent();
-          tagName = this.htmlTag(parentNode);
-        }
-        if (needChange) {
-          var oldNode = $(range.extractContents());
-          var oldNodeTextLength = oldNode.text().length;
-          var formattedNode = $("<strong></strong>").append(oldNode);
-          range.insertNode(formattedNode[0]);
-          
-          var leftMergedNode = this.mergeAdjoinNode(formattedNode, range, true);
-          this.mergeAdjoinNode(formattedNode, range, false);
-          
-          this.stripSubTag(formattedNode.children(), "strong");
-          
-          var leftMergeNodeTextLength = leftMergedNode ? leftMergedNode.text().length : 0;
-          range.selectNode(formattedNode[0]);
-          range.setStart(formattedNode[0], leftMergeNodeTextLength);
-          range.setEnd(formattedNode[0], leftMergeNodeTextLength + oldNodeTextLength);
-          this.restoreSelection(range);
-        }
-      }
-    }
-    console.log(this.editor.html());
-  },
-  
-  
-  onItalic: function(event) {
-    var selectedRange = this.selectedRange;
-    if (selectedRange) {
-      var restoredSelection = this.restoreSelection(selectedRange);
-      if (restoredSelection) {
-        var range = restoredSelection.getRangeAt(0);
-        var fragment = $("<em></em>").append(range.extractContents());
-        // this.stripSubTag(fragment, "em");
-        range.insertNode(fragment[0]);
-        this.restoreSelection(range);
-      }
-    }
-  },
-  
-  
-  stripSubTag: function(subElements, tagName) {
-    var that = this;
-    
+  stripSubTag: function(subElements, htmlFormatMatcher) {
     var children = subElements;
     var childrenLength = children.length;
     for (var index = 0; index < childrenLength; ++index) {
       var child = $(children[index]);
-      console.log(child.html());
-      that.stripSubTag(child.children(), tagName);
-      if (this.htmlTag(child) === "strong") {
+      this.stripSubTag(child.children(), htmlFormatMatcher);
+      if (htmlFormatMatcher(child, true)) {
         child.before(child.html());
         child.remove();
       }
