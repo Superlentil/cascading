@@ -83,6 +83,71 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   },
   
   
+  htmlTag: function(jQuerySelector) {
+    return (jQuerySelector.prop("tagName") || "").toLowerCase();
+  },
+  
+  
+  mergeAdjoinNode: function(currentNode, selectedRange, leftAdjoinNode) {
+    var merge = false;
+    var adjoinNode = leftAdjoinNode ? currentNode.prev() : currentNode.next();
+    console.log(adjoinNode);
+    if (adjoinNode.length > 0) {
+      if (adjoinNode.text().length === 0) {
+        adjoinNode.remove();
+      } else {
+        if (leftAdjoinNode) {
+          selectedRange.setStartBefore(adjoinNode[0]);
+          selectedRange.setEndBefore(currentNode[0]);
+        } else {
+          selectedRange.setStartAfter(currentNode[0]);
+          selectedRange.setEndAfter(adjoinNode[0]);
+        }
+
+        var children = $("<div></div>").append(selectedRange.cloneContents()).contents();
+
+        while (children.length > 0) {
+          var childrenCount = children.length;
+          var realChildCount = 0;
+          var realChildIndex = 0;
+          for(var index = 0; index < childrenCount; ++index) {
+            var child = $(children[index]);
+            if (child.text().length > 0) {
+              ++realChildCount;
+              realChildIndex = index;
+            } else {
+              child.remove();
+            }
+          }
+          
+          if (realChildCount === 1) {
+            children = $(children[realChildIndex]);
+            if (this.htmlTag(children) === "strong") {
+              merge = true;
+              break;
+            }
+            children = children.contents();
+          } else {
+            break;
+          }
+        }
+      }
+    }
+    
+    if (merge) {
+      adjoinNode.detach();
+      if (leftAdjoinNode) {
+        currentNode.prepend(adjoinNode);
+      } else {
+        currentNode.append(adjoinNode);
+      }
+      return adjoinNode;
+    } else {
+      return null;
+    }
+  },
+  
+  
   onBold: function(event) {
     var selectedRange = this.selectedRange;
     if (selectedRange) {
@@ -90,35 +155,36 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
       if (restoredSelection) {
         var range = restoredSelection.getRangeAt(0);
         var parentNode = $(range.commonAncestorContainer);
-        var tagName = (parentNode.prop("tagName") || "").toLowerCase();
+        var tagName = this.htmlTag(parentNode);
         var needChange = true;
         while (tagName !== "pre") {
-          parentNode = parentNode.parent();
-          tagName = (parentNode.prop("tagName") || "").toLowerCase();
           if (tagName === "strong") {
             needChange = false;
+            break;
           }
+          parentNode = parentNode.parent();
+          tagName = this.htmlTag(parentNode);
         }
         if (needChange) {
-          var formattedNode = $("<strong></strong>").append(range.extractContents());
-          this.stripSubTag(formattedNode, "strong");
+          var oldNode = $(range.extractContents());
+          var oldNodeTextLength = oldNode.text().length;
+          var formattedNode = $("<strong></strong>").append(oldNode);
           range.insertNode(formattedNode[0]);
+          
+          var leftMergedNode = this.mergeAdjoinNode(formattedNode, range, true);
+          this.mergeAdjoinNode(formattedNode, range, false);
+          
+          this.stripSubTag(formattedNode.children(), "strong");
+          
+          var leftMergeNodeTextLength = leftMergedNode ? leftMergedNode.text().length : 0;
+          range.selectNode(formattedNode[0]);
+          range.setStart(formattedNode[0], leftMergeNodeTextLength);
+          range.setEnd(formattedNode[0], leftMergeNodeTextLength + oldNodeTextLength);
           this.restoreSelection(range);
-          
-          var previousNode = formattedNode.prev();
-          console.log(previousNode);
-          if (previousNode.length > 0 && previousNode.text().length === 0) {
-            previousNode.remove();
-          }
-          
-          var nextNode = formattedNode.next();
-          console.log(nextNode);
-          if (nextNode.length > 0 && nextNode.text().length === 0) {
-            nextNode.remove();
-          }
         }
       }
     }
+    console.log(this.editor.html());
   },
   
   
@@ -129,7 +195,6 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
       if (restoredSelection) {
         var range = restoredSelection.getRangeAt(0);
         var fragment = $("<em></em>").append(range.extractContents());
-        console.log(fragment);
         // this.stripSubTag(fragment, "em");
         range.insertNode(fragment[0]);
         this.restoreSelection(range);
@@ -138,17 +203,19 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   },
   
   
-  stripSubTag: function(jQueryElement, tagName) {
+  stripSubTag: function(subElements, tagName) {
     var that = this;
     
-    var children = jQueryElement.children(tagName);
-    if (children.length > 0) {
-      children.each(function(index, child) {
-        var childElement = $(child);       
-        that.stripSubTag(childElement, tagName);
-        childElement.after(childElement.html());
-        childElement.remove();
-      });
+    var children = subElements;
+    var childrenLength = children.length;
+    for (var index = 0; index < childrenLength; ++index) {
+      var child = $(children[index]);
+      console.log(child.html());
+      that.stripSubTag(child.children(), tagName);
+      if (this.htmlTag(child) === "strong") {
+        child.before(child.html());
+        child.remove();
+      }
     }
   },
   
