@@ -59,35 +59,42 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   
   
   clearFormat: function(event) {
-    var selectedRange = this.selectedRange;
-    if (selectedRange) {
-      var restoredSelection = this.restoreSelection(selectedRange);
-      if (restoredSelection) {
-        var range = restoredSelection.getRangeAt(0);
-        var unformattedNode = document.createTextNode($(range.extractContents()).text());
-        
-        var editor = this.editor;
-        range.setStart(editor[0], 0);
-        var beforeContent = $(range.extractContents());
-        if (editor.text().length === 0) {
-          editor.empty();
+    var range = this.selectedRange;
+    if (range) {
+      var editor = this.editor;
+      
+      if (range.collapsed) {
+        editor.html(editor.text());
+      } else {
+        var restoredSelection = this.restoreSelection(range);
+        if (restoredSelection) {
+          var range = restoredSelection.getRangeAt(0);
+          var unformattedNode = document.createTextNode($(range.extractContents()).text());
+          
+          range.setStart(editor[0], 0);
+          var beforeContent = $(range.extractContents());
+          if (editor.text().length === 0) {
+            editor.empty();
+          }
+          
+          range.insertNode(unformattedNode);
+          if (beforeContent.text().length > 0) {
+            range.insertNode(beforeContent[0]);
+          }
+          range.setStartBefore(unformattedNode);
+          
+          this.restoreSelection(range);
         }
-        
-        range.insertNode(unformattedNode);
-        if (beforeContent.text().length > 0) {
-          range.insertNode(beforeContent[0]);
-        }
-        range.setStartBefore(unformattedNode);
-        
-        this.restoreSelection(range);
+        this.stripSubEmptyTags();
       }
     }
+    console.log(this.editor.html());
   },
   
   
   bold: function(event) {
     var that = this;
-    that.addFormat("<strong></strong>", function(jQueryElement, vagueMatch) {
+    that.changeStyle("<strong></strong>", function(jQueryElement, vagueMatch) {
       return that.htmlTag(jQueryElement) === "strong";
     });
   },
@@ -95,7 +102,7 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   
   italic: function(event) {
     var that = this;
-    that.addFormat("<em></em>", function(jQueryElement, vagueMatch) {
+    that.changeStyle("<em></em>", function(jQueryElement, vagueMatch) {
       return that.htmlTag(jQueryElement) === "em";
     });
   },
@@ -103,7 +110,7 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   
   largeFont: function(event) {
     var that = this;
-    that.addFormat("<span style=\"font-size:1.42857em\"></span>", function(jQueryElement, vagueMatch) {
+    that.changeStyle("<span style=\"font-size:1.42857em\"></span>", function(jQueryElement, vagueMatch) {
       if (that.htmlTag(jQueryElement) === "span") {
         var style = jQueryElement.attr("style");
         if (style) {
@@ -124,7 +131,7 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   
   smallFont: function(event) {
     var that = this;
-    that.addFormat("<span style=\"font-size:0.7em\"></span>", function(jQueryElement, vagueMatch) {
+    that.changeStyle("<span style=\"font-size:0.7em\"></span>", function(jQueryElement, vagueMatch) {
       if (that.htmlTag(jQueryElement) === "span") {
         var style = jQueryElement.attr("style");
         if (style) {
@@ -143,50 +150,126 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   },
   
   
-  addFormat: function(htmlFormat, htmlFormatMatcher) {
-    var selectedRange = this.selectedRange;
-    if (selectedRange) {
-      var restoredSelection = this.restoreSelection(selectedRange);
-      if (restoredSelection) {
-        var range = restoredSelection.getRangeAt(0);
-        var parentNode = $(range.commonAncestorContainer);
-        var tagName = this.htmlTag(parentNode);
-        var needChange = true;
-        while (tagName !== "pre") {
-          if (htmlFormatMatcher(parentNode, true)) {
-            if (htmlFormatMatcher(parentNode)) {
-              needChange = false;
-            } else {
-              
+  markSelectRange: function(selectRange, selectStartMark, selectEndMark) {
+    selectRange.insertNode(selectStartMark[0]);
+    selectRange.collapse(false);
+    selectRange.insertNode(selectEndMark[0]);
+    selectRange.setStartBefore(selectStartMark[0]);
+  },
+  
+  
+  restoreSelectRangeFromMarks: function(selectRange, selectStartMark, selectEndMark) {
+    selectRange.setStartAfter(selectStartMark[0]);
+    selectRange.setEndBefore(selectEndMark[0]);
+    selectStartMark.remove();
+    selectEndMark.remove();
+  },
+  
+  
+  styleOutFromAncestor: function(selectRange, selectStartMark, selectEndMark, rangeAncestor, htmlStyleWrapper) {
+    if (rangeAncestor.find(selectStartMark).length > 0) {
+      var rangeAncestorPositionMark = $("<span></span>");
+      rangeAncestor.before(rangeAncestorPositionMark);
+      rangeAncestor.detach();
+      var temporaryContainer = $("<div></div>").append(rangeAncestor);
+      selectRange.selectNode(rangeAncestor[0]);
+      selectRange.setEndBefore(selectStartMark[0]);
+      var beforeNode = $(selectRange.extractContents());
+      selectRange.collapse(false);
+      selectRange.setEndAfter(selectEndMark[0]);
+      var selectedNode = $(htmlStyleWrapper).append(selectRange.extractContents());
+      var afterNode = $(temporaryContainer.contents());
+      rangeAncestorPositionMark.before(beforeNode);
+      rangeAncestorPositionMark.before(selectedNode);
+      rangeAncestorPositionMark.before(afterNode);
+      rangeAncestorPositionMark.remove();
+      return selectedNode;
+    } else {
+      selectRange.setStartBefore(selectStartMark[0]);
+      selectRange.setEndAfter(selectEndMark[0]);
+      var selectedNode = $(htmlStyleWrapper).append(selectRange.extractContents());
+      selectRange.insertNode(selectedNode[0]);
+      return selectedNode;
+    }
+  },
+  
+  
+  changeStyle: function(htmlStyleWrapper, htmlStyleMatcher) {
+    var range = this.selectedRange;
+    if (range) {
+      if (range.collapsed) {
+        var editor = this.editor;
+        var styledContents = $(htmlStyleWrapper).append(editor.contents());
+        editor.html(styledContents);
+        this.stripSubTags(styledContents.children(), htmlStyleMatcher);
+      } else {
+        var restoredSelection = this.restoreSelection(range);
+        if (restoredSelection) {       
+          var range = restoredSelection.getRangeAt(0);
+          var rangeAncestor = $(range.commonAncestorContainer);
+          var tagName = this.htmlTag(rangeAncestor);
+          var needChange = true;
+          var simplyAdd = true;
+          while (tagName !== "pre") {
+            if (htmlStyleMatcher(rangeAncestor, true)) {
+              if (htmlStyleMatcher(rangeAncestor)) {
+                needChange = false;
+              } else {
+                simplyAdd = false;
+              }
+              break;
             }
-            break;
+            rangeAncestor = rangeAncestor.parent();
+            tagName = this.htmlTag(rangeAncestor);
           }
-          parentNode = parentNode.parent();
-          tagName = this.htmlTag(parentNode);
-        }
-        if (needChange) {
-          var formattedNode = $(htmlFormat).append(range.extractContents());
-          this.stripSubTag(formattedNode.children(), htmlFormatMatcher);
-          var selectStartMark = $("<span></span>");
-          var selectEndMark = $("<span></span>");
-          formattedNode.prepend(selectStartMark);
-          formattedNode.append(selectEndMark);
           
-          range.insertNode(formattedNode[0]);
-          
-          this.mergeAdjoinNode(formattedNode, range, true, htmlFormatMatcher);
-          this.mergeAdjoinNode(formattedNode, range, false, htmlFormatMatcher);
-          
-          this.stripSubTag(formattedNode.children(), htmlFormatMatcher);
-          
-          range.setStartAfter(selectStartMark[0]);
-          selectStartMark.remove();
-          range.setEndBefore(selectEndMark[0]);
-          selectEndMark.remove();
-          this.restoreSelection(range);
+          if (needChange) {
+            var selectStartMark = $("<span></span>");
+            var selectEndMark = $("<span></span>");
+            this.markSelectRange(range, selectStartMark, selectEndMark);
+            
+            var formattedNode = null;
+            
+            if (simplyAdd) {
+              formattedNode = $(htmlStyleWrapper).append(range.extractContents());
+              range.insertNode(formattedNode[0]);
+            } else {   // has ancestor with the same type of style but not the same style
+              var parent = rangeAncestor;
+              var onlyChild = this.getOnlyChild(parent);
+              while (onlyChild) {
+                parent = onlyChild;
+                onlyChild = this.getOnlyChild(parent);
+              }
+  
+              if (parent[0] !== rangeAncestor[0]) {
+                rangeAncestor.before(rangeAncestor.contents());
+                if (parent[0].nodeType === 3) {   // a text node
+                  parent.before(rangeAncestor);
+                  rangeAncestor.append(parent);
+                } else {
+                  rangeAncestor.append(parent.contents());
+                  parent.append(rangeAncestor);
+                }
+              }
+              
+              formattedNode = this.styleOutFromAncestor(range, selectStartMark, selectEndMark, rangeAncestor, htmlStyleWrapper);
+            }
+            
+            formattedNode.prepend(selectStartMark);   // avoid "selectStartMark" and "selectEndMark" to get removed in "stripSubTags"
+            formattedNode.append(selectEndMark);
+            
+            this.mergeAdjoinNode(formattedNode, range, true, htmlStyleMatcher);
+            this.mergeAdjoinNode(formattedNode, range, false, htmlStyleMatcher);
+            
+            this.stripSubTags(formattedNode.children(), htmlStyleMatcher);
+            
+            this.restoreSelectRangeFromMarks(range, selectStartMark, selectEndMark);
+            this.restoreSelection(range);
+          }
         }
       }
     }
+    this.stripSubEmptyTags();
     console.log(this.editor.html());
   },
   
@@ -196,7 +279,31 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   },
   
   
-  mergeAdjoinNode: function(currentNode, selectedRange, isPreviousNode, htmlFormatMatcher) {
+  getOnlyChild: function(jQueryElement) {
+    var children = jQueryElement.contents();
+
+    if (children.length > 0) {
+      var childrenCount = children.length;
+      var realChildCount = 0;
+      var realChildIndex = 0;
+      for(var index = 0; index < childrenCount; ++index) {
+        var child = $(children[index]);
+        if (child.text().length > 0) {
+          ++realChildCount;
+          realChildIndex = index;
+        }
+      }
+      
+      if (realChildCount === 1) {
+        return $(children[realChildIndex]);
+      } else {
+        return null;
+      }
+    }
+  },
+  
+  
+  mergeAdjoinNode: function(currentNode, selectedRange, isPreviousNode, htmlStyleMatcher) {
     var merge = false;
     var adjoinNode = isPreviousNode ? currentNode.prev() : currentNode.next();
     while (adjoinNode.length > 0) {
@@ -212,32 +319,13 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
           selectedRange.setEndAfter(adjoinNode[0]);
         }
 
-        var children = $("<div></div>").append(selectedRange.cloneContents()).contents();
-
-        while (children.length > 0) {
-          var childrenCount = children.length;
-          var realChildCount = 0;
-          var realChildIndex = 0;
-          for(var index = 0; index < childrenCount; ++index) {
-            var child = $(children[index]);
-            if (child.text().length > 0) {
-              ++realChildCount;
-              realChildIndex = index;
-            } else {
-              child.remove();
-            }
-          }
-          
-          if (realChildCount === 1) {
-            children = $(children[realChildIndex]);
-            if (htmlFormatMatcher(children)) {
-              merge = true;
-              break;
-            }
-            children = children.contents();
-          } else {
+        var onlyChild = this.getOnlyChild($("<div></div>").append(selectedRange.cloneContents()));
+        while (onlyChild) {
+          if (htmlStyleMatcher(onlyChild)) {
+            merge = true;
             break;
           }
+          onlyChild = this.getOnlyChild(onlyChild);
         }
         
         break;
@@ -255,13 +343,13 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   },
   
   
-  stripSubTag: function(subElements, htmlFormatMatcher) {
+  stripSubTags: function(subElements, htmlStyleMatcher) {
     var children = subElements;
     var childrenLength = children.length;
     for (var index = 0; index < childrenLength; ++index) {
       var child = $(children[index]);
-      this.stripSubTag(child.children(), htmlFormatMatcher);
-      if (htmlFormatMatcher(child, true)) {
+      this.stripSubTags(child.children(), htmlStyleMatcher);
+      if (htmlStyleMatcher(child, true)) {
         child.before(child.html());
         child.remove();
       }
@@ -269,11 +357,18 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   },
   
   
+  stripSubEmptyTags: function() {
+    this.stripSubTags(this.editor, function(jQueryElement, vagueMatch) {
+      return jQueryElement.text().length === 0;
+    });
+  },
+  
+  
   // returns "range"
   saveSelection: function() {
     if (window.getSelection) {
       var selection = window.getSelection();
-      if (selection.rangeCount) {
+      if (selection.rangeCount > 0) {
         return selection.getRangeAt(0);
       }
     }
