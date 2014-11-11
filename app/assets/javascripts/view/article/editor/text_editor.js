@@ -245,10 +245,10 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
       var temporaryContainer = $("<div></div>").append(rangeAncestor);
       selectRange.selectNode(rangeAncestor[0]);
       selectRange.setEndBefore(selectStartMark[0]);
-      var beforeNode = $(htmlStyleWrapper).append(selectRange.extractContents());
+      var beforeNode = $(selectRange.extractContents());
       selectRange.collapse(false);
       selectRange.setEndAfter(selectEndMark[0]);
-      var selectedNode = $(selectRange.extractContents());
+      var selectedNode = $(htmlStyleWrapper).append(selectRange.extractContents());
       var afterNode = $(temporaryContainer.contents());
       rangeAncestorPositionMark.before(beforeNode);
       rangeAncestorPositionMark.before(selectedNode);
@@ -326,8 +326,6 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
               formattedNode = this.styleOutFromAncestor(range, selectStartMark, selectEndMark, rangeAncestor, htmlStyleWrapper);
             }
             
-            console.log(formattedNode);
-            
             var formattedNodeParent = formattedNode.parent();
             while (this.htmlTag(formattedNodeParent) !== "pre") {
               if (this.getOnlyChild(formattedNodeParent)) {
@@ -337,8 +335,6 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
                 break;
               }
             }
-            
-            console.log(formattedNode);
             
             var formattedNodePosition = $("<span></span>");
             formattedNode.before(formattedNodePosition);
