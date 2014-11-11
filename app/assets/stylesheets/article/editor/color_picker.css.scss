@@ -1,0 +1,17 @@
+.color-picker-container {
+  width: 100%;
+  
+  .row {
+    padding: 10px 0 0 0 !important;
+  }
+  
+  .col-xs-3 {
+    padding: 0 10px;
+  }
+  
+  pre {
+    width: 100%;
+    height: 20px;
+    cursor: pointer;
+  }
+}

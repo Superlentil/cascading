@@ -4,6 +4,15 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   
   
   renderHelper: function() {
+    this.viewColorPicker = new View.Article.Editor.ColorPicker({pickEventHandler: function() {}});
+    this.fontColorPickerOn = false;
+    this.backgroundColorPickerOn = false;
+    _.bindAll(this, "changeFontColor");
+    _.bindAll(this, "changeBackgroundColor");
+    this.fontColorButton = this.$el.find(".m-font-color");
+    this.backgroundColorButton = this.$el.find(".m-background-color");
+    this.colorPicker = this.$el.find(".article-editor-color-picker");
+    this.colorPicker.append(this.viewColorPicker.render().$el);
     this.editor = this.$el.find(".Paragraph");
   },
   
@@ -16,7 +25,9 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
       "click .m-bold": "bold",
       "click .m-italic": "italic",
       "click .m-large-font": "largeFont",
-      "click .m-small-font": "smallFont"
+      "click .m-small-font": "smallFont",
+      "click .m-font-color": "fontColorPicker",
+      "click .m-background-color": "backgroundColorPicker"
     });
   },
   
@@ -109,36 +120,96 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   
   
   largeFont: function(event) {
-    var that = this;
-    that.changeStyle("<span style=\"font-size:1.42857em\"></span>", function(jQueryElement, vagueMatch) {
-      if (that.htmlTag(jQueryElement) === "span") {
-        var style = jQueryElement.attr("style");
-        if (style) {
-          if (vagueMatch) {
-            return style.match(/font-size/i);
-          } else {
-            return style.match(/font-size:1.42857em/i);
-          }
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    });
+    this.changeStyleWidthSpanTag("font-size", "1.42857em");
   },
   
   
   smallFont: function(event) {
+    this.changeStyleWidthSpanTag("font-size", "0.7em");
+  },
+  
+  
+  fontColorPicker: function(event) {
+    var colorPicker = this.colorPicker;
+    var markSelected = true;
+    if (this.fontColorPickerOn) {
+      colorPicker.slideUp(500);
+      markSelected = false;
+    } else {
+      this.restoreSelection(this.selectedRange);
+      this.viewColorPicker.setColorPickHandler(this.changeFontColor);
+      if (colorPicker.is(":hidden")) {
+        colorPicker.slideDown(500);
+      }
+    }
+    this.markColorPickerButton(this.fontColorButton, markSelected);
+    this.fontColorPickerOn = markSelected;
+  },
+  
+  
+  changeFontColor: function(color) {
+    this.changeStyleWidthSpanTag("color", color);
+  },
+  
+  
+  backgroundColorPicker: function(event) {
+    var colorPicker = this.colorPicker;
+    var markSelected = true;
+    if (this.backgroundColorPickerOn) {
+      colorPicker.slideUp(500);
+      markSelected = false;
+    } else {
+      this.restoreSelection(this.selectedRange);
+      this.viewColorPicker.setColorPickHandler(this.changeBackgroundColor);
+      if (colorPicker.is(":hidden")) {
+        colorPicker.slideDown(500);
+      }
+    }
+    this.markColorPickerButton(this.backgroundColorButton, markSelected);
+    this.backgroundColorPickerOn = markSelected;
+  },
+  
+  
+  changeBackgroundColor: function(color) {
+    this.changeStyleWidthSpanTag("background-color", color);
+  },
+  
+  
+  markColorPickerButton: function(button, markSelected) {
+    var fontColorButton = this.fontColorButton;
+    var backgroundColorButton = this.backgroundColorButton;
+    if (fontColorButton[0] === button[0]) {
+      if (markSelected) {
+        fontColorButton.css("opacity", 0.3);
+      } else {
+        fontColorButton.css("opacity", 1.0);
+      }
+      backgroundColorButton.css("opacity", 1.0);
+      this.backgroundColorPickerOn = false;
+    } else {
+      if (markSelected) {
+        backgroundColorButton.css("opacity", 0.3);
+      } else {
+        backgroundColorButton.css("opacity", 1.0);
+      }
+      fontColorButton.css("opacity", 1.0);
+      this.fontColorPickerOn = false;
+    }
+  },
+  
+  
+  changeStyleWidthSpanTag: function(styleType, styleValue) {
     var that = this;
-    that.changeStyle("<span style=\"font-size:0.7em\"></span>", function(jQueryElement, vagueMatch) {
+    that.changeStyle("<span style=\"" + styleType + ":" + styleValue + "\"></span>", function(jQueryElement, vagueMatch) {
       if (that.htmlTag(jQueryElement) === "span") {
         var style = jQueryElement.attr("style");
         if (style) {
           if (vagueMatch) {
-            return style.match(/font-size/i);
+            var regExp = new RegExp('^' + styleType, "i");
+            return style.match(regExp);
           } else {
-            return style.match(/font-size:0.7em/i);
+            var regExp = new RegExp('^' + styleType + ":" + styleValue, "i");
+            return style.match(regExp);
           }
         } else {
           return false;
@@ -174,10 +245,10 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
       var temporaryContainer = $("<div></div>").append(rangeAncestor);
       selectRange.selectNode(rangeAncestor[0]);
       selectRange.setEndBefore(selectStartMark[0]);
-      var beforeNode = $(selectRange.extractContents());
+      var beforeNode = $(htmlStyleWrapper).append(selectRange.extractContents());
       selectRange.collapse(false);
       selectRange.setEndAfter(selectEndMark[0]);
-      var selectedNode = $(htmlStyleWrapper).append(selectRange.extractContents());
+      var selectedNode = $(selectRange.extractContents());
       var afterNode = $(temporaryContainer.contents());
       rangeAncestorPositionMark.before(beforeNode);
       rangeAncestorPositionMark.before(selectedNode);
@@ -254,6 +325,26 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
               
               formattedNode = this.styleOutFromAncestor(range, selectStartMark, selectEndMark, rangeAncestor, htmlStyleWrapper);
             }
+            
+            console.log(formattedNode);
+            
+            var formattedNodeParent = formattedNode.parent();
+            while (this.htmlTag(formattedNodeParent) !== "pre") {
+              if (this.getOnlyChild(formattedNodeParent)) {
+                formattedNode = formattedNodeParent;
+                formattedNodeParent = formattedNode.parent();
+              } else {
+                break;
+              }
+            }
+            
+            console.log(formattedNode);
+            
+            var formattedNodePosition = $("<span></span>");
+            formattedNode.before(formattedNodePosition);
+            formattedNode = $(htmlStyleWrapper).append(formattedNode);
+            formattedNodePosition.before(formattedNode);
+            formattedNodePosition.remove();
             
             formattedNode.prepend(selectStartMark);   // avoid "selectStartMark" and "selectEndMark" to get removed in "stripSubTags"
             formattedNode.append(selectEndMark);
@@ -385,5 +476,10 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
       return selection;
     }
     return null;
+  },
+  
+  
+  removeHelper: function() {
+    this.viewColorPicker.remove();
   }
 });

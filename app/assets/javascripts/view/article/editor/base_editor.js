@@ -72,7 +72,12 @@ View.Article.Editor.BaseEditor = Backbone.View.extend({
   
   
   remove: function() {
+    this.removeHelper();
     this.viewAddEditor.remove();
     Backbone.View.prototype.remove.call(this);
+  },
+  
+  
+  removeHelper: function() {
   }
 });
