@@ -339,16 +339,15 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
             var formattedNodePosition = $("<span></span>");
             formattedNode.before(formattedNodePosition);
             formattedNode = $(htmlStyleWrapper).append(formattedNode);
+            formattedNode.prepend(selectStartMark);   // avoid "stripSubTags" to cause problem
+            formattedNode.append(selectEndMark);
+            this.stripSubTags(formattedNode.children(), htmlStyleMatcher);
+            
             formattedNodePosition.before(formattedNode);
             formattedNodePosition.remove();
             
-            formattedNode.prepend(selectStartMark);   // avoid "selectStartMark" and "selectEndMark" to get removed in "stripSubTags"
-            formattedNode.append(selectEndMark);
-            
-            this.mergeAdjoinNode(formattedNode, range, true, htmlStyleMatcher);
-            this.mergeAdjoinNode(formattedNode, range, false, htmlStyleMatcher);
-            
-            this.stripSubTags(formattedNode.children(), htmlStyleMatcher);
+            this.mergeAdjoinNode(formattedNode, selectStartMark, true, htmlStyleMatcher);
+            this.mergeAdjoinNode(formattedNode, selectEndMark, false, htmlStyleMatcher);
             
             this.restoreSelectRangeFromMarks(range, selectStartMark, selectEndMark);
             this.restoreSelection(range);
@@ -390,26 +389,29 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   },
   
   
-  mergeAdjoinNode: function(currentNode, selectedRange, isPreviousNode, htmlStyleMatcher) {
-    var merge = false;
+  getMergableAdjoinNode: function(currentNode, isPreviousNode, htmlStyleMatcher) {
+    var mergable = false;
+    console.log("---" + currentNode.html());
     var adjoinNode = isPreviousNode ? currentNode.prev() : currentNode.next();
     while (adjoinNode.length > 0) {
       if (adjoinNode.text().length === 0) {
+        console.log("***" + adjoinNode.html());
         adjoinNode.remove();
         adjoinNode = isPreviousNode ? currentNode.prev() : currentNode.next();
       } else {
+        var range = document.createRange();
         if (isPreviousNode) {
-          selectedRange.setStartBefore(adjoinNode[0]);
-          selectedRange.setEndBefore(currentNode[0]);
+          range.setStartBefore(adjoinNode[0]);
+          range.setEndBefore(currentNode[0]);
         } else {
-          selectedRange.setStartAfter(currentNode[0]);
-          selectedRange.setEndAfter(adjoinNode[0]);
+          range.setStartAfter(currentNode[0]);
+          range.setEndAfter(adjoinNode[0]);
         }
 
-        var onlyChild = this.getOnlyChild($("<div></div>").append(selectedRange.cloneContents()));
+        var onlyChild = this.getOnlyChild($("<div></div>").append(range.cloneContents()));
         while (onlyChild) {
           if (htmlStyleMatcher(onlyChild)) {
-            merge = true;
+            mergable = true;
             break;
           }
           onlyChild = this.getOnlyChild(onlyChild);
@@ -419,13 +421,48 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
       }
     }
     
-    if (merge) {
-      adjoinNode.detach();
+    if (mergable) {
+      return adjoinNode;
+    } else {
+      return null;
+    }
+  },
+  
+  
+  mergeAdjoinNode: function(currentNode, rangeBoundaryMark, isPreviousNode, htmlStyleMatcher) {
+    var  mergableAdjoinNode = this.getMergableAdjoinNode(currentNode, isPreviousNode, htmlStyleMatcher);
+    if (mergableAdjoinNode) {
+      var temporaryContainer = $("<div></div>").append(mergableAdjoinNode);
+      this.stripSubTags(temporaryContainer.children(), htmlStyleMatcher);
       if (isPreviousNode) {
-        currentNode.prepend(adjoinNode);
+        currentNode.prepend(temporaryContainer.contents());
       } else {
-        currentNode.append(adjoinNode);
+        currentNode.append(temporaryContainer.contents());
       }
+      
+      console.log("<<<<<<<<<<");
+      var boundaryLeftNode = this.getMergableAdjoinNode(rangeBoundaryMark, true, function(jQueryElement, vagueMatch) {
+        return jQueryElement[0].nodeType !== 3;
+      });
+      console.log(">>>>>>>>>>");
+// 
+      // if (boundaryLeftNode) {
+        // console.log("I am here!");
+        // var that = this;
+//         
+        // var tagName = that.htmlTag(boundaryLeftNode);
+        // var style = boundaryLeftNode.attr("style");
+        // boundaryLeftNode.append(rangeBoundaryMark);
+        // var subMerged = that.mergeAdjoinNode(boundaryLeftNode, rangeBoundaryMark, false, function(jQueryElement, vagueMatch) {
+          // return that.htmlTag(jQueryElement) === tagName && jQueryElement.attr("style") === style;
+        // });
+        // if (!subMerged) {
+          // boundaryLeftNode.after(rangeBoundaryMark);
+        // }
+      // }
+      return true;
+    } else {
+      return false;
     }
   },
   
@@ -437,7 +474,7 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
       var child = $(children[index]);
       this.stripSubTags(child.children(), htmlStyleMatcher);
       if (htmlStyleMatcher(child, true)) {
-        child.before(child.html());
+        child.before(child.contents());
         child.remove();
       }
     }
