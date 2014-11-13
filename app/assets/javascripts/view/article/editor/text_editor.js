@@ -305,22 +305,11 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
               formattedNode = $(htmlStyleWrapper).append(range.extractContents());
               range.insertNode(formattedNode[0]);
             } else {   // has ancestor with the same type of style but not the same style
-              var parent = rangeAncestor;
-              var onlyChild = this.getOnlyChild(parent);
-              while (onlyChild) {
-                parent = onlyChild;
-                onlyChild = this.getOnlyChild(parent);
-              }
-  
+              var parent = this.firstProlificParent(rangeAncestor); 
               if (parent[0] !== rangeAncestor[0]) {
                 rangeAncestor.before(rangeAncestor.contents());
-                if (parent[0].nodeType === 3) {   // a text node
-                  parent.before(rangeAncestor);
-                  rangeAncestor.append(parent);
-                } else {
-                  rangeAncestor.append(parent.contents());
-                  parent.append(rangeAncestor);
-                }
+                rangeAncestor.append(parent.contents());
+                parent.append(rangeAncestor);
               }
               
               formattedNode = this.styleOutFromAncestor(range, selectStartMark, selectEndMark, rangeAncestor, htmlStyleWrapper);
@@ -346,13 +335,16 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
             formattedNodePosition.before(formattedNode);
             formattedNodePosition.remove();
             
-            this.mergeAdjoinNode(formattedNode, true, htmlStyleMatcher);
-            this.mergeAdjoinNode(formattedNode, false, htmlStyleMatcher);
+            var merged = false;
+            merged = this.mergeAdjoinNode(formattedNode, true, htmlStyleMatcher) || merged;
+            merged = this.mergeAdjoinNode(formattedNode, false, htmlStyleMatcher) || merged;
                        
             this.restoreSelectRangeFromMarks(range, selectStartMark, selectEndMark);
             this.restoreSelection(range);
             
-            this.mergeSubNodes(formattedNode);
+            if (merged) {
+              this.mergeSubNodes(formattedNode);
+            }
           }
         }
       }
@@ -388,6 +380,17 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
         return null;
       }
     }
+  },
+  
+  
+  firstProlificParent: function(jQueryElement) {
+    var parent = jQueryElement;
+    onlyChild = this.getOnlyChild(parent);
+    while (onlyChild && onlyChild[0].nodeType !== 3) {
+      parent = onlyChild;
+      onlyChild = this.getOnlyChild(parent);
+    }
+    return parent;
   },
   
   
@@ -446,78 +449,62 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   
   
   mergeSubNodes: function(parentNode) {
+    console.log(temporaryContainer);
     var that = this;
     
     var children = parentNode.children();
     if (children.length > 0) {
       var subNode = $(children[0]);
+
       while (subNode.length > 0) {
         while (subNode.text().length === 0) {
           subNode = subNode.next();
         }
         if (subNode.length > 0) {
-          var temporaryContainer = $("<div></div>");
-          var pointer = temporaryContainer;
           var tagName = that.htmlTag(subNode);
           var style = subNode.attr("style");
           var merged = that.mergeAdjoinNode(subNode, false, function(jQueryElement, vagueMatch) {
             return that.htmlTag(jQueryElement) === tagName && jQueryElement.attr("style") === style;
           });
           
+          console.log("!1! " + that.htmlTag(subNode));
+          console.log("*1* " + subNode.html());
           if (merged) {
+            console.log("!2! " + that.htmlTag(subNode));
+            console.log("*2* " + subNode.html());
             that.mergeSubNodes(subNode);
           } else {
-            var onlyChild = this.getOnlyChild(subNode);
-            if (onlyChild) {
-              subNode.before(onlyChild);
-              pointer.append(subNode);
-              pointer = subNode;
-              subNode = onlyChild;
-            } else {
-              if (temporaryContainer[0] !== pointer[0]) {
-                pointer.append(subNode.contents());
-                subNode.append(temporaryContainer.contents());
+            var temporaryContainer = $("<div></div>");
+            var temporaryContainerPointer = temporaryContainer;
+            var onlyChild = that.getOnlyChild(subNode);
+            if (onlyChild && onlyChild[0].nodeType !== 3) {
+              var iterator = subNode;
+              
+              while (onlyChild && onlyChild[0].nodeType !== 3) {
+                var tagName = that.htmlTag(iterator);
+                var style = iterator.attr("style");
+                if (that.getMergableAdjoinNode(subNode, false, function(jQueryElement, vagueMatch) {
+                  return that.htmlTag(jQueryElement) === tagName && jQueryElement.attr("style") === style;
+                })) {
+                  iterator = onlyChild;
+                  onlyChild = that.getOnlyChild(iterator);
+                } else {
+                  iterator.before(onlyChild);
+                  temporaryContainerPointer.append(iterator);
+                  temporaryContainerPointer = iterator;
+                  iterator = onlyChild;
+                }
               }
+              
+              temporaryContainerPointer.append(iterator.contents());
+              iterator.append(temporaryContainer.contents());
+            } else {
               subNode = subNode.next();
             }
           }
         }
       }
     }
-    
-    // var boundaryNode = this.getMergableAdjoinNode(rangeBoundaryMark, !isPreviousNode, function(jQueryElement, vagueMatch) {
-      // return jQueryElement[0].nodeType !== 3;
-    // });
-// 
-    // if (boundaryNode) {
-      // var that = this;
-//       
-      // var tagName = that.htmlTag(boundaryNode);
-      // var style = boundaryNode.attr("style");
-      // var anotherBoundary = $("<span></span>");
-      // var leftBoundary = rangeBoundaryMark;
-      // var rightBoundary = rangeBoundaryMark;
-      // if (isPreviousNode) {
-        // boundaryNode.prepend(rangeBoundaryMark);
-        // rightBoundary = anotherBoundary;
-        // boundaryNode.append(rightBoundary);
-      // } else {
-        // leftBoundary = anotherBoundary;
-        // boundaryNode.prepend(leftBoundary);
-        // boundaryNode.append(rangeBoundaryMark);
-      // }
-      // var subMerged = false;
-      // subMerged = that.mergeAdjoinNode(boundaryNode, leftBoundary, true, function(jQueryElement, vagueMatch) {
-        // return that.htmlTag(jQueryElement) === tagName && jQueryElement.attr("style") === style;
-      // }) || subMerged;
-      // subMerged = that.mergeAdjoinNode(boundaryNode, rightBoundary, false, function(jQueryElement, vagueMatch) {
-        // return that.htmlTag(jQueryElement) === tagName && jQueryElement.attr("style") === style;
-      // }) || subMerged;
-      // if (!subMerged) {
-        // isPreviousNode ? boundaryNode.before(rangeBoundaryMark) : boundaryNode.after(rangeBoundaryMark);
-      // }
-      // anotherBoundary.remove();
-    // }
   },
   
   
