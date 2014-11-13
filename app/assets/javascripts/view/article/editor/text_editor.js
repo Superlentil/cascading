@@ -346,13 +346,13 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
             formattedNodePosition.before(formattedNode);
             formattedNodePosition.remove();
             
-            this.mergeAdjoinNode(formattedNode, selectStartMark, true, htmlStyleMatcher);
-            this.mergeAdjoinNode(formattedNode, selectEndMark, false, htmlStyleMatcher);
-            
-            console.log(formattedNode.html());
-            
+            this.mergeAdjoinNode(formattedNode, true, htmlStyleMatcher);
+            this.mergeAdjoinNode(formattedNode, false, htmlStyleMatcher);
+                       
             this.restoreSelectRangeFromMarks(range, selectStartMark, selectEndMark);
             this.restoreSelection(range);
+            
+            this.mergeSubNodes(formattedNode);
           }
         }
       }
@@ -428,7 +428,7 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   },
   
   
-  mergeAdjoinNode: function(currentNode, rangeBoundaryMark, isPreviousNode, htmlStyleMatcher) {
+  mergeAdjoinNode: function(currentNode, isPreviousNode, htmlStyleMatcher) {
     var  mergableAdjoinNode = this.getMergableAdjoinNode(currentNode, isPreviousNode, htmlStyleMatcher);
     if (mergableAdjoinNode) {
       var temporaryContainer = $("<div></div>").append(mergableAdjoinNode);
@@ -438,28 +438,86 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
       } else {
         currentNode.append(temporaryContainer.contents());
       }
-      
-      var boundaryLeftNode = this.getMergableAdjoinNode(rangeBoundaryMark, true, function(jQueryElement, vagueMatch) {
-        return jQueryElement[0].nodeType !== 3;
-      });
-
-      if (boundaryLeftNode) {
-        var that = this;
-        
-        var tagName = that.htmlTag(boundaryLeftNode);
-        var style = boundaryLeftNode.attr("style");
-        boundaryLeftNode.append(rangeBoundaryMark);
-        var subMerged = that.mergeAdjoinNode(boundaryLeftNode, rangeBoundaryMark, false, function(jQueryElement, vagueMatch) {
-          return that.htmlTag(jQueryElement) === tagName && jQueryElement.attr("style") === style;
-        });
-        if (!subMerged) {
-          boundaryLeftNode.after(rangeBoundaryMark);
-        }
-      }
       return true;
     } else {
       return false;
     }
+  },
+  
+  
+  mergeSubNodes: function(parentNode) {
+    var that = this;
+    
+    var children = parentNode.children();
+    if (children.length > 0) {
+      var subNode = $(children[0]);
+      while (subNode.length > 0) {
+        while (subNode.text().length === 0) {
+          subNode = subNode.next();
+        }
+        if (subNode.length > 0) {
+          var temporaryContainer = $("<div></div>");
+          var pointer = temporaryContainer;
+          var tagName = that.htmlTag(subNode);
+          var style = subNode.attr("style");
+          var merged = that.mergeAdjoinNode(subNode, false, function(jQueryElement, vagueMatch) {
+            return that.htmlTag(jQueryElement) === tagName && jQueryElement.attr("style") === style;
+          });
+          
+          if (merged) {
+            that.mergeSubNodes(subNode);
+          } else {
+            var onlyChild = this.getOnlyChild(subNode);
+            if (onlyChild) {
+              subNode.before(onlyChild);
+              pointer.append(subNode);
+              pointer = subNode;
+              subNode = onlyChild;
+            } else {
+              if (temporaryContainer[0] !== pointer[0]) {
+                pointer.append(subNode.contents());
+                subNode.append(temporaryContainer.contents());
+              }
+              subNode = subNode.next();
+            }
+          }
+        }
+      }
+    }
+    
+    // var boundaryNode = this.getMergableAdjoinNode(rangeBoundaryMark, !isPreviousNode, function(jQueryElement, vagueMatch) {
+      // return jQueryElement[0].nodeType !== 3;
+    // });
+// 
+    // if (boundaryNode) {
+      // var that = this;
+//       
+      // var tagName = that.htmlTag(boundaryNode);
+      // var style = boundaryNode.attr("style");
+      // var anotherBoundary = $("<span></span>");
+      // var leftBoundary = rangeBoundaryMark;
+      // var rightBoundary = rangeBoundaryMark;
+      // if (isPreviousNode) {
+        // boundaryNode.prepend(rangeBoundaryMark);
+        // rightBoundary = anotherBoundary;
+        // boundaryNode.append(rightBoundary);
+      // } else {
+        // leftBoundary = anotherBoundary;
+        // boundaryNode.prepend(leftBoundary);
+        // boundaryNode.append(rangeBoundaryMark);
+      // }
+      // var subMerged = false;
+      // subMerged = that.mergeAdjoinNode(boundaryNode, leftBoundary, true, function(jQueryElement, vagueMatch) {
+        // return that.htmlTag(jQueryElement) === tagName && jQueryElement.attr("style") === style;
+      // }) || subMerged;
+      // subMerged = that.mergeAdjoinNode(boundaryNode, rightBoundary, false, function(jQueryElement, vagueMatch) {
+        // return that.htmlTag(jQueryElement) === tagName && jQueryElement.attr("style") === style;
+      // }) || subMerged;
+      // if (!subMerged) {
+        // isPreviousNode ? boundaryNode.before(rangeBoundaryMark) : boundaryNode.after(rangeBoundaryMark);
+      // }
+      // anotherBoundary.remove();
+    // }
   },
   
   
