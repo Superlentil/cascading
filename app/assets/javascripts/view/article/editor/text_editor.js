@@ -50,12 +50,10 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
     }
 
     if (pasteText.length > 0) {
-      var restoredSelection = this.restoreSelection(oldSelectRange);
-      if (restoredSelection) {
-        var range = restoredSelection.getRangeAt(0);
-        range.deleteContents();
-        range.insertNode(document.createTextNode(pasteText));
-        this.restoreSelection(range).collapseToEnd();
+      if (oldSelectRange) {
+        oldSelectRange.deleteContents();
+        oldSelectRange.insertNode(document.createTextNode(pasteText));
+        this.restoreSelection(oldSelectRange).collapseToEnd();
       } else {
         var input = $(event.currentTarget);
         input.html(input.html() + pasteText);
@@ -77,27 +75,23 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
       if (range.collapsed) {
         editor.html(editor.text());
       } else {
-        var restoredSelection = this.restoreSelection(range);
-        if (restoredSelection) {
-          var range = restoredSelection.getRangeAt(0);
-          var unformattedNode = document.createTextNode($(range.extractContents()).text());
-          
-          range.setStart(editor[0], 0);
-          var beforeContent = $(range.extractContents());
-          if (editor.text().length === 0) {
-            editor.empty();
-          }
-          
-          range.insertNode(unformattedNode);
-          if (beforeContent.text().length > 0) {
-            range.insertNode(beforeContent[0]);
-          }
-          range.setStartBefore(unformattedNode);
-          
-          this.restoreSelection(range);
+        var unformattedNode = document.createTextNode($(range.extractContents()).text());
+        
+        range.setStart(editor[0], 0);
+        var beforeContent = $(range.extractContents());
+        if (editor.text().length === 0) {
+          editor.empty();
         }
-        this.stripSubEmptyTags();
+        
+        range.insertNode(unformattedNode);
+        if (beforeContent.text().length > 0) {
+          range.insertNode(beforeContent[0]);
+        }
+        range.setStartBefore(unformattedNode);
+        
+        this.restoreSelection(range);
       }
+      this.stripSubEmptyTags();
     }
     console.log(this.editor.html());
   },
@@ -274,78 +268,72 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
         editor.html(styledContents);
         this.stripSubTags(styledContents.children(), htmlStyleMatcher);
       } else {
-        var restoredSelection = this.restoreSelection(range);
-        if (restoredSelection) {       
-          var range = restoredSelection.getRangeAt(0);
-          var rangeAncestor = $(range.commonAncestorContainer);
-          var tagName = this.htmlTag(rangeAncestor);
-          var needChange = true;
-          var simplyAdd = true;
-          while (tagName !== "pre") {
-            if (htmlStyleMatcher(rangeAncestor, true)) {
-              if (htmlStyleMatcher(rangeAncestor)) {
-                needChange = false;
-              } else {
-                simplyAdd = false;
-              }
-              break;
+        var rangeAncestor = $(range.commonAncestorContainer);
+        var tagName = this.htmlTag(rangeAncestor);
+        var needChange = true;
+        var simplyAdd = true;
+        while (tagName !== "pre") {
+          if (htmlStyleMatcher(rangeAncestor, true)) {
+            if (htmlStyleMatcher(rangeAncestor)) {
+              needChange = false;
+            } else {
+              simplyAdd = false;
             }
-            rangeAncestor = rangeAncestor.parent();
-            tagName = this.htmlTag(rangeAncestor);
+            break;
+          }
+          rangeAncestor = rangeAncestor.parent();
+          tagName = this.htmlTag(rangeAncestor);
+        }
+        
+        if (needChange) {
+          var selectStartMark = $("<span></span>");
+          var selectEndMark = $("<span></span>");
+          this.markSelectRange(range, selectStartMark, selectEndMark);
+          
+          var formattedNode = null;
+          
+          if (simplyAdd) {
+            formattedNode = $(htmlStyleWrapper).append(range.extractContents());
+            range.insertNode(formattedNode[0]);
+          } else {   // has ancestor with the same type of style but not the same style
+            var parent = this.firstProlificParent(rangeAncestor); 
+            if (parent[0] !== rangeAncestor[0]) {
+              rangeAncestor.before(rangeAncestor.contents());
+              rangeAncestor.append(parent.contents());
+              parent.append(rangeAncestor);
+            }
+            
+            formattedNode = this.styleOutFromAncestor(range, selectStartMark, selectEndMark, rangeAncestor, htmlStyleWrapper);
           }
           
-          if (needChange) {
-            var selectStartMark = $("<span></span>");
-            var selectEndMark = $("<span></span>");
-            this.markSelectRange(range, selectStartMark, selectEndMark);
-            
-            var formattedNode = null;
-            
-            if (simplyAdd) {
-              formattedNode = $(htmlStyleWrapper).append(range.extractContents());
-              range.insertNode(formattedNode[0]);
-            } else {   // has ancestor with the same type of style but not the same style
-              var parent = this.firstProlificParent(rangeAncestor); 
-              if (parent[0] !== rangeAncestor[0]) {
-                rangeAncestor.before(rangeAncestor.contents());
-                rangeAncestor.append(parent.contents());
-                parent.append(rangeAncestor);
-              }
-              
-              formattedNode = this.styleOutFromAncestor(range, selectStartMark, selectEndMark, rangeAncestor, htmlStyleWrapper);
-            }
-            
-            var formattedNodeParent = formattedNode.parent();
-            while (this.htmlTag(formattedNodeParent) !== "pre") {
-              if (this.getOnlyChild(formattedNodeParent)) {
-                formattedNode = formattedNodeParent;
-                formattedNodeParent = formattedNode.parent();
-              } else {
-                break;
-              }
-            }
-            
-            var formattedNodePosition = $("<span></span>");
-            formattedNode.before(formattedNodePosition);
-            formattedNode = $(htmlStyleWrapper).append(formattedNode);
-            formattedNode.prepend(selectStartMark);   // avoid "stripSubTags" to cause problem
-            formattedNode.append(selectEndMark);
-            this.stripSubTags(formattedNode.children(), htmlStyleMatcher);
-            
-            formattedNodePosition.before(formattedNode);
-            formattedNodePosition.remove();
-            
-            var merged = false;
-            merged = this.mergeAdjoinNode(formattedNode, true, htmlStyleMatcher) || merged;
-            merged = this.mergeAdjoinNode(formattedNode, false, htmlStyleMatcher) || merged;
-                       
-            this.restoreSelectRangeFromMarks(range, selectStartMark, selectEndMark);
-            this.restoreSelection(range);
-            
-            if (merged) {
-              this.mergeSubNodes(formattedNode);
+          var formattedNodeParent = formattedNode.parent();
+          while (this.htmlTag(formattedNodeParent) !== "pre") {
+            if (this.getOnlyChild(formattedNodeParent)) {
+              formattedNode = formattedNodeParent;
+              formattedNodeParent = formattedNode.parent();
+            } else {
+              break;
             }
           }
+          
+          var formattedNodePosition = $("<span></span>");
+          formattedNode.before(formattedNodePosition);
+          formattedNode = $(htmlStyleWrapper).append(formattedNode);
+          this.stripSubTags(formattedNode.children(), htmlStyleMatcher);
+          
+          formattedNodePosition.before(formattedNode);
+          formattedNodePosition.remove();
+          
+          var merged = false;
+          merged = this.mergeAdjoinNode(formattedNode, true, htmlStyleMatcher) || merged;
+          merged = this.mergeAdjoinNode(formattedNode, false, htmlStyleMatcher) || merged;
+          
+          if (merged) {
+            this.mergeSubNodes(formattedNode);
+          }
+          
+          this.restoreSelectRangeFromMarks(range, selectStartMark, selectEndMark);
+          this.restoreSelection(range);
         }
       }
     }
@@ -449,59 +437,70 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   
   
   mergeSubNodes: function(parentNode) {
-    console.log(temporaryContainer);
-    var that = this;
-    
     var children = parentNode.children();
     if (children.length > 0) {
-      var subNode = $(children[0]);
-
-      while (subNode.length > 0) {
-        while (subNode.text().length === 0) {
-          subNode = subNode.next();
-        }
-        if (subNode.length > 0) {
-          var tagName = that.htmlTag(subNode);
-          var style = subNode.attr("style");
-          var merged = that.mergeAdjoinNode(subNode, false, function(jQueryElement, vagueMatch) {
-            return that.htmlTag(jQueryElement) === tagName && jQueryElement.attr("style") === style;
-          });
+      var leftNode = $(children[0]);
+      
+      while (leftNode.length > 0 && leftNode.text().length === 0) {
+        leftNode = leftNode.next();
+      }
+      
+      while (leftNode.length > 0) {        
+        var rightNode = this.getMergableAdjoinNode(leftNode, false, function(jQueryElement, vagueMatch) {
+          return true;
+        });
+        
+        while (rightNode) {
+          var commonTags = $("<span></span>");
+          rightNode.after(commonTags);
+          var commonTagIter = commonTags;
+          var tagHash = {};
+          var leftIter = leftNode;
+          var rightIter = rightNode;
+          var leftNodeWrapper = $("<span></span>").append(leftNode);
+          var rightNodeWrapper = $("<span></span>").append(rightNode);
           
-          console.log("!1! " + that.htmlTag(subNode));
-          console.log("*1* " + subNode.html());
-          if (merged) {
-            console.log("!2! " + that.htmlTag(subNode));
-            console.log("*2* " + subNode.html());
-            that.mergeSubNodes(subNode);
-          } else {
-            var temporaryContainer = $("<div></div>");
-            var temporaryContainerPointer = temporaryContainer;
-            var onlyChild = that.getOnlyChild(subNode);
-            if (onlyChild && onlyChild[0].nodeType !== 3) {
-              var iterator = subNode;
-              
-              while (onlyChild && onlyChild[0].nodeType !== 3) {
-                var tagName = that.htmlTag(iterator);
-                var style = iterator.attr("style");
-                if (that.getMergableAdjoinNode(subNode, false, function(jQueryElement, vagueMatch) {
-                  return that.htmlTag(jQueryElement) === tagName && jQueryElement.attr("style") === style;
-                })) {
-                  iterator = onlyChild;
-                  onlyChild = that.getOnlyChild(iterator);
-                } else {
-                  iterator.before(onlyChild);
-                  temporaryContainerPointer.append(iterator);
-                  temporaryContainerPointer = iterator;
-                  iterator = onlyChild;
-                }
-              }
-              
-              temporaryContainerPointer.append(iterator.contents());
-              iterator.append(temporaryContainer.contents());
+          while (leftIter && leftIter[0].nodeType !== 3) {
+            var tag = this.htmlTag(leftIter) + (leftIter.attr("style") || "");
+            tagHash[tag] = leftIter;
+            leftIter = this.getOnlyChild(leftIter);
+          }
+          
+          while (rightIter && rightIter[0].nodeType !== 3) {
+            var tag = this.htmlTag(rightIter) + (rightIter.attr("style") || "");
+            if (tag in tagHash) {
+              var leftSame = tagHash[tag];
+              leftSame.before(leftSame.contents());
+              commonTagIter.append(leftSame);
+              commonTagIter = leftSame;
+              var rightSame = rightIter;
+              rightIter = this.getOnlyChild(rightIter);
+              rightSame.before(rightSame.contents());
+              rightSame.detach();
             } else {
-              subNode = subNode.next();
+              rightIter = this.getOnlyChild(rightIter);
             }
           }
+          
+          if (commonTagIter[0] === commonTags[0]) {
+            leftNode = rightNode;
+          } else {
+            leftNode = $(commonTags.children()[0]);
+          }
+          commonTagIter.append(leftNodeWrapper.contents());
+          commonTagIter.append(rightNodeWrapper.contents());
+          commonTags.before(commonTags.contents());
+          commonTags.remove();
+          this.mergeSubNodes(commonTagIter);
+          
+          rightNode = this.getMergableAdjoinNode(leftNode, false, function(jQueryElement, vagueMatch) {
+            return true;
+          });
+        }
+        
+        leftNode = leftNode.next();
+        while (leftNode.length > 0 && leftNode.text().length === 0) {
+          leftNode = leftNode.next();
         }
       }
     }
