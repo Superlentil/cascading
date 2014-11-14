@@ -194,19 +194,16 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   
   changeStyleWidthSpanTag: function(styleType, styleValue) {
     var that = this;
+    var temporaryNode = $("<span style=\"" + styleType + ":" + styleValue + "\"></span>");
+    var expectedStyle = temporaryNode.attr("style") || "";
     that.changeStyle("<span style=\"" + styleType + ":" + styleValue + "\"></span>", function(jQueryElement, vagueMatch) {
       if (that.htmlTag(jQueryElement) === "span") {
-        var style = jQueryElement.attr("style");
-        if (style) {
-          if (vagueMatch) {
-            var regExp = new RegExp('^' + styleType, "i");
-            return style.match(regExp);
-          } else {
-            var regExp = new RegExp('^' + styleType + ":" + styleValue, "i");
-            return style.match(regExp);
-          }
+        var style = jQueryElement.attr("style") || "";
+        if (vagueMatch) {
+          var regExp = new RegExp('^' + styleType, "i");
+          return style.match(regExp);
         } else {
-          return false;
+          return style === expectedStyle;
         }
       } else {
         return false;
@@ -267,6 +264,7 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
         var styledContents = $(htmlStyleWrapper).append(editor.contents());
         editor.html(styledContents);
         this.stripSubTags(styledContents.children(), htmlStyleMatcher);
+        this.mergeSubNodes(styledContents);
       } else {
         var rangeAncestor = $(range.commonAncestorContainer);
         var tagName = this.htmlTag(rangeAncestor);
@@ -316,21 +314,28 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
             }
           }
           
-          var formattedNodePosition = $("<span></span>");
-          formattedNode.before(formattedNodePosition);
-          formattedNode = $(htmlStyleWrapper).append(formattedNode);
-          this.stripSubTags(formattedNode.children(), htmlStyleMatcher);
+          var formatWrapper = $(htmlStyleWrapper);
+          formattedNode.before(formatWrapper);
+          formattedNode = formatWrapper.append(formattedNode);
           
-          formattedNodePosition.before(formattedNode);
-          formattedNodePosition.remove();
-          
-          var merged = false;
-          merged = this.mergeAdjoinNode(formattedNode, true, htmlStyleMatcher) || merged;
-          merged = this.mergeAdjoinNode(formattedNode, false, htmlStyleMatcher) || merged;
-          
-          if (merged) {
-            this.mergeSubNodes(formattedNode);
+          // put "selectStartMark" in a safe place
+          var boundaryNode = formattedNode;
+          while (boundaryNode) {
+            boundaryNode.prepend(selectStartMark);
+            boundaryNode = this.getMergableAdjoinNode(selectStartMark, false, function(jQueryElement, vagueMatch) {return true;});
           }
+          
+          // put "selectEndMark" in a safe place
+          boundaryNode = formattedNode;
+          while (boundaryNode) {
+            boundaryNode.append(selectEndMark);
+            boundaryNode = this.getMergableAdjoinNode(selectEndMark, true, function(jQueryElement, vagueMatch) {return true;});
+          }
+          
+          this.mergeAdjoinNode(formattedNode, true, htmlStyleMatcher);
+          this.mergeAdjoinNode(formattedNode, false, htmlStyleMatcher);
+          this.stripSubTags(formattedNode.children(), htmlStyleMatcher);
+          this.mergeSubNodes(formattedNode);
           
           this.restoreSelectRangeFromMarks(range, selectStartMark, selectEndMark);
           this.restoreSelection(range);
@@ -422,16 +427,11 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   mergeAdjoinNode: function(currentNode, isPreviousNode, htmlStyleMatcher) {
     var  mergableAdjoinNode = this.getMergableAdjoinNode(currentNode, isPreviousNode, htmlStyleMatcher);
     if (mergableAdjoinNode) {
-      var temporaryContainer = $("<div></div>").append(mergableAdjoinNode);
-      this.stripSubTags(temporaryContainer.children(), htmlStyleMatcher);
       if (isPreviousNode) {
-        currentNode.prepend(temporaryContainer.contents());
+        currentNode.prepend(mergableAdjoinNode);
       } else {
-        currentNode.append(temporaryContainer.contents());
+        currentNode.append(mergableAdjoinNode);
       }
-      return true;
-    } else {
-      return false;
     }
   },
   
@@ -481,17 +481,17 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
               rightIter = this.getOnlyChild(rightIter);
             }
           }
-          
+                   
+          commonTagIter.append(leftNodeWrapper.contents());
+          commonTagIter.append(rightNodeWrapper.contents());
           if (commonTagIter[0] === commonTags[0]) {
             leftNode = rightNode;
           } else {
+            this.mergeSubNodes(commonTagIter);
             leftNode = $(commonTags.children()[0]);
           }
-          commonTagIter.append(leftNodeWrapper.contents());
-          commonTagIter.append(rightNodeWrapper.contents());
           commonTags.before(commonTags.contents());
           commonTags.remove();
-          this.mergeSubNodes(commonTagIter);
           
           rightNode = this.getMergableAdjoinNode(leftNode, false, function(jQueryElement, vagueMatch) {
             return true;
