@@ -7,6 +7,11 @@ View.Article.Editor.BaseEditor = Backbone.View.extend({
         this.articleId = options.articleId;
       }
     }
+    this.initializeHelper(options);
+  },
+  
+  
+  initializeHelper: function(options) {
   },
   
   

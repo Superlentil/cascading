@@ -1,5 +1,18 @@
 // define the view "TextEditor"
 View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
+  initializeHelper: function(options) {
+    this.undoList = [],
+    this.undoLength = 100;
+    for (var index = 0; index < this.undoLength; ++index) {
+      this.undoList.push("");
+    }
+    this.undoTop = 0;
+    this.undoBottom = 0;
+    this.undoNow = 0;
+    _.bindAll(this, "recordBehavior");
+  },
+  
+  
   template: JST["template/article/editor/text_editor"],
   
   
@@ -19,6 +32,14 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   
   events: function() {
     return _.extend({}, View.Article.Editor.BaseEditor.prototype.events, {
+      "drop .Paragraph": "preventEvent",
+      
+      "keydown .Paragraph": "onKeyDown",
+      
+      "keyup .Paragraph": "onKeyUp",
+      "click .m-undo": "undo",
+      "click .m-redo": "redo",
+      
       "paste .Paragraph": "onPaste",
       "blur .Paragraph": "onBlur",
       "click .m-clear-format": "clearFormat",
@@ -29,6 +50,84 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
       "click .m-font-color": "fontColorPicker",
       "click .m-background-color": "backgroundColorPicker"
     });
+  },
+  
+  
+  preventEvent: function(event) {
+    event.preventDefault();
+    return false;
+  },
+  
+  
+  onKeyDown: function(event) {
+    var ctrlDown = event.ctrlKey || event.metaKey; // Mac support
+
+    if (ctrlDown) {
+      var key = event.keyCode;
+      if (key === 89) {   // Ctrl + y
+        event.preventDefault();
+        this.redo();
+      } else if (key === 90) {   // Ctrl + z
+        event.preventDefault();
+        this.undo();
+      }
+    }
+  },
+  
+  
+  recordBehavior: function() {
+    if (this.editor.html() !== this.undoList[this.undoNow]) {
+      var undoNow = this.undoNow;
+      ++undoNow;
+      if (undoNow === this.undoLength) {
+        undoNow = 0;
+      }
+      this.undoNow = undoNow;
+      this.undoTop = undoNow;
+      if (undoNow === this.undoBottom) {
+        ++this.undoBottom;
+      }
+      this.undoList[undoNow] = this.editor.html();
+    }
+    console.log(this.undoBottom + "   " + this.undoNow + "   " + this.undoTop);
+  },
+  
+  
+  onKeyUp: function(event) {
+    var ctrlDown = event.altKey || event.ctrlKey || event.metaKey;
+    if (!ctrlDown) {
+      clearTimeout(this.keyUpTimeout);
+      this.keyUpTimeout = setTimeout(this.recordBehavior, 300);
+    }
+  },
+  
+  
+  undo: function(event) {
+    var undoNow = this.undoNow;
+    if (this.undoBottom !== undoNow) {
+      if (undoNow <= 0) {
+        undoNow = this.undoLength - 1;
+      } else {
+        --undoNow;
+      }
+      this.undoNow = undoNow;
+      this.editor.html(this.undoList[undoNow]);
+    }
+    console.log(this.undoBottom + "   " + this.undoNow + "   " + this.undoTop);
+  },
+  
+  
+  redo: function(event) {
+    var undoNow = this.undoNow;
+    if (this.undoTop !== undoNow) {
+      ++undoNow;
+      if (undoNow > this.undoLength - 1) {
+        undoNow = 0;
+      }
+      this.undoNow = undoNow;
+      this.editor.html(this.undoList[undoNow]);
+    }
+    console.log(this.undoBottom + "   " + this.undoNow + "   " + this.undoTop);
   },
   
   
@@ -58,6 +157,7 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
         var input = $(event.currentTarget);
         input.html(input.html() + pasteText);
       }
+      this.recordBehavior();
     }
   },
   
@@ -92,6 +192,7 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
         this.restoreSelection(range);
       }
       this.stripSubEmptyTags();
+      this.recordBehavior();
     }
     console.log(this.editor.html());
   },
@@ -341,8 +442,9 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
           this.restoreSelection(range);
         }
       }
+      this.stripSubEmptyTags();
+      this.recordBehavior();
     }
-    this.stripSubEmptyTags();
     console.log(this.editor.html());
   },
   
@@ -522,7 +624,7 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   
   
   stripSubEmptyTags: function() {
-    this.stripSubTags(this.editor, function(jQueryElement, vagueMatch) {
+    this.stripSubTags(this.editor.children(), function(jQueryElement, vagueMatch) {
       return jQueryElement.text().length === 0;
     });
   },
