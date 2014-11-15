@@ -23,14 +23,6 @@
   background-color: #f0f0f0;
   padding: 10px;
   @include border-radius(4px);
-  
-  .row {
-    padding: 10px 0 0 0 !important;
-    
-    span {
-      padding: 0 5px;
-    }
-  }
 }
 
 
@@ -64,34 +56,6 @@
   
   img + img {
     margin-left: 10px;
-  }
-}
-
-
-.article-editor-move-up-button {
-  max-width: 20px;
-  
-  color: #000;
-  background-color: #1dff18;
-  border-color: #13a810;
-  
-  &:hover {
-    background-color: #17c412;
-    border-color: #0e760b;
-  }
-}
-
-
-.article-editor-move-down-button {
-  max-width: 20px;
-  
-  color: #000;
-  background-color: #fffc09;
-  border-color: #dcd908;
-  
-  &:hover {
-    background-color: #ece908;
-    border-color: #bbb807;
   }
 }
 

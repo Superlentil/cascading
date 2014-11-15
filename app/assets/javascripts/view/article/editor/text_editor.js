@@ -14,6 +14,7 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   
   
   template: JST["template/article/editor/text_editor"],
+  additionalOptionTemplate: JST["template/article/editor/text_editor_options"],
   
   
   renderHelper: function() {
@@ -89,7 +90,6 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
       }
       this.undoList[undoNow] = this.editor.html();
     }
-    console.log(this.undoBottom + "   " + this.undoNow + "   " + this.undoTop);
   },
   
   
@@ -113,7 +113,6 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
       this.undoNow = undoNow;
       this.editor.html(this.undoList[undoNow]);
     }
-    console.log(this.undoBottom + "   " + this.undoNow + "   " + this.undoTop);
   },
   
   
@@ -127,7 +126,6 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
       this.undoNow = undoNow;
       this.editor.html(this.undoList[undoNow]);
     }
-    console.log(this.undoBottom + "   " + this.undoNow + "   " + this.undoTop);
   },
   
   

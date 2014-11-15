@@ -19,6 +19,10 @@ View.Article.Editor.BaseEditor = Backbone.View.extend({
   className: "article-edit-editor-container",
   
   
+  headerTemplate: JST["template/article/editor/editor_header"],
+  additionalOptionTemplate: null,
+  
+  
   render: function(content) {
     this.viewAddEditor = new View.Article.Editor.AddEditor({
       articleEditView: this.articleEditView,
@@ -27,9 +31,17 @@ View.Article.Editor.BaseEditor = Backbone.View.extend({
     });
     this.$el.append(this.viewAddEditor.render().$el);
     var editor = $("<div class='article-edit-editor article-edit-new-editor'></div>");
-    editor.html(this.template({"content": content}));
+    var additionalOptions = null;
+    if (this.additionalOptionTemplate) {
+      additionalOptions = this.additionalOptionTemplate();
+    }
+    editor.append(this.headerTemplate({additionalOptions: additionalOptions}));
+    editor.append(this.template({"content": content}));
     this.$el.append(editor);
     this.renderHelper();
+    
+    this.options = this.$el.find(".article-editor-options");
+    
     return this;
   },
   
@@ -42,7 +54,8 @@ View.Article.Editor.BaseEditor = Backbone.View.extend({
     "click .article-editor-move-up-button": "moveUpEditor",
     "click .article-editor-move-down-button": "moveDownEditor",
     "click .article-editor-remove-button": "removeEditor",
-    "click .article-edit-new-editor": "removeNewEditorMark"
+    "click .article-edit-new-editor": "removeNewEditorMark",
+    "click .article-editor-option-switch": "toggleOptions"
   },
 
 
@@ -73,6 +86,15 @@ View.Article.Editor.BaseEditor = Backbone.View.extend({
   
   removeNewEditorMark: function(event) {
     this.$el.find(".article-edit-editor").removeClass("article-edit-new-editor");
+  },
+  
+  
+  toggleOptions: function(event) {
+    if (this.options.is(":hidden")) {
+      this.options.slideDown(500);
+    } else {
+      this.options.slideUp(500);
+    }
   },
   
   

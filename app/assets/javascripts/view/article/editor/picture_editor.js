@@ -43,11 +43,12 @@ View.Article.Editor.PictureEditor = View.Article.Editor.BaseEditor.extend({
     formData.append("picture[src]", file);
     
     var picture = new Model.Picture();
+    var progressBar = $("<progress></progress>");
     
     picture.save(formData, {
       progress: function(event) {
         if (event.lengthComputable) {
-          $('progress').attr({
+          progressBar.attr({
             value: event.loaded,
             max: event.total
           });
@@ -56,7 +57,7 @@ View.Article.Editor.PictureEditor = View.Article.Editor.BaseEditor.extend({
       
       beforeSend: function() {
         contentContainer.empty();
-        contentContainer.append("<progress></progress>");
+        contentContainer.append(progressBar);
       },
       
       success: function(savedPicture) {
