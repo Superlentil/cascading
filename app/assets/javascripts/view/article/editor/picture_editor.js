@@ -1,6 +1,11 @@
 // define the view "PictureEditor"
 View.Article.Editor.PictureEditor = View.Article.Editor.BaseEditor.extend({ 
   template: JST["template/article/editor/picture_editor"],
+  
+  
+  additionalClassName: function() {
+    return "article-picture-editor";
+  },
 
   
   events: function() {

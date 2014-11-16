@@ -13,6 +13,11 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   },
   
   
+  additionalClassName: function() {
+    return "article-text-editor";
+  },
+  
+  
   template: JST["template/article/editor/text_editor"],
   additionalOptionTemplate: JST["template/article/editor/text_editor_options"],
   

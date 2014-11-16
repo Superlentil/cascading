@@ -19,8 +19,7 @@
 }
 
 
-.article-edit-editor {
-  background-color: #f0f0f0;
+.article-editor {
   padding: 10px;
   @include border-radius(4px);
 }
@@ -56,19 +55,5 @@
   
   img + img {
     margin-left: 10px;
-  }
-}
-
-
-.article-editor-remove-button {
-  max-width: 20px;
-  
-  color: #000;
-  background-color: #ff0000;
-  border-color: #c20000;
-  
-  &:hover {
-    background-color: #e00000;
-    border-color: #a50000;
   }
 }
