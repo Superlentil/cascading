@@ -82,7 +82,7 @@ View.Article.Editor.BaseEditor = Backbone.View.extend({
   
   removeEditor: function(event) {
     event.preventDefault();
-    this.closeButton.transition({rotate: "90deg"}, 250, "ease").transition({rotate: 0}, 250, "ease");
+    this.closeButton.transition({scale: 0.7}, 250, "ease").transition({scale: 1}, 250, "ease");
     if (confirm("Are you sure to remove this paragraph?")) {
       this.$el.remove();
     }
