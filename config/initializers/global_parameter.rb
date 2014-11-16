@@ -22,7 +22,7 @@ class GlobalConstant
   class Resource
     class Picture
       DATA_GENERATOR_PATH = Rails.root.join("resource", "picture", "data_generator")
-      DEFAULT_USER_AVATAR_PATH = Rails.root.join("resource", "picture", "default_user_avatar.jpg")
+      DEFAULT_USER_AVATAR_PATH = Rails.root.join("resource", "picture", "default_user_avatar_20141116.jpg")
     end
   end
 end
