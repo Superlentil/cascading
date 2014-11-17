@@ -28,6 +28,9 @@ View.Article.Edit = Backbone.View.extend({
       });
     }
     
+    that.flipContainer = that.$el.find(".central-column");
+    that.previewContainer = that.$el.find("#article-edit-preview");
+    
     return that;
   },
   
@@ -134,7 +137,7 @@ View.Article.Edit = Backbone.View.extend({
   
   getArticle: function() {    
     var articleContent = [];
-    $(".article-edit-editor").each(function(index) {
+    $(".article-editor").each(function(index) {
       var editor = $(this);
       var paragraph = editor.children(".Paragraph");
       var type = paragraph.data("type");
@@ -254,20 +257,40 @@ View.Article.Edit = Backbone.View.extend({
   
   
   preview: function(savedArticle) {
-    var viewShow = new View.Article.Show({el: "div#popup_container"});
-    this.allSubviews.push(viewShow);   // prevent view memory leak
-
-    viewShow.render({id: savedArticle.get("id"), preview: true});
-    var popupContainer = $("#popup_container");
-    var editArea = $("#article-edit-container");
-    popupContainer.fadeIn("slow");
-    editArea.css({"opacity": "0.3"});
+    var that = this;
     
-    editArea.on("click", function() {
-      editArea.off("click");
-      popupContainer.fadeOut("slow");
-      editArea.css({"opacity": "1.0"});
+    that.previewContainer.empty();
+    that.previewContainer.append("<div id='article-edit-preview-content' style='width:100%;'></div>");
+    var viewShow = new View.Article.Show({el: "#article-edit-preview-content"});
+    that.allSubviews.push(viewShow);   // prevent view memory leak
+    viewShow.render({id: savedArticle.get("id"), preview: true});
+    var backButton = $("<button>Back to Edit</button>");
+    that.previewContainer.append(backButton);
+    
+    var thisWindow = GlobalVariable.Browser.Window;
+    
+    backButton.on("click", function() {
+      backButton.off("click");
+      that.flipContainer.removeClass("m-flipped");
+      thisWindow.scrollTop(0);
     });
+    
+    that.flipContainer.addClass("m-flipped");
+    thisWindow.scrollTop(0);
+    // var viewShow = new View.Article.Show({el: "div#popup_container"});
+    // this.allSubviews.push(viewShow);   // prevent view memory leak
+// 
+    // viewShow.render({id: savedArticle.get("id"), preview: true});
+    // var popupContainer = $("#popup_container");
+    // var editArea = $("#article-edit-container");
+    // popupContainer.fadeIn("slow");
+    // editArea.css({"opacity": "0.3"});
+//     
+    // editArea.on("click", function() {
+      // editArea.off("click");
+      // popupContainer.fadeOut("slow");
+      // editArea.css({"opacity": "1.0"});
+    // });
   },
   
   
