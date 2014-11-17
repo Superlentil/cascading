@@ -39,14 +39,14 @@
 }
 
 #article-edit-preview {
-  @include transform(rotateY(-180deg) scale(0.1));
+  @include transform(rotateY(-180deg));
   @include opacity(0);
   z-index: 1;
 }
 
 .m-flipped #article-edit-main {
   @include opacity(0);
-  @include transform(rotateY(180deg) scale(0.1));
+  @include transform(rotateY(180deg));
 }
 
 .m-flipped #article-edit-preview{
