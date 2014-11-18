@@ -73,8 +73,6 @@ View.Article.DraftByUser = Backbone.View.extend({
     });
     if (text) {
       text = text.src;
-      console.log(text);
-      console.log(text.length);
       if (text.length > 300) {
         return text.substring(0, 300) + " ...";
       } else {

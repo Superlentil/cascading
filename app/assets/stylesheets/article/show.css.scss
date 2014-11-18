@@ -8,11 +8,6 @@
   margin: 8px auto 20px auto;
   
   
-  img {
-    width: 100%;
-  }
-  
-  
   .article-show-title {
     text-align: center;
   }
@@ -40,5 +35,9 @@
   
   .article-show-picture {
     text-align: center;
+    
+    img {
+      max-width: 100%;
+    }
   }
 }

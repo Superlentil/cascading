@@ -41,9 +41,10 @@ View.Article.Editor.BaseEditor = Backbone.View.extend({
       additionalOptions = this.additionalOptionTemplate();
     }
     editor.append(this.headerTemplate({additionalOptions: additionalOptions}));
-    editor.append(this.template({"content": content}));
+    editor.append(this.template());
     this.$el.append(editor);
     this.renderHelper();
+    this.populateContent(content);
     
     this.options = this.$el.find(".article-editor-options");
     this.optionSwitch = this.$el.find(".article-editor-option-switch").find("img");
@@ -54,6 +55,10 @@ View.Article.Editor.BaseEditor = Backbone.View.extend({
   
   
   renderHelper: function() {
+  },
+  
+  
+  populateContent: function(content) {
   },
   
   

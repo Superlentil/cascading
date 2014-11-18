@@ -139,7 +139,7 @@ View.Article.Edit = Backbone.View.extend({
     var articleContent = [];
     $(".article-editor").each(function(index) {
       var editor = $(this);
-      var paragraph = editor.children(".Paragraph");
+      var paragraph = editor.children(".m-paragraph");
       var type = paragraph.data("type");
 
       if (type === "text") {
@@ -189,7 +189,7 @@ View.Article.Edit = Backbone.View.extend({
   uploadAllPictures: function() {
     $(".article-edit-editor").each(function(index) {
       var editor = $(this);
-      var paragraph = editor.children(".Paragraph");
+      var paragraph = editor.children(".m-paragraph");
       var type = paragraph.data("type");
 
       if (type === "picture") {
@@ -209,7 +209,7 @@ View.Article.Edit = Backbone.View.extend({
     var allUploaded = true;
     $(".article-edit-editor").each(function(index) {
       var editor = $(this);
-      var paragraph = editor.children(".Paragraph");
+      var paragraph = editor.children(".m-paragraph");
       var type = paragraph.data("type");
 
       if (type === "picture") {

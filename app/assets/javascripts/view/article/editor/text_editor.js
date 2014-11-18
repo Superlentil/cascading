@@ -32,22 +32,29 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
     this.backgroundColorButton = this.$el.find(".m-background-color");
     this.colorPicker = this.$el.find(".article-editor-color-picker");
     this.colorPicker.append(this.viewColorPicker.render().$el);
-    this.editor = this.$el.find(".Paragraph");
+    this.editor = this.$el.find(".m-paragraph");
+  },
+  
+  
+  populateContent: function(content) {
+    if (content) {
+      this.editor.append(content);
+    }
   },
   
   
   events: function() {
     return _.extend({}, View.Article.Editor.BaseEditor.prototype.events, {
-      "drop .Paragraph": "preventEvent",
+      "drop .m-paragraph": "preventEvent",
       
-      "keydown .Paragraph": "onKeyDown",
+      "keydown .m-paragraph": "onKeyDown",
       
-      "keyup .Paragraph": "onKeyUp",
+      "keyup .m-paragraph": "onKeyUp",
       "click .m-undo": "undo",
       "click .m-redo": "redo",
       
-      "paste .Paragraph": "onPaste",
-      "blur .Paragraph": "onBlur",
+      "paste .m-paragraph": "onPaste",
+      "blur .m-paragraph": "onBlur",
       "click .m-clear-format": "clearFormat",
       "click .m-bold": "bold",
       "click .m-italic": "italic",

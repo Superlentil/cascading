@@ -1,3 +1,23 @@
 .article-picture-editor {
   background-color: #ffd6e4;
+  
+  
+  .m-paragraph {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    
+    div {
+      font-size: small;
+      font-style: italic;
+      color: #a9afaf;
+      padding: 0 0 2px 0;
+    }
+  }
+}
+
+
+.article-picture-editor-img {
+  max-width: 100%;
 }
