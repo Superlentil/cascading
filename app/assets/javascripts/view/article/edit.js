@@ -30,6 +30,7 @@ View.Article.Edit = Backbone.View.extend({
     
     that.flipContainer = that.$el.find(".central-column");
     that.previewContainer = that.$el.find("#article-edit-preview");
+    that.editContainer = that.$el.find("#article-edit-main");
     
     return that;
   },
@@ -272,10 +273,12 @@ View.Article.Edit = Backbone.View.extend({
     this.previewBackButton = $("<button class='article-edit-preview-back-button'>Back to Edit</button>");
     var backButton = this.previewBackButton;
     that.$el.append(backButton);
+    setTimeout(function(){that.editContainer.hide();}, 600);   // TODO: It works fine now, but need to keep thinking better implementations.
     
     backButton.on("click", function() {
       backButton.off("click");
       backButton.remove();
+      that.editContainer.show();
       that.flipContainer.removeClass("m-flipped");
       thisWindow.scrollTop(0);
     });
