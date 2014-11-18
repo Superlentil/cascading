@@ -264,33 +264,21 @@ View.Article.Edit = Backbone.View.extend({
     var viewShow = new View.Article.Show({el: "#article-edit-preview-content"});
     that.allSubviews.push(viewShow);   // prevent view memory leak
     viewShow.render({id: savedArticle.get("id"), preview: true});
-    var backButton = $("<button>Back to Edit</button>");
-    that.previewContainer.append(backButton);
     
     var thisWindow = GlobalVariable.Browser.Window;
+    that.flipContainer.addClass("m-flipped");
+    thisWindow.scrollTop(0);
+    
+    this.previewBackButton = $("<button class='article-edit-preview-back-button'>Back to Edit</button>");
+    var backButton = this.previewBackButton;
+    that.$el.append(backButton);
     
     backButton.on("click", function() {
       backButton.off("click");
+      backButton.remove();
       that.flipContainer.removeClass("m-flipped");
       thisWindow.scrollTop(0);
     });
-    
-    that.flipContainer.addClass("m-flipped");
-    thisWindow.scrollTop(0);
-    // var viewShow = new View.Article.Show({el: "div#popup_container"});
-    // this.allSubviews.push(viewShow);   // prevent view memory leak
-// 
-    // viewShow.render({id: savedArticle.get("id"), preview: true});
-    // var popupContainer = $("#popup_container");
-    // var editArea = $("#article-edit-container");
-    // popupContainer.fadeIn("slow");
-    // editArea.css({"opacity": "0.3"});
-//     
-    // editArea.on("click", function() {
-      // editArea.off("click");
-      // popupContainer.fadeOut("slow");
-      // editArea.css({"opacity": "1.0"});
-    // });
   },
   
   
@@ -313,7 +301,9 @@ View.Article.Edit = Backbone.View.extend({
   
   
   remove: function() {
-    $("#article-edit-container").off("click");
+    if (this.previewBackButton) {
+      this.previewBackButton.off("click");
+    }
     
     var subview;
     while (this.allSubviews.length > 0) {

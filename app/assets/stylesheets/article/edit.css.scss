@@ -42,3 +42,20 @@
   @include transform(rotateY(0deg));
   z-index: 5;
 }
+
+
+.article-edit-preview-back-button {
+  position: fixed;
+  z-index: 500;
+  
+  bottom: 20px;
+  right: 20px;
+  
+  width: 100px;
+  height: 100px;
+  
+  @include opacity(0.6);
+  
+  white-space: normal;
+  word-wrap: break-word;
+}

@@ -59,6 +59,7 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
       "click .m-bold": "bold",
       "click .m-italic": "italic",
       "click .m-large-font": "largeFont",
+      "click .m-normal-font": "normalFont",
       "click .m-small-font": "smallFont",
       "click .m-font-color": "fontColorPicker",
       "click .m-background-color": "backgroundColorPicker"
@@ -225,12 +226,17 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   
   
   largeFont: function(event) {
-    this.changeStyleWidthSpanTag("font-size", "1.42857em");
+    this.changeStyleWithSpanTag("font-size", "1.42857em");
+  },
+  
+  
+  normalFont: function(event) {
+    this.changeStyleWithSpanTag("font-size", "1em");
   },
   
   
   smallFont: function(event) {
-    this.changeStyleWidthSpanTag("font-size", "0.7em");
+    this.changeStyleWithSpanTag("font-size", "0.7em");
   },
   
   
@@ -253,7 +259,7 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   
   
   changeFontColor: function(color) {
-    this.changeStyleWidthSpanTag("color", color);
+    this.changeStyleWithSpanTag("color", color);
   },
   
   
@@ -276,7 +282,7 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   
   
   changeBackgroundColor: function(color) {
-    this.changeStyleWidthSpanTag("background-color", color);
+    this.changeStyleWithSpanTag("background-color", color);
   },
   
   
@@ -303,7 +309,7 @@ View.Article.Editor.TextEditor = View.Article.Editor.BaseEditor.extend({
   },
   
   
-  changeStyleWidthSpanTag: function(styleType, styleValue) {
+  changeStyleWithSpanTag: function(styleType, styleValue) {
     var that = this;
     var temporaryNode = $("<span style=\"" + styleType + ":" + styleValue + "\"></span>");
     var expectedStyle = temporaryNode.attr("style") || "";
