@@ -1,11 +1,14 @@
+@import "compass";
+
+
 .color-picker-container {
   width: 100%;
+  background-color: rgba(191, 191, 191, 0.8);
+  @include border-radius(4px);
+  padding: 5px 0;
+  margin: 5px auto;
   
-  .row {
-    padding: 10px 0 0 0 !important;
-  }
-  
-  .col-xs-3 {
+  .col-xs-3, .col-xs-4, .col-xs-8 {
     padding: 0 10px;
   }
   
