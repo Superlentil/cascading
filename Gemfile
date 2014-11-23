@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.1'
 # Use mysql as the database for Active Record
-gem 'mysql2'
+gem 'mysql2', '0.3.17'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.3'
 # Use Uglifier as compressor for JavaScript assets
@@ -43,3 +43,9 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin]
 gem 'ejs'
 gem 'paperclip', '~> 4'
 gem 'compass-rails'
+gem 'sunspot_rails', '2.1.1'
+
+
+group :development do
+  gem 'sunspot_solr', '2.1.1'
+end
