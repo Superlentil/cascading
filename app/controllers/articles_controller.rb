@@ -47,6 +47,26 @@ class ArticlesController < ApplicationController
     respond_with queryArticlesByBatch(batch, articlesPerBatch, queryConditions)
   end
   
+  
+  def search
+    batch = params[:batch].to_i + 1
+    articlesPerBatch = params[:articles_per_batch].to_i
+    keyword = params[:keyword]  
+    
+    search = Article.search do
+      fulltext keyword do
+        boost_fields :title => 3.0
+        boost_fields :author => 2.0
+        boost_fields :category_name => 2.0
+        boost_fields :content=>1.0
+      end
+
+      paginate :page => batch, :per_page => articlesPerBatch
+    end
+    
+    respond_with search.results
+  end
+  
 
   def show
     @article = Article.find(params[:id])

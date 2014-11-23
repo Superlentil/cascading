@@ -38,12 +38,12 @@ View.Layout.RightNav = Backbone.View.extend({
   
   onSignOut: function(event) {
     event.preventDefault();
-   
     this.signOutHandler();
   },
   
   
   onCloseNav: function(event) {
+    event.preventDefault();
     this.closeNavHandler();
   }
 });

@@ -31,6 +31,7 @@ Rails.application.routes.draw do
       get "inCategory"
       get "byUser"
       get "byUserAndCategory"
+      get "search"
     end
   end
 

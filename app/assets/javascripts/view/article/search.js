@@ -1,18 +1,18 @@
-// define the view InCategory
-View.Article.InCategory = Backbone.View.extend({
+// define the view Search
+View.Article.Search = Backbone.View.extend({
   initialize: function(options) {
-    _.bindAll(this, "articleFetchFunction");
+    this.keyword = options.keyword;
     
-    this.categoryId = options.categoryId;
+    _.bindAll(this, "articleFetchFunction");
   },
   
   
   el: "#layout-content",
   
   
-  template: JST["template/article/in_category"],
-  
-  
+  template: JST["template/article/search"],
+
+
   render: function() {
     this.$el.html(this.template());
     
@@ -21,18 +21,18 @@ View.Article.InCategory = Backbone.View.extend({
 
     return this;
   },
-  
-  
+
+
   articleFetchFunction: function(batchToLoad, articlesPerBatch, options) {
-    var articles = new Collection.Article.InCategory({
-      categoryId: this.categoryId,
+    var articles = new Collection.Article.Search({
+      keyword: this.keyword,
       batch: batchToLoad,
       articlesPerBatch: articlesPerBatch
     });
     articles.fetch(options);
   },
 
-  
+
   onWidthChange: function() {
     this.viewArticleCascade.onWidthChange();
   },

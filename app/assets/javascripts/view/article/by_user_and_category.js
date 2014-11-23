@@ -46,9 +46,14 @@ View.Article.ByUserAndCategory = Backbone.View.extend({
   },
   
   
-  articleFetchFunction: function(batchToLoad, countPerBatch, options) {
-    var articles = new Collection.Article.ByUserAndCategory({userId: this.userId, categoryId: this.categoryId});
-    articles.fetchBatch(batchToLoad, countPerBatch, options);
+  articleFetchFunction: function(batchToLoad, articlesPerBatch, options) {
+    var articles = new Collection.Article.ByUserAndCategory({
+      userId: this.userId,
+      categoryId: this.categoryId,
+      batch: batchToLoad,
+      articlesPerBatch: articlesPerBatch
+    });
+    articles.fetch(options);
   },
 
   

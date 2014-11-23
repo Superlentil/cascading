@@ -2,23 +2,26 @@ Router = Backbone.Router.extend({
   routes: {
     "forbidden": "forbiddenAccess",
     
-    "": "allArticles",
-    "articles/draft/user/:user_id": "draftArticlesByUser",
+    "": "articlesAll",
+    
+    "articles/draft/user/:user_id": "articlesDraftByUser",
     "articles/category/:category_id": "articlesInCategory",
     "articles/user/:user_id": "articlesByUser",
     "articles/user/:user_id/category/:category_id": "articlesByUserAndCategory",
-    "articles/new": "newArticle",
-    "article/:id": "showArticle",
-    "article/:id/edit": "editArticle",
+    "articles/search/:keyword": "articlesSearch",
     
-    "categories": "allCategories",
+    "articles/new": "articleNew",
+    "article/:id": "articleShow",
+    "article/:id/edit": "articleEdit",
+    
+    "categories": "categoriesAll",
     "categories/user/:user_id": "categoriesByUser",
     
-    "users": "allUsers",
-    "users/new": "newUser",
-    "user/:id": "showUser",
-    "user/:id/edit/profile": "editUserProfile",
-    "user/:id/edit/password": "editUserPassword"
+    "users": "usersAll",
+    "users/new": "userNew",
+    "user/:id": "userShow",
+    "user/:id/edit/profile": "userEditProfile",
+    "user/:id/edit/password": "userEditPassword"
   },
   
   
@@ -47,14 +50,14 @@ Router = Backbone.Router.extend({
   },
 
   
-  allArticles: function() {
+  articlesAll: function() {
     var viewIndex = new View.Article.Index();
     viewIndex.render();
     return viewIndex;
   },
   
   
-  draftArticlesByUser: function(userId) {
+  articlesDraftByUser: function(userId) {
     var viewDraftArticlesByUser = new View.Article.DraftByUser({userId: userId});
     viewDraftArticlesByUser.render();
     return viewDraftArticlesByUser;
@@ -82,7 +85,14 @@ Router = Backbone.Router.extend({
   },
   
   
-  newArticle: function() {
+  articlesSearch: function(keyword) {
+    var viewArticlesSearch = new View.Article.Search({keyword: keyword});
+    viewArticlesSearch.render();
+    return viewArticlesSearch;
+  },
+  
+  
+  articleNew: function() {
     var now = $.now();
     var lastNewArticleTime = parseInt($.cookie("last_new_article_timestamp")) || 0;
     if (now - lastNewArticleTime > 100) {   // Prevent loading the "new" page too frequently.
@@ -97,21 +107,21 @@ Router = Backbone.Router.extend({
   },
   
    
-  showArticle: function(id) {
+  articleShow: function(id) {
     var viewShow = new View.Article.Show();
     viewShow.render({id: id});
     return viewShow;
   },
   
   
-  editArticle: function(id) {
+  articleEdit: function(id) {
     var viewEdit = new View.Article.Edit();
     viewEdit.editArticle(id);
     return viewEdit;
   },
   
   
-  allCategories: function() {
+  categoriesAll: function() {
     var viewCategories = new View.Category.Index();
     viewCategories.render();
     return viewCategories;
@@ -125,33 +135,32 @@ Router = Backbone.Router.extend({
   },
   
   
-  allUsers: function() {
-
+  usersAll: function() {
   },
   
   
-  newUser: function() {
+  userNew: function() {
     var viewNew = new View.User.New({signInHandler: this.layout.signIn});
     viewNew.render();
     return viewNew;
   },
   
   
-  showUser: function(id) {
+  userShow: function(id) {
     var viewShow = new View.User.Show();
     viewShow.render({id: id});
     return viewShow;
   },
   
   
-  editUserProfile: function(id) {
+  userEditProfile: function(id) {
     var viewEditProfile = new View.User.EditProfile({signInHandler: this.layout.signIn});
     viewEditProfile.render({userId: id});
     return viewEditProfile;
   },
   
   
-  editUserPassword: function(id) {
+  userEditPassword: function(id) {
     var viewEditPassword = new View.User.EditPassword({signInHandler: this.layout.signIn});
     viewEditPassword.render({userId: id});
     return viewEditPassword;
