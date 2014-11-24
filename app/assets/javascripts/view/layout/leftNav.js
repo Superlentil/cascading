@@ -30,13 +30,12 @@ View.Layout.LeftNav = Backbone.View.extend({
   
   
   events: {
-    "click .layout-leftNav-closeNav": "onCloseNav",
+    "click .layout-leftNav-alsoCloseNav": "onAlsoCloseNav",
     "click #layout-leftNav-search-button": "search"
   },
   
   
-  onCloseNav: function(event) {
-    event.preventDefault();
+  onAlsoCloseNav: function(event) {
     this.closeNavHandler();
   },
   
