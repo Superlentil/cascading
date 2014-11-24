@@ -14,7 +14,7 @@ View.Article.Search = Backbone.View.extend({
 
 
   render: function() {
-    this.$el.html(this.template());
+    this.$el.html(this.template({keyword: this.keyword}));
     
     this.viewArticleCascade = new View.Article.Cascade.Main({articleFetchFunction: this.articleFetchFunction});
     this.viewArticleCascade.render();

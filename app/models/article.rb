@@ -13,7 +13,16 @@ class Article < ActiveRecord::Base
     text :category_name, :stored=>true
     
     text :content do
-      strip_tags(content)
+      contentJson = JSON.parse(content)
+      content.clear
+      contentJson.each do |paragraph|
+        if paragraph["type"] == "text"
+          content << strip_tags(paragraph["src"]) 
+        end
+      end
+      content << ""
     end
+    
+    integer :status
   end
 end

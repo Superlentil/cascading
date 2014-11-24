@@ -53,13 +53,24 @@ class ArticlesController < ApplicationController
     articlesPerBatch = params[:articles_per_batch].to_i
     keyword = params[:keyword]  
     
-    search = Article.search do
+    search = Article.search(:select => [
+      :id,
+      :cover_picture_url,
+      :cover_picture_id,
+      :cover_picture_height,
+      :title,
+      :author,
+      :user_id,
+      :category_name,
+      :category_id
+    ]) do
       fulltext keyword do
-        boost_fields :title => 3.0
-        boost_fields :author => 2.0
-        boost_fields :category_name => 2.0
-        boost_fields :content=>1.0
+        boost_fields :title => 10.0
+        boost_fields :author => 5.0
+        boost_fields :category_name => 5.0
       end
+      
+      with :status, GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED
 
       paginate :page => batch, :per_page => articlesPerBatch
     end
