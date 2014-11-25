@@ -1,14 +1,17 @@
-<% if (!preview) { %>
+<% if (preview) { %>
+  <div id="article-show-preview">
+<% } else { %>
   <div id="popup_container" class="popup_box"></div>
-  
+
   <div>
     <a href="#">All Article</a><br>
     <a href="#/article/<%= article.get("id") %>/edit">edit</a>
     <a href="#" class="Delete_Article" data-article-id="<%= article.get("id") %>">delete</a><br>
   </div>
+
+  <div id="article-show">
 <% } %>
 
-<div id="article-show-container">
   <h1 class="article-show-title"><%= article.get("title") %></h1>
   <div class="row article-show-info">
     <div class="left article-show-date"><%= GlobalFormater.LocalDate.Chinese(article.get("created_at") * 1000) %></div>
@@ -20,6 +23,7 @@
     <p>-----------------------------------------------------------------------</p>
   <% } %>
   <%= contentJsonToHtml(article.get("content")) %>
+  
 </div>
 
 

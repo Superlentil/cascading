@@ -28,10 +28,6 @@ View.Article.Edit = Backbone.View.extend({
       });
     }
     
-    that.flipContainer = that.$el.find(".central-column");
-    that.previewContainer = that.$el.find("#article-edit-preview");
-    that.editContainer = that.$el.find("#article-edit-main");
-    
     return that;
   },
   
@@ -47,7 +43,8 @@ View.Article.Edit = Backbone.View.extend({
       addBeforeElement: addEditorContainer
     });
     that.allSubviews.push(viewAddEditor);
-    addEditorContainer.html(viewAddEditor.render().$el);
+    addEditorContainer.empty();
+    addEditorContainer.append(viewAddEditor.render().$el);
     
     article = article || new Model.Article();
     article.unset("created_at", { silent: true });
@@ -58,7 +55,7 @@ View.Article.Edit = Backbone.View.extend({
     $("#article_author").val(article.get("author"));
     var articleCategoryId = article.get("category_id") || -1;
     $("#article-edit-category").val(articleCategoryId);
-    var articleContent = JSON.parse(article.get("content"));
+    var articleContent = JSON.parse(article.get("content") || "[]");
     _.each(articleContent, function(articleParagraph) {
       if (articleParagraph.src) {
         if (articleParagraph.type === "text") {
@@ -68,6 +65,10 @@ View.Article.Edit = Backbone.View.extend({
         }
       }
     });
+    
+    that.flipContainer = that.$el.find(".central-column");
+    that.previewContainer = that.$el.find("#article-edit-preview");
+    that.editContainer = that.$el.find("#article-edit-main");
   },
   
   

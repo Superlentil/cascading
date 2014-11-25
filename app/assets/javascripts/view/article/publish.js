@@ -135,7 +135,6 @@ View.Article.Publish = Backbone.View.extend({
     that.coverPictureUrl = picture.attr("src");
     that.coverPictureId = picture.data("pictureId");
     that.coverPictureImported = (picture.data("imported") === "yes");
-    alert(picture.data("imported") + "   " + (picture.data("imported") === "yes"));
     that.mode = "choose";
     $(".Article_Picture").css({"margin-bottom": "1em", "border": "0px none"});
     picture.css({"border": "0px outset pink"}).animate({

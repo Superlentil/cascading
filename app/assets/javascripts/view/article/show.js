@@ -77,7 +77,7 @@ View.Article.Show = Backbone.View.extend({
     var popupContainer = $("#popup_container");
     if (popupContainer.length > 0) {
       var picture = $(event.currentTarget);
-      var articleContainer = $("#article-show-container");
+      var articleContainer = $("#article-show");
       popupContainer.html("<img src='" + picture.attr("src").replace("/medium/", "/original/") + "' />");
       popupContainer.fadeIn("slow");
       articleContainer.css({"opacity": "0.3"});
@@ -93,7 +93,7 @@ View.Article.Show = Backbone.View.extend({
   
   remove: function() {
     $(".Delete_Article").off("click");
-    $("#article-show-container").off("click");
+    $("#article-show").off("click");
     
     var subview;
     while (this.allSubviews.length > 0) {

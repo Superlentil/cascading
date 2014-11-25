@@ -112,8 +112,8 @@ class ArticlesController < ApplicationController
           coverPicturePath = Picture.find(inputParams[:cover_picture_id]).src.path(:thumb)
           geometry = Paperclip::Geometry.from_file(coverPicturePath)
           inputParams[:cover_picture_height] = geometry.height.to_i
-          @article.update(inputParams)
           deleteNotUsedPictures(inputParams)
+          @article.update(inputParams)   # "update" will modify inputParams, so put this at the end
         else
           @article.update(inputParams)
         end
@@ -156,8 +156,8 @@ private
     if !articleCoverPictureId.nil? && articleCoverPictureId != INVALID_ARTICLE_COVER_PICTURE_ID
       pictureIds.add(articleCoverPictureId)
     end
-    articleContent = ActiveSupport::JSON.decode(articleContent)
-    articleContent.each do |paragraph|
+    articleContentJson = JSON.parse(articleContent)
+    articleContentJson.each do |paragraph|
       if paragraph["type"] == "picture"
         pictureIds.add(paragraph["src"]["id"])
       end
