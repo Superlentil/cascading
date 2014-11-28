@@ -41,12 +41,12 @@ View.Article.ByUserAndCategory = Backbone.View.extend({
     var viewUserHeader = new View.User.Header({user: user});
     $("#article-by-user-and-category-header").append(viewUserHeader.render().$el);
     
-    this.viewArticleCascade = new View.Article.Cascade.Main({articleFetchFunction: this.articleFetchFunction});
+    this.viewArticleCascade = new View.Article.Cascade.Cover({fetchFunction: this.fetchFunction});
     this.viewArticleCascade.render();
   },
   
   
-  articleFetchFunction: function(batchToLoad, articlesPerBatch, options) {
+  fetchFunction: function(batchToLoad, articlesPerBatch, options) {
     var articles = new Collection.Article.ByUserAndCategory({
       userId: this.userId,
       categoryId: this.categoryId,

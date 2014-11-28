@@ -16,14 +16,14 @@ View.Article.Search = Backbone.View.extend({
   render: function() {
     this.$el.html(this.template({keyword: this.keyword}));
     
-    this.viewArticleCascade = new View.Article.Cascade.Main({articleFetchFunction: this.articleFetchFunction});
+    this.viewArticleCascade = new View.Article.Cascade.Cover({fetchFunction: this.fetchFunction});
     this.viewArticleCascade.render();
 
     return this;
   },
 
 
-  articleFetchFunction: function(batchToLoad, articlesPerBatch, options) {
+  fetchFunction: function(batchToLoad, articlesPerBatch, options) {
     var articles = new Collection.Article.Search({
       keyword: this.keyword,
       batch: batchToLoad,

@@ -9,14 +9,14 @@ View.Article.Index = Backbone.View.extend({
   render: function() {
     this.$el.html(this.template());
     
-    this.viewArticleCascade = new View.Article.Cascade.Main({articleFetchFunction: this.articleFetchFunction});
+    this.viewArticleCascade = new View.Article.Cascade.Cover({fetchFunction: this.fetchFunction});
     this.viewArticleCascade.render();
 
     return this;
   },
   
   
-  articleFetchFunction: function(batchToLoad, countPerBatch, options) {
+  fetchFunction: function(batchToLoad, countPerBatch, options) {
     var articles = new Collection.Article.All();
     articles.fetchBatch(batchToLoad, countPerBatch, options);
   },
