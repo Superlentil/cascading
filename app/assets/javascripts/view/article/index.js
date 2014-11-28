@@ -9,7 +9,7 @@ View.Article.Index = Backbone.View.extend({
   render: function() {
     this.$el.html(this.template());
     
-    this.viewArticleCascade = new View.Article.Cascade.Cover({fetchFunction: this.fetchFunction});
+    this.viewArticleCascade = new View.Article.CoverCascade({fetchFunction: this.fetchFunction});
     this.viewArticleCascade.render();
 
     return this;

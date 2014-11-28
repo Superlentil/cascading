@@ -1,7 +1,7 @@
 // define the view ByUserAndCategory
 View.Article.ByUserAndCategory = Backbone.View.extend({
   initialize: function(options) {
-    _.bindAll(this, "articleFetchFunction");
+    _.bindAll(this, "fetchFunction");
     
     this.userId = options.userId;
     this.categoryId = options.categoryId;
@@ -41,7 +41,7 @@ View.Article.ByUserAndCategory = Backbone.View.extend({
     var viewUserHeader = new View.User.Header({user: user});
     $("#article-by-user-and-category-header").append(viewUserHeader.render().$el);
     
-    this.viewArticleCascade = new View.Article.Cascade.Cover({fetchFunction: this.fetchFunction});
+    this.viewArticleCascade = new View.Article.CoverCascade({fetchFunction: this.fetchFunction});
     this.viewArticleCascade.render();
   },
   

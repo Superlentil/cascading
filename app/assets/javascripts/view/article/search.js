@@ -3,7 +3,7 @@ View.Article.Search = Backbone.View.extend({
   initialize: function(options) {
     this.keyword = options.keyword;
     
-    _.bindAll(this, "articleFetchFunction");
+    _.bindAll(this, "fetchFunction");
   },
   
   
@@ -16,7 +16,7 @@ View.Article.Search = Backbone.View.extend({
   render: function() {
     this.$el.html(this.template({keyword: this.keyword}));
     
-    this.viewArticleCascade = new View.Article.Cascade.Cover({fetchFunction: this.fetchFunction});
+    this.viewArticleCascade = new View.Article.CoverCascade({fetchFunction: this.fetchFunction});
     this.viewArticleCascade.render();
 
     return this;

@@ -1,1 +1,0 @@
-//= require ./cover/_INDEXER_

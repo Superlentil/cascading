@@ -1,11 +1,11 @@
-#article-cascade-container {
+#article-cover-cascade {
   margin: 0;
   padding: 0;
   width: 100%;
 }
 
 
-#article-cascade-option-container {
+#article-cover-cascade-option {
   padding: 10px 0 20px 0;
   
   .col-xs-6 {
@@ -14,26 +14,26 @@
 }
 
 
-#article-cascade-content-container {
+#article-cover-cascade-content {
   position: relative;
   
   margin: 0 auto;
 }
 
 
-.article-cascade-cover {
+.article-cover {
   position: absolute;
 
   background-color: #ebfffd;
 }
 
 
-.article-cascade-cover-img-link {
+.article-cover-img-link {
   text-decoration: none;
 }
 
-.article-cascade-cover-img-link,
-.article-cascade-cover-img {
+.article-cover-img-link,
+.article-cover-img {
   margin: 0 auto;
   display: block;
 }

@@ -7,6 +7,8 @@ View.Cascade.Base = Backbone.View.extend({
   // --- common constants ---
   CACHE_LIFETIME: 3600000,   // in the unit "milliseconds"
   
+  CASCADE_CONTENT_CONTAINER_ID: "cascade-content",
+  
   COUNT_PER_BATCH: 30,
   EAGER_LOAD_BATCH: 1,
   
@@ -21,15 +23,15 @@ View.Cascade.Base = Backbone.View.extend({
   COMPACT_COLUMN_WIDTH: 220.0,   // in the unit "px"
   COMPACT_VERTICAL_GAP: 4.0,   // in the unit "px"
   COMPACT_HORIZONTAL_GAP: 4.0,   // in the unit "px"
-    
+  
+  // --- other specific constants for this kind of cascading design, override them for different cascading designs ---
+  initializeOtherConstants: function() {},
+
+  
   el: null,   // must be overrided
     
   mainTemplate: null,   // must be overrided
   itemTemplate: null,   // must be overrided
-  
-  
-  // --- other specific constants for this kind of cascading design, override them for different cascading designs ---
-  initializeOtherConstants: function() {},
   
   
   // --- specific functions for this kind of cascading design, override them for different cascading designs ---
@@ -58,6 +60,11 @@ View.Cascade.Base = Backbone.View.extend({
   },
   
   
+  hasMoreDataToFetch: function(currentFetchedData) {
+    return true;
+  },
+  
+  
   updateItemDataInCacheAfterDisplayModeChange: function(itemIndex) {},
   
   
@@ -74,8 +81,14 @@ View.Cascade.Base = Backbone.View.extend({
       return this.$el.width() - GlobalVariable.Browser.ScrollBarWidthInPx;
     }
   },
+  
+  
+  events: {
+    "click #m-cascade-compact-mode": "changeCoverDisplayMode",
+    "click #m-cascade-normal-mode": "changeCoverDisplayMode"
+  },
   // -----------------------------------------------------------------
-  // END: parameters or functions that can be overrided by subclass
+  // END: parameters or functions that can be overrided by subclasses
   // -----------------------------------------------------------------
   
   
@@ -167,7 +180,7 @@ View.Cascade.Base = Backbone.View.extend({
       oldCascadeContainer.remove();
     }
     
-    var newCascadeContainer = $("<div id='cascade-content' style='width: " + this.cache.cascadeWidth + "px;'></div>");
+    var newCascadeContainer = $("<div id='" + this.CASCADE_CONTENT_CONTAINER_ID + "' style='width: " + this.cache.cascadeWidth + "px;'></div>");
     this.$el.append(newCascadeContainer);
     this.cascadeContainer = newCascadeContainer;
     
@@ -314,7 +327,7 @@ View.Cascade.Base = Backbone.View.extend({
       
       this.fetchFunction(loadingBatch, countPerBatch, {
         success: function(fetchedData) {
-          if (storeFetchedDataIntoCache(fetchedData)) {
+          if (that.storeFetchedDataIntoCache(fetchedData)) {
             var heightOffset = cache.cascadeHeight;
             cache.batchTopPosition.push(heightOffset);
             cache.batchContainer.push(null);
@@ -324,10 +337,8 @@ View.Cascade.Base = Backbone.View.extend({
             cache.lastCacheTime = $.now();
             
             that.attachBatch(loadingBatch, true);
-            
-            if (items.length < countPerBatch) {
-              that.moreToLoad = false;
-            }
+                        
+            that.moreToLoad = that.hasMoreDataToFetch(fetchedData);
           } else {
             that.moreToLoad = false;
           }
@@ -344,12 +355,6 @@ View.Cascade.Base = Backbone.View.extend({
         }
       });
     }
-  },
-  
-  
-  events: {
-    "click #cascade-compact-mode": "changeCoverDisplayMode",
-    "click #cascade-normal-mode": "changeCoverDisplayMode"
   },
   
   
@@ -488,7 +493,8 @@ View.Cascade.Base = Backbone.View.extend({
 
         var countPerBatch = this.COUNT_PER_BATCH;
         var batchIndex = 0;
-        for (var firstItemIndexInThisBatch = 0; firstItemIndexInThisBatch < itemDataLength; firstItemIndexInThisBatch += countPerBatch) {
+        var itemDataCount = cache.itemData.length;
+        for (var firstItemIndexInThisBatch = 0; firstItemIndexInThisBatch < itemDataCount; firstItemIndexInThisBatch += countPerBatch) {
           var firstItemIndexInNextBatch = this.getFirstItemIndexInNextBatch(firstItemIndexInThisBatch);
           
           var heightOffset = cache.cascadeHeight;
@@ -518,8 +524,8 @@ View.Cascade.Base = Backbone.View.extend({
   
   
   getFirstItemIndexInNextBatch: function(firstItemIndexInThisBatch) {
-    var itemDataCount = cache.itemData.length;
-    var firstItemIndexInNextBatch = firstItemIndexInThisBatch + countPerBatch;
+    var itemDataCount = this.cache.itemData.length;
+    var firstItemIndexInNextBatch = firstItemIndexInThisBatch + this.COUNT_PER_BATCH;
     if (firstItemIndexInNextBatch > itemDataCount) {
       firstItemIndexInNextBatch = itemDataCount;
     }

@@ -1,0 +1,9 @@
+<div class="article-cover" style="top: <%= top %>px; left: <%= left %>px; width: <%= width %>px; padding: <%= padding %>px;">
+  <a class="article-cover-img-link" href="#/article/<%= id %>">
+    <img class="article-cover-img" style="height: <%= picHeight %>px; width: <%= picWidth %>px;" src="<%= picUrl %>">
+  </a>
+  <div class="article-cover-information" style="margin: 0; padding: 0;">
+    <div style="word-break: break-all; word-wrap: break-word;"><strong><%= title %></strong></div>
+    <div><em><a href="#/articles/user/<%= userId %>"><%= author %></a> <a href="#/articles/category/<%= categoryId %>"><%= category %></a></em></div>
+  </div>
+</div>

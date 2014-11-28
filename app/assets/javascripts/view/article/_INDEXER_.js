@@ -1,4 +1,4 @@
-//= require ./cascade/_INDEXER_
+//= require ./cover_cascade
 //= require ./editor/_INDEXER_
 //= require ./comment
 //= require ./publish

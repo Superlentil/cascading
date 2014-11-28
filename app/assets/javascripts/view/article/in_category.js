@@ -1,7 +1,7 @@
 // define the view InCategory
 View.Article.InCategory = Backbone.View.extend({
   initialize: function(options) {
-    _.bindAll(this, "articleFetchFunction");
+    _.bindAll(this, "fetchFunction");
     
     this.categoryId = options.categoryId;
   },
@@ -16,7 +16,7 @@ View.Article.InCategory = Backbone.View.extend({
   render: function() {
     this.$el.html(this.template());
     
-    this.viewArticleCascade = new View.Article.Cascade.Cover({fetchFunction: this.fetchFunction});
+    this.viewArticleCascade = new View.Article.CoverCascade({fetchFunction: this.fetchFunction});
     this.viewArticleCascade.render();
 
     return this;
