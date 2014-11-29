@@ -17,7 +17,7 @@
 !/public/robots.txt
 
 # Ignore database access information.
-# /config/database.yml
+/config/database.yml
 
 # Ignore database schema
 /db/schema.rb
