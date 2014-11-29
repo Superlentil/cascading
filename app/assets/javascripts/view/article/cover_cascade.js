@@ -31,14 +31,21 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
   itemTemplate: JST["template/article/cover_cascade/cover"],
   
   
-  initializationFromConstructorOptions: function(options) {
+  initializeHelper: function(options) {
     this.fetchFunction = options.fetchFunction;
   },
   
   
+  generateFetchOptions: function() {
+    return {pageLoadTime: this.cache.pageLoadTimeSinceEpoch};
+  },
+  
+  
   resetCacheHelper: function() {
-    this.cache.itemPadding = 0;
-    this.cache.itemPictureScale = 1.0;
+    var cache = this.cache;
+    cache.itemPadding = 0;
+    cache.itemPictureScale = 1.0;
+    cache.pageLoadTimeSinceEpoch = $.now();   // in the unit "millisecond"
   },
   
   

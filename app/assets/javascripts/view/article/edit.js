@@ -79,7 +79,8 @@ View.Article.Edit = Backbone.View.extend({
       var article = new Model.Article();
       article.set({
         "author": $.cookie("user_nickname"),
-        "user_id": $.cookie("user_id")
+        "user_id": $.cookie("user_id"),
+        "content": "[]"
       });
       
       article.save(article.toJSON(), {

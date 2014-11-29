@@ -23,13 +23,14 @@ View.Article.InCategory = Backbone.View.extend({
   },
   
   
-  fetchFunction: function(batchToLoad, articlesPerBatch, options) {
+  fetchFunction: function(batchToLoad, articlesPerBatch, fetchOptions, callbacks) {
     var articles = new Collection.Article.InCategory({
       categoryId: this.categoryId,
       batch: batchToLoad,
-      articlesPerBatch: articlesPerBatch
+      articlesPerBatch: articlesPerBatch,
+      pageLoadTime: fetchOptions.pageLoadTime
     });
-    articles.fetch(options);
+    articles.fetch(callbacks);
   },
 
   

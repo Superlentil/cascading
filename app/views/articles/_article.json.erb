@@ -9,6 +9,6 @@
     "cover_picture_imported": <%= @article.cover_picture_imported %>,
     "cover_picture_url": <%= raw(@article.cover_picture_url.to_json) %>,
     "content": <%= raw(@article.content.to_json) %>,
-    "created_at": <%= @article.created_at.to_i %>
+    "publish_time": <%= @article.created_at.to_i %>
   <% end %>
 }

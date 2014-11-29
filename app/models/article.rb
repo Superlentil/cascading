@@ -23,6 +23,8 @@ class Article < ActiveRecord::Base
       content << ""
     end
     
+    integer :id
     integer :status
+    time :publish_time
   end
 end

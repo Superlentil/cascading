@@ -23,13 +23,14 @@ View.Article.Search = Backbone.View.extend({
   },
 
 
-  fetchFunction: function(batchToLoad, articlesPerBatch, options) {
+  fetchFunction: function(batchToLoad, articlesPerBatch, fetchOptions, callbacks) {
     var articles = new Collection.Article.Search({
       keyword: this.keyword,
       batch: batchToLoad,
-      articlesPerBatch: articlesPerBatch
+      articlesPerBatch: articlesPerBatch,
+      pageLoadTime: fetchOptions.pageLoadTime
     });
-    articles.fetch(options);
+    articles.fetch(callbacks);
   },
 
 

@@ -99,6 +99,7 @@ namespace :data_generator do
         user_id: randUser.id,
         category_name: randCategory.name,
         category_id: randCategory.id,
+        content: "[]"
       })
       
       articleId = article.id
@@ -128,6 +129,7 @@ namespace :data_generator do
       article.cover_picture_height = Paperclip::Geometry.from_file(coverPicture.src.path(:thumb)).height.to_i
       article.status = GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED
       article.content = articleContent
+      article.publish_time = Time.now
       
       article.save
     end

@@ -6,10 +6,7 @@ class ArticlesController < ApplicationController
   
   
   def index
-    batch = params[:batch].to_i
-    articlesPerBatch = params[:articles_per_batch].to_i
-    
-    respond_with queryArticlesByBatch(batch, articlesPerBatch, {})
+    respond_with queryArticlesByBatch(params[:batch], params[:articles_per_batch], params[:page_load_time], {})
     return
   end
   
@@ -22,29 +19,23 @@ class ArticlesController < ApplicationController
   
   
   def inCategory
-    batch = params[:batch].to_i
-    articlesPerBatch = params[:articles_per_batch].to_i
     queryConditions = {category_id: params[:category_id].to_i}
     
-    respond_with queryArticlesByBatch(batch, articlesPerBatch, queryConditions)
+    respond_with queryArticlesByBatch(params[:batch], params[:articles_per_batch], params[:page_load_time], queryConditions)
   end
   
   
   def byUser
-    batch = params[:batch].to_i
-    articlesPerBatch = params[:articles_per_batch].to_i
     queryConditions = {user_id: params[:user_id].to_i}
     
-    respond_with queryArticlesByBatch(batch, articlesPerBatch, queryConditions)
+    respond_with queryArticlesByBatch(params[:batch], params[:articles_per_batch], params[:page_load_time], queryConditions)
   end
   
   
   def byUserAndCategory
-    batch = params[:batch].to_i
-    articlesPerBatch = params[:articles_per_batch].to_i
     queryConditions = {user_id: params[:user_id].to_i, category_id: params[:category_id].to_i}
     
-    respond_with queryArticlesByBatch(batch, articlesPerBatch, queryConditions)
+    respond_with queryArticlesByBatch(params[:batch], params[:articles_per_batch], params[:page_load_time], queryConditions)
   end
   
   
@@ -71,6 +62,8 @@ class ArticlesController < ApplicationController
       end
       
       with :status, GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED
+      with(:publish_time).less_than Time.at(params[:page_load_time].to_i / 1000.0)
+      order_by :id, :desc
 
       paginate :page => batch, :per_page => articlesPerBatch
     end
@@ -105,7 +98,7 @@ class ArticlesController < ApplicationController
     inputParams = articleParams
     if correctLoggedInUser?(@article.user_id)
       ActiveRecord::Base.transaction do
-        if inputParams[:status] && inputParams[:status].to_i != GlobalConstant::ArticleStatus::DRAFT
+        if inputParams[:status] && inputParams[:status].to_i == GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED
           if inputParams[:cover_picture_id].to_i < 0
             assignCoverPicture(inputParams)
           end
@@ -113,6 +106,9 @@ class ArticlesController < ApplicationController
           geometry = Paperclip::Geometry.from_file(coverPicturePath)
           inputParams[:cover_picture_height] = geometry.height.to_i
           deleteNotUsedPictures(inputParams)
+          if @article.publish_time.nil?
+            inputParams[:publish_time] = Time.now
+          end
           @article.update(inputParams)   # "update" will modify inputParams, so put this at the end
         else
           @article.update(inputParams)
@@ -139,15 +135,34 @@ private
 
 
   def articleParams
-    params.require(:article).permit(:id, :cover_picture_id, :cover_picture_url, :cover_picture_height, :cover_picture_imported, :title, :author, :content, :category_name, :category_id, :views, :like, :status, :user_id, :created_at, :updated_at)
+    params.require(:article).permit(
+      :id,
+      :cover_picture_id,
+      :cover_picture_url,
+      :cover_picture_height,
+      :cover_picture_imported,
+      :title,
+      :author,
+      :content,
+      :category_name,
+      :category_id,
+      :views,
+      :like,
+      :status,
+      :publish_time,
+      :user_id,
+      :created_at,
+      :updated_at
+    )
   end
   
   
-  def queryArticlesByBatch(batch, articlesPerBatch, queryConditions)
+  def queryArticlesByBatch(batch, articlesPerBatch, pageLoadTime, queryConditions)
+    countPerBatch = articlesPerBatch.to_i
     queryConditions[:status] = GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED;
-    return Article.where(queryConditions)
+    return Article.where("publish_time < ?", Time.at(pageLoadTime.to_i / 1000.0)).where(queryConditions)
       .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, author, user_id, category_name, category_id")
-      .limit(articlesPerBatch).offset(batch * articlesPerBatch).order(id: :desc)
+      .limit(countPerBatch).offset(batch.to_i * countPerBatch).order(id: :desc)
   end
   
   

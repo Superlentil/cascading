@@ -35,10 +35,15 @@ View.Cascade.Base = Backbone.View.extend({
   
   
   // --- specific functions for this kind of cascading design, override them for different cascading designs ---
-  fetchFunction: function(loadingBatch, countPerBatch, options) {},   // must be overrided
+  fetchFunction: function(batchToLoad, countPerBatch, fetchOptions, callbacks) {},   // must be overrided
   
   
-  initializationFromConstructorOptions: function(options) {},
+  generateFetchOptions: function() {
+    return null;
+  },
+  
+  
+  initializeHelper: function(options) {},
   
   
   resetCacheHelper: function() {},
@@ -83,6 +88,16 @@ View.Cascade.Base = Backbone.View.extend({
   },
   
   
+  addScrollListener: function() {
+    GlobalVariable.Browser.Window.on("scroll", this.onScroll);
+  },
+  
+  
+  removeScrollListener: function() {
+    GlobalVariable.Browser.Window.off("scroll");
+  },
+  
+  
   events: {
     "click #m-cascade-compact-mode": "changeCoverDisplayMode",
     "click #m-cascade-normal-mode": "changeCoverDisplayMode"
@@ -97,8 +112,6 @@ View.Cascade.Base = Backbone.View.extend({
     
     _.bindAll(this, "onScroll");
     _.bindAll(this, "loadData");
-
-    this.initializationFromConstructorOptions(options);
     
     this.readyToLoad = true;
     this.moreToLoad = true;    
@@ -116,6 +129,8 @@ View.Cascade.Base = Backbone.View.extend({
       GlobalVariable.PageCache[pageCacheKey] = this.cache;
       this.resetCache();
     }
+    
+    this.initializeHelper(options);
   },
   
   
@@ -173,7 +188,7 @@ View.Cascade.Base = Backbone.View.extend({
      
   
   resetCascadeContainer: function() {
-    GlobalVariable.Browser.Window.off("scroll", this.onScroll);
+    this.removeScrollListener();
     
     var oldCascadeContainer = this.cascadeContainer;
     if (oldCascadeContainer) {
@@ -184,7 +199,7 @@ View.Cascade.Base = Backbone.View.extend({
     this.$el.append(newCascadeContainer);
     this.cascadeContainer = newCascadeContainer;
     
-    GlobalVariable.Browser.Window.on("scroll", this.onScroll);
+    this.addScrollListener();
   },
   
   
@@ -325,7 +340,7 @@ View.Cascade.Base = Backbone.View.extend({
       var loadingBatch = cache.nextBatchToLoad;
       var countPerBatch = this.COUNT_PER_BATCH;
       
-      this.fetchFunction(loadingBatch, countPerBatch, {
+      this.fetchFunction(loadingBatch, countPerBatch, this.generateFetchOptions(), {
         success: function(fetchedData) {
           if (that.storeFetchedDataIntoCache(fetchedData)) {
             var heightOffset = cache.cascadeHeight;
@@ -636,7 +651,7 @@ View.Cascade.Base = Backbone.View.extend({
   
   
   remove: function() {
-    GlobalVariable.Browser.Window.off("scroll");
+    this.removeScrollListener();
     
     this.cascadeContainer = null;
     
