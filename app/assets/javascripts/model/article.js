@@ -4,8 +4,7 @@ Model.Article = Backbone.Model.extend({
     "title": "",
     "author": "",
     "category_name": "",
-    "content": "{}",
-    "published": false
+    "content": "{}"
   },
   
   urlRoot: "articles"

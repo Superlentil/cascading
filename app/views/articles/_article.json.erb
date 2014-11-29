@@ -7,6 +7,7 @@
     "category_name": <%= raw(@article.category_name.to_json) %>,
     "category_id": <%= @article.category_id %>,
     "cover_picture_imported": <%= @article.cover_picture_imported %>,
+    "cover_picture_id": <%= @article.cover_picture_id %>,
     "cover_picture_url": <%= raw(@article.cover_picture_url.to_json) %>,
     "content": <%= raw(@article.content.to_json) %>,
     "publish_time": <%= @article.created_at.to_i %>

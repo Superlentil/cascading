@@ -47,8 +47,9 @@ View.Article.Edit = Backbone.View.extend({
     addEditorContainer.append(viewAddEditor.render().$el);
     
     article = article || new Model.Article();
-    article.unset("created_at", { silent: true });
-    article.unset("updated_at", { silent: true });
+    article.unset("created_at", {silent: true});
+    article.unset("updated_at", {silent: true});
+    article.unset("publish_time", {silent: true});
     that.model = article; 
     
     $("#article-edit-title").val(article.get("title"));
