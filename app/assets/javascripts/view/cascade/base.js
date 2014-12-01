@@ -333,6 +333,7 @@ View.Cascade.Base = Backbone.View.extend({
   loadData: function() {
     if (this.moreToLoad) {
       this.readyToLoad = false;   // only one load process allowed
+      clearTimeout(this.loadDataTimeout);
       
       var that = this;
       var cache = this.cache;
@@ -629,9 +630,11 @@ View.Cascade.Base = Backbone.View.extend({
       var lastOnBoardBatch = lastVisibleBatch + eagerLoadBatchCount;
       for (var index = lastVisibleBatch + 1; index <= lastOnBoardBatch; ++index) {
         if (index > lastBatch) {
-          // prevent loading the same contents more than once
-          clearTimeout(this.loadItemTimeout);
-          this.loadItemTimeout = setTimeout(this.loadData, 300);
+          if (this.readyToLoad && this.moreToLoad) {
+            // prevent loading the same contents more than once
+            clearTimeout(this.loadDataTimeout);
+            this.loadDataTimeout = setTimeout(this.loadData, 300);
+          }
           lastBatch = lastOnBoardBatch;
           break;
         } else {
