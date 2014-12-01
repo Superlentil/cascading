@@ -10,7 +10,7 @@ View.Cascade.Base = Backbone.View.extend({
   CASCADE_CONTENT_CONTAINER_ID: "cascade-content",
   
   COUNT_PER_BATCH: 30,
-  EAGER_LOAD_BATCH: 1,
+  BATCH_LOAD_WHEN_SCROLL_TO_BOTTOM: 1,   // if this value is set to "0", then it will disable "scroll to load" feature.
   
   MAX_COLUMN_COUNT: 5,
   ENABLE_COMPACT_MODE: true,
@@ -163,8 +163,8 @@ View.Cascade.Base = Backbone.View.extend({
     cache.batchTopPosition = [];
     cache.batchProcessed = [];
     
-    cache.firstVisibleBatch = -1;
-    cache.lastVisibleBatch = -1;
+    cache.firstVisibleBatch = 0;
+    cache.lastVisibleBatch = 0;
     
     cache.itemWidth = 0;   
     cache.itemData = [];
@@ -359,8 +359,20 @@ View.Cascade.Base = Backbone.View.extend({
           }
           
           that.readyToLoad = true;
-          if (that.moreToLoad && !that.isEnoughForScroll()) {
-            that.loadData();
+          
+          if (that.moreToLoad) {
+            if (!that.isEnoughForScroll()) {
+              that.loadData();
+            } else {
+              var lastVisibleBatch = cache.lastVisibleBatch;
+              var lastOnboardBatch = lastVisibleBatch + that.BATCH_LOAD_WHEN_SCROLL_TO_BOTTOM;
+              for (var index = lastVisibleBatch; index <= lastOnboardBatch; ++index) {
+                if (!cache.batchContainer[index]) {
+                  that.loadData();
+                  break;
+                }
+              }
+            }
           }
         },
         
@@ -415,7 +427,7 @@ View.Cascade.Base = Backbone.View.extend({
       ++batch;
       
       if (this.isEnoughForScroll()) {
-        if (eagerLoadedBatchCount < this.EAGER_LOAD_BATCH) {
+        if (eagerLoadedBatchCount < this.BATCH_LOAD_WHEN_SCROLL_TO_BOTTOM) {
           ++eagerLoadedBatchCount;
         } else {
           break;
@@ -436,18 +448,16 @@ View.Cascade.Base = Backbone.View.extend({
       reusedItemDataCount = itemDataCount;
     }
     cache.itemData = cache.itemData.slice(0, reusedItemDataCount);
-       
-    if (eagerLoadedBatchCount < this.EAGER_LOAD_BATCH || !this.isEnoughForScroll()) {
-      this.loadData();
-    }
+
+    this.onScroll();
   },
    
  
   attachBatch: function(batchIndex, isInitialAttach) {
     var cache = this.cache;
     
-    if (0 <= batchIndex && batchIndex < cache.nextBatchToLoad) {   // safer
-      if ((!cache.batchContainer[batchIndex] && cache.batchProcessed[batchIndex]) || isInitialAttach) {
+    if (0 <= batchIndex && batchIndex < cache.nextBatchToLoad) {   // safer    
+      if ((!cache.batchContainer[batchIndex] && cache.batchProcessed[batchIndex]) || isInitialAttach) {       
         var countPerBatch = this.COUNT_PER_BATCH;
         var firstItemIndexInThisBatch = batchIndex * countPerBatch;
         var firstItemIndexInNextBatch = this.getFirstItemIndexInNextBatch(firstItemIndexInThisBatch);
@@ -557,9 +567,7 @@ View.Cascade.Base = Backbone.View.extend({
     var jumpToScrollTop = GlobalVariable.Browser.Document.height() * cache.scrollPercentage;
     cache.scrollTop = jumpToScrollTop;
     GlobalVariable.Browser.Window.scrollTop(jumpToScrollTop);
-    if (jumpToScrollTop == 0) {
-      this.onScroll();
-    }
+    this.onScroll();
   },
   
   
@@ -574,7 +582,7 @@ View.Cascade.Base = Backbone.View.extend({
     
     var firstVisibleBatch = 0;
     var lastVisibleBatch = 0;
-    var lastBatch = cache.nextBatchToLoad - 1;
+    var lastBatch = cache.batchContainer.length - 1;
     
     if (lastBatch >= 0) {
       if (scrollTopPosition >= cache.batchTopPosition[lastBatch]) {
@@ -604,15 +612,6 @@ View.Cascade.Base = Backbone.View.extend({
       }
     }
     
-    if (lastVisibleBatch + this.EAGER_LOAD_BATCH > lastBatch) {   // Possible Bug: may triggered but not loaded.
-      if (this.readyToLoad && this.moreToLoad) {
-        // prevent loading the same contents more than once
-        clearTimeout(this.loadItemTimeout);
-        this.loadItemTimeout = setTimeout(this.loadData, 10);
-      }
-      lastBatch = cache.nextBatchToLoad - 1;
-    }
-    
     if (firstVisibleBatch !== cache.firstVisibleBatch || lastVisibleBatch !== cache.lastVisibleBatch) {
       cache.firstVisibleBatch = firstVisibleBatch;
       cache.lastVisibleBatch = lastVisibleBatch;
@@ -621,13 +620,24 @@ View.Cascade.Base = Backbone.View.extend({
         this.attachBatch(index, false);
       }
 
-      var firstOnBoardBatch = firstVisibleBatch - 1;
-      if (firstOnBoardBatch < 0) {firstOnBoardBatch = 0;}
-      this.attachBatch(firstOnBoardBatch, false);
+      var eagerLoadBatchCount = this.BATCH_LOAD_WHEN_SCROLL_TO_BOTTOM;
+      var firstOnBoardBatch = firstVisibleBatch - eagerLoadBatchCount;
+      for (var index = firstOnBoardBatch; index < firstVisibleBatch; ++index) {
+        this.attachBatch(index, false);
+      }
 
-      var lastOnBoardBatch = lastVisibleBatch + 1;
-      if (lastOnBoardBatch > lastBatch) {lastOnBoardBatch = lastBatch;}
-      this.attachBatch(lastOnBoardBatch, false);
+      var lastOnBoardBatch = lastVisibleBatch + eagerLoadBatchCount;
+      for (var index = lastVisibleBatch + 1; index <= lastOnBoardBatch; ++index) {
+        if (index > lastBatch) {
+          // prevent loading the same contents more than once
+          clearTimeout(this.loadItemTimeout);
+          this.loadItemTimeout = setTimeout(this.loadData, 300);
+          lastBatch = lastOnBoardBatch;
+          break;
+        } else {
+          this.attachBatch(index, false);
+        }
+      }
       
       // detach batches that should not be on board.
       if (scrollTopPosition !== oldScrollTopPosition) {
