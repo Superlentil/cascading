@@ -3,7 +3,7 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
   CASCADE_CONTENT_CONTAINER_ID: "article-cover-cascade-content",
   
   COUNT_PER_BATCH: 30,
-  EAGER_LOAD_BATCH: 1,
+  BATCH_LOAD_WHEN_SCROLL_TO_BOTTOM: 1,
   
   MAX_COLUMN_COUNT: 5,
   ENABLE_COMPACT_MODE: true,
