@@ -166,7 +166,13 @@ namespace :data_generator do
         file = File.open(allPicturePaths[randomIntegerGenerator.rand(0..allPicturePathsLastIndex)])
         pic = Picture.create({src: file, article_id: articleId})
         file.close
-        articleContent += "{\"type\":\"picture\",\"src\":{\"id\":#{pic.id},\"url\":\"#{pic.src.url(:medium)}\"}},"
+        if pic
+          mediumPicPath = pic.src.path(:medium)
+          mediumPicHeight = Paperclip::Geometry.from_file(mediumPicPath).height.to_s + "px"
+        else
+          mediumPicHeight = "auto"
+        end
+        articleContent += "{\"type\":\"picture\",\"src\":{\"id\":#{pic.id},\"url\":\"#{pic.src.url(:medium)}\",\"height\":\"#{mediumPicHeight}\"}},"
       end
       nextContentType = contentTypes[randomIntegerGenerator.rand(0..contentTypesLastIndex)]
     end

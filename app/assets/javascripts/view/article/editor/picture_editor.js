@@ -22,7 +22,8 @@ View.Article.Editor.PictureEditor = View.Article.Editor.BaseEditor.extend({
       contentContainer.append("<div>(Click Picture to Make a Change)</div>");
       contentContainer.append("<img class='article-picture-editor-img' src='" + content.url
         + "' alt='Uploaded Picture' data-picture-id='" + content.id
-        + "' title='Click Picture to Make a Change' />"
+        + "' data-picture-height='" + content.height
+        + "' title='Click Picture to Make a Change' style='height:" + content.height + ";' />"
       );
     }
   },
@@ -94,7 +95,7 @@ View.Article.Editor.PictureEditor = View.Article.Editor.BaseEditor.extend({
       
       success: function(savedPicture) {
         progressBar.remove();
-        that.populateContent({url: savedPicture.medium_url, id: savedPicture.id});
+        that.populateContent({id: savedPicture.id, url: savedPicture.medium_url, height: savedPicture.medium_height});
       },
       
       error: function() {

@@ -3,7 +3,14 @@ class PicturesController < ApplicationController
   
   
   def create
-    @picture = Picture.create(pictureParams)
+    ActiveRecord::Base.transaction do
+      @picture = Picture.create(pictureParams)
+      @mediumHeight = "auto"
+      if @picture
+        mediumPath = @picture.src.path(:medium)
+        @mediumHeight = Paperclip::Geometry.from_file(mediumPath).height.to_s + "px"
+      end
+    end
     respond_with @picture
   end
 
@@ -15,7 +22,6 @@ class PicturesController < ApplicationController
   def destroy
     @picture = Picture.find(params[:id])
     @picture.destroy
-    respond_with @picture
   end
 
   

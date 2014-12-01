@@ -1,1 +1,5 @@
-<%= render "picture" %>
+{
+  "id": <%= @picture.id %>,
+  "medium_url": <%= raw(@picture.src.url(:medium).to_json) %>,
+  "medium_height": <%= raw(@mediumHeight.to_json) %>
+}

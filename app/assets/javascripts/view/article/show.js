@@ -59,7 +59,7 @@ View.Article.Show = Backbone.View.extend({
       if (paragraph.type === "text") {
         contentHtml += "<pre class='article-show-text'>" + paragraph.src + "</pre>";
       } else if (paragraph.type === "picture") {
-        contentHtml += "<pre class='article-show-picture'><img src='" + paragraph.src.url + "' class='Article_Picture' /></pre>";
+        contentHtml += "<pre class='article-show-picture'><img src='" + paragraph.src.url + "' class='m-picture' style='height:" + paragraph.src.height + ";' /></pre>";
       }
     });
     return contentHtml;
@@ -67,7 +67,7 @@ View.Article.Show = Backbone.View.extend({
   
   
   events: {
-    "click .Article_Picture": "showOriginalPicture"
+    "click .m-picture": "showOriginalPicture"
   },
   
   
