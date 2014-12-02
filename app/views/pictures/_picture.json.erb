@@ -1,0 +1,6 @@
+{
+  "id": <%= @picture.id %>,
+  "original_url": "<%= @picture.src.url %>",
+  "thumb_url": "<%= @picture.src.url(:thumb) %>",
+  "medium_url": "<%= @picture.src.url(:medium) %>"
+}

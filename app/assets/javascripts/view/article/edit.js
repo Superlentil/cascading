@@ -163,8 +163,7 @@ View.Article.Edit = Backbone.View.extend({
             "type": type,
             "src": {
               "id": img.data("pictureId"),
-              "url": img.attr("src"),
-              "height": img.data("pictureHeight")
+              "url": img.attr("src")
             }
           };
           articleContent.push(paragraphJSON);
