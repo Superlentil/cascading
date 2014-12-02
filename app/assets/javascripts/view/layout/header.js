@@ -22,7 +22,9 @@ View.Layout.Header = Backbone.View.extend({
   
   
   events: {
-    "click #layout-header-form-submit": "onSignIn"
+    "click #layout-header-form-submit": "onSignIn",
+    "keyup #layout-header-form-password": "enterToSignIn",
+    "keyup #layout-header-form-email": "enterToSignIn"
   },
   
   
@@ -32,5 +34,10 @@ View.Layout.Header = Backbone.View.extend({
     var email = $("#layout-header-form-email").val();
     var password = $("#layout-header-form-password").val();    
     this.signInHandler(email, password);
+  },
+    
+  enterToSignIn: function(event) {
+    if(event.keyCode == 13)
+        this.onSignIn(event);
   }
 });
