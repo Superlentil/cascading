@@ -24,6 +24,9 @@ View.Article.Show = Backbone.View.extend({
             that.deleteArticle(event);
           });
           
+          var viewShowCascade = new View.Article.ShowCascade({articleShowContainer: $("#article-show")});
+          viewShowCascade.render();
+          
           var viewComment = new View.Article.Comment({articleId: options.id});
           that.allSubviews.push(viewComment);
           viewComment.render();

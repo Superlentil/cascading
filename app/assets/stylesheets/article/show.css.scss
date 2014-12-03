@@ -1,4 +1,4 @@
-#article-show, #article-show-preview {
+#article-show-preview {
   width: 100%;
   max-width: 600px;
   
@@ -6,6 +6,27 @@
   line-height: 200%;
   
   margin: 8px auto 20px auto;
+}
+
+
+#article-show {
+  width: 600px;
+  
+  font-size: 16px;
+  line-height: 200%;
+  
+  margin: 8px 20px 20px 20px;
+  
+  float: left;
+  z-index: 1000;
+}
+
+
+#article-show-recommend {
+  float: left;
+  width: 250px;
+  z-index: -1000;
+  opacity: 0.4;
 }
 
 
