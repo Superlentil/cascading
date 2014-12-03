@@ -31,7 +31,8 @@ View.Layout.LeftNav = Backbone.View.extend({
   
   events: {
     "click .layout-leftNav-alsoCloseNav": "onAlsoCloseNav",
-    "click #layout-leftNav-search-button": "search"
+    "click #layout-leftNav-search-button": "search",
+    "keyup #layout-leftNav-search-input": "enterToSearch",
   },
   
   
@@ -46,5 +47,12 @@ View.Layout.LeftNav = Backbone.View.extend({
     if (keyword.length > 0) {
       Backbone.history.navigate("#/articles/search/" + keyword, {trigger: true});
     }
+  },
+  
+  enterToSearch: function(event) {
+    if(event.keyCode == 13) {
+      this.search(event);
+    }
   }
+
 });
