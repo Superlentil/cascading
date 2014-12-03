@@ -5,6 +5,8 @@ View.Article.ShowCascade = View.Cascade.Base.extend({
   COUNT_PER_BATCH: 1,
   BATCH_LOAD_WHEN_SCROLL_TO_BOTTOM: 0,
   
+  ADJUST_CASCADE_WHEN_VIEWPORT_WIDTH_CHANGE: false,
+  
   MAX_COLUMN_COUNT: 1,
   ENABLE_COMPACT_MODE: false,
   
@@ -80,6 +82,7 @@ View.Article.ShowCascade = View.Cascade.Base.extend({
   
   
   isEnoughForScroll: function() {
-    return this.cache.cascadeHeight > this.articleShowContainer.height() + 100.0;
+    console.log(this.cache.cascadeHeight + "   " + this.articleShowContainer.height());
+    return this.cache.cascadeHeight > this.articleShowContainer.height();
   },
 });

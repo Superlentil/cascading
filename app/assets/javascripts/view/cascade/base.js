@@ -12,6 +12,8 @@ View.Cascade.Base = Backbone.View.extend({
   COUNT_PER_BATCH: 30,
   BATCH_LOAD_WHEN_SCROLL_TO_BOTTOM: 1,   // if this value is set to "0", then it will disable "scroll to load" feature.
   
+  ADJUST_CASCADE_WHEN_VIEWPORT_WIDTH_CHANGE: true,
+  
   MAX_COLUMN_COUNT: 5,
   ENABLE_COMPACT_MODE: true,
   MAX_AUTO_COMPACT_MODE_WIDTH: 720.0,   // if compact mode is enabled and the cascading area width is smaller than this value, then the initial display mode will be automatically set to compact.
@@ -506,6 +508,13 @@ View.Cascade.Base = Backbone.View.extend({
   
   
   onWidthChange: function() {
+    if (this.ADJUST_CASCADE_WHEN_VIEWPORT_WIDTH_CHANGE) {
+      this.widthChangeHandler();
+    }
+  },
+  
+  
+  widthChangeHandler: function() {
     var cache = this.cache;
     
     if (this.readyForWidthChange) {   
@@ -658,6 +667,14 @@ View.Cascade.Base = Backbone.View.extend({
             cache.batchContainer[index] = null;
           }
         }
+      }
+    }
+    
+    if (eagerLoadBatchCount == 0 && !this.isEnoughForScroll()) {
+      if (this.readyToLoad && this.moreToLoad) {
+        // prevent loading the same contents more than once
+        clearTimeout(this.loadDataTimeout);
+        this.loadDataTimeout = setTimeout(this.loadData, 300);
       }
     }
   },
