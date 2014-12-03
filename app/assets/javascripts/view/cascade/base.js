@@ -590,6 +590,7 @@ View.Cascade.Base = Backbone.View.extend({
     cache.scrollPercentage = scrollTopPosition / GlobalVariable.Browser.Document.height();
     cache.scrollTop = scrollTopPosition;
     
+    var eagerLoadBatchCount = this.BATCH_LOAD_WHEN_SCROLL_TO_BOTTOM;
     var firstVisibleBatch = 0;
     var lastVisibleBatch = 0;
     var lastBatch = cache.batchContainer.length - 1;
@@ -630,7 +631,6 @@ View.Cascade.Base = Backbone.View.extend({
         this.attachBatch(index, false);
       }
 
-      var eagerLoadBatchCount = this.BATCH_LOAD_WHEN_SCROLL_TO_BOTTOM;
       var firstOnBoardBatch = firstVisibleBatch - eagerLoadBatchCount;
       for (var index = firstOnBoardBatch; index < firstVisibleBatch; ++index) {
         this.attachBatch(index, false);
@@ -670,7 +670,7 @@ View.Cascade.Base = Backbone.View.extend({
       }
     }
     
-    if (eagerLoadBatchCount == 0 && !this.isEnoughForScroll()) {
+    if (eagerLoadBatchCount === 0 && !this.isEnoughForScroll()) {
       if (this.readyToLoad && this.moreToLoad) {
         // prevent loading the same contents more than once
         clearTimeout(this.loadDataTimeout);
