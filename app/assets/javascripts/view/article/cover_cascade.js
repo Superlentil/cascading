@@ -61,40 +61,27 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
   },
   
   
-  storeFetchedDataIntoCache: function(fetchedData) {
-    var items = fetchedData.models;
+  createItemData: function(fetchedItem) {
+    var cache = this.cache;
+    var itemPictureScale = cache.itemPictureScale;
+    var originalItemPictureHeight = fetchedItem.get("cover_picture_height");
     
-    if (items.length > 0) {
-      var cache = this.cache;
-      var itemPictureWidth = this.ITEM_PICTURE_WIDTH;
-      var itemPictureScale = cache.itemPictureScale;
-      var cacheItemData = cache.itemData;
-       
-      _.each(items, function(item) {          
-        var originalItemPictureHeight = item.get("cover_picture_height");
-        
-        var data = {
-          id: item.get("id"),
-          title: item.get("title"),
-          author: item.get("author"),
-          userId: item.get("user_id"),
-          category: item.get("category_name"),
-          categoryId: item.get("category_id"),
-          picUrl: item.get("cover_picture_url"),
-          originalPicHeight: originalItemPictureHeight,
-          picHeight: Math.floor(originalItemPictureHeight * itemPictureScale),
-          picWidth: Math.floor(itemPictureWidth * itemPictureScale),
-          width: cache.itemWidth,
-          padding: cache.itemPadding
-        };
-        
-        cacheItemData.push(data);
-      });
-      
-      return true;   // stored
-    } else {
-      return false;   // not stored
-    }
+    var itemData = {
+      id: fetchedItem.get("id"),
+      title: fetchedItem.get("title"),
+      author: fetchedItem.get("author"),
+      userId: fetchedItem.get("user_id"),
+      category: fetchedItem.get("category_name"),
+      categoryId: fetchedItem.get("category_id"),
+      picUrl: fetchedItem.get("cover_picture_url"),
+      originalPicHeight: originalItemPictureHeight,
+      picHeight: Math.floor(originalItemPictureHeight * itemPictureScale),
+      picWidth: Math.floor(this.ITEM_PICTURE_WIDTH * itemPictureScale),
+      width: cache.itemWidth,
+      padding: cache.itemPadding
+    };
+    
+    return itemData;
   },
   
   
