@@ -6,7 +6,7 @@ class ArticlesController < ApplicationController
   
   
   def index
-    respond_with queryArticlesByBatch(params[:batch], params[:articles_per_batch], params[:page_load_time], {})
+    respond_with fetchArticles(params[:fetch_sequence_number], params[:articles_per_fetch], params[:page_load_time], {})
     return
   end
   
@@ -21,27 +21,27 @@ class ArticlesController < ApplicationController
   def inCategory
     queryConditions = {category_id: params[:category_id].to_i}
     
-    respond_with queryArticlesByBatch(params[:batch], params[:articles_per_batch], params[:page_load_time], queryConditions)
+    respond_with fetchArticles(params[:fetch_sequence_number], params[:articles_per_fetch], params[:page_load_time], queryConditions)
   end
   
   
   def byUser
     queryConditions = {user_id: params[:user_id].to_i}
     
-    respond_with queryArticlesByBatch(params[:batch], params[:articles_per_batch], params[:page_load_time], queryConditions)
+    respond_with fetchArticles(params[:fetch_sequence_number], params[:articles_per_fetch], params[:page_load_time], queryConditions)
   end
   
   
   def byUserAndCategory
     queryConditions = {user_id: params[:user_id].to_i, category_id: params[:category_id].to_i}
     
-    respond_with queryArticlesByBatch(params[:batch], params[:articles_per_batch], params[:page_load_time], queryConditions)
+    respond_with fetchArticles(params[:fetch_sequence_number], params[:articles_per_fetch], params[:page_load_time], queryConditions)
   end
   
   
   def search
-    batch = params[:batch].to_i + 1
-    articlesPerBatch = params[:articles_per_batch].to_i
+    adjustedFetchSequenceNumber = params[:fetch_sequence_number].to_i + 1
+    articlesPerFetch = params[:articles_per_fetch].to_i
     keyword = params[:keyword]  
     
     search = Article.search(:select => [
@@ -65,7 +65,7 @@ class ArticlesController < ApplicationController
       with(:publish_time).less_than Time.at(params[:page_load_time].to_i / 1000.0)
       order_by :id, :desc
 
-      paginate :page => batch, :per_page => articlesPerBatch
+      paginate :page => adjustedFetchSequenceNumber, :per_page => articlesPerFetch
     end
     
     respond_with search.results
@@ -157,12 +157,12 @@ private
   end
   
   
-  def queryArticlesByBatch(batch, articlesPerBatch, pageLoadTime, queryConditions)
-    countPerBatch = articlesPerBatch.to_i
+  def fetchArticles(fetchSequenceNumber, articlesPerFetch, pageLoadTime, queryConditions)
+    countPerFetch = articlesPerFetch.to_i
     queryConditions[:status] = GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED;
     return Article.where("publish_time < ?", Time.at(pageLoadTime.to_i / 1000.0)).where(queryConditions)
       .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, author, user_id, category_name, category_id")
-      .limit(countPerBatch).offset(batch.to_i * countPerBatch).order(id: :desc)
+      .limit(countPerFetch).offset(fetchSequenceNumber.to_i * countPerFetch).order(id: :desc)
   end
   
   

@@ -66,22 +66,17 @@ View.Cascade.Base = Backbone.View.extend({
   },
   
   
-  hasMoreDataToFetch: function(currentFetchedData) {
-    return true;
-  },
-  
-  
   updateItemDataInCacheAfterDisplayModeChange: function(itemIndex) {},
   
   
-  isEnoughForScroll: function() {
+  beAbleToScrollDown: function() {
     var thisWindow = GlobalVariable.Browser.Window;
     return (this.cache.cascadeHeight > thisWindow.scrollTop() + thisWindow.height());
   },
   
   
   getCascadeContainerWidth: function() {
-    if (this.isEnoughForScroll()) {
+    if (this.beAbleToScrollDown()) {
       return this.$el.width();
     } else {
       return this.$el.width() - GlobalVariable.Browser.ScrollBarWidthInPx;
@@ -103,6 +98,13 @@ View.Cascade.Base = Backbone.View.extend({
     "click #m-cascade-compact-mode": "changeCoverDisplayMode",
     "click #m-cascade-normal-mode": "changeCoverDisplayMode"
   },
+  
+  
+  onWidthChange: function() {
+    if (this.ADJUST_CASCADE_WHEN_VIEWPORT_WIDTH_CHANGE) {
+      this.widthChangeHandler();
+    }
+  },
   // -----------------------------------------------------------------
   // END: parameters or functions that can be overrided by subclasses
   // -----------------------------------------------------------------
@@ -114,8 +116,8 @@ View.Cascade.Base = Backbone.View.extend({
     _.bindAll(this, "onScroll");
     _.bindAll(this, "fetchData");
     
-    this.readyToLoad = true;
-    this.moreToLoad = true;    
+    this.readyToFetch = true;
+    this.moreToFetch = true;    
     this.readyForWidthChange = false;
 
     // Global Page Cache
@@ -332,21 +334,23 @@ View.Cascade.Base = Backbone.View.extend({
   
   
   getFetchSequenceNumber: function() {
-    return this.cache.itemData.length / this.ITEM_COUNT_PER_FETCH;
+    return Math.floor(this.cache.itemData.length / this.ITEM_COUNT_PER_FETCH);
   },
   
   
   fetchData: function() {
-    if (this.moreToLoad) {
-      this.readyToLoad = false;   // only one load process allowed
+    if (this.moreToFetch) {
+      this.readyToFetch = false;   // only one load process allowed
       clearTimeout(this.fetchDataTimeout);
       
       var that = this;
       var cache = that.cache;
+      var itemCountPerFetch = that.ITEM_COUNT_PER_FETCH;
       
-      that.fetchFunction(that.getFetchSequenceNumber(), that.ITEM_COUNT_PER_FETCH, that.generateFetchOptions(), {
+      that.fetchFunction(that.getFetchSequenceNumber(), itemCountPerFetch, that.generateFetchOptions(), {
         success: function(fetchedData) {
           var allFetchedItems = fetchedData.models;
+          that.moreToFetch = allFetchedItems.length === itemCountPerFetch;   // if the current time is a full fetch, there may be more data to fetch
     
           if (allFetchedItems.length > 0) {
             var cache = that.cache;
@@ -358,11 +362,11 @@ View.Cascade.Base = Backbone.View.extend({
             
             var needMoreFetch = false;
             
-            while (that.hasWellFetchedButUnprocessedBatch() && !that.isEnoughForScroll()) {
+            while (that.hasWellFetchedButUnprocessedBatch() && !that.beAbleToScrollDown()) {
               that.processNextUnprocessedBatch();
             }
             
-            if (that.isEnoughForScroll()) {
+            if (that.beAbleToScrollDown()) {
               var lastVisibleBatch = cache.lastVisibleBatch;
               var lastOnboardBatch = lastVisibleBatch + that.BATCH_EAGER_DISPLAY_BELOW_VIEWPORT;
               for (var index = lastVisibleBatch; index <= lastOnboardBatch; ++index) {
@@ -379,18 +383,18 @@ View.Cascade.Base = Backbone.View.extend({
               needMoreFetch = true;
             }
 
-            that.readyToLoad = true;
+            that.readyToFetch = true;
             if (needMoreFetch) {
               that.fetchData();
             }
           } else {
-            that.moreToLoad = false;
+            that.moreToFetch = false;
           }
         },
         
         error: function() {
           // TODO: put some error handling logic here
-          that.readyToLoad = true;
+          that.readyToFetch = true;
         }
       });
     }
@@ -400,10 +404,10 @@ View.Cascade.Base = Backbone.View.extend({
   // if there is no more data to fetch, the last not full batch is also considered as a well fetched batch
   hasWellFetchedButUnprocessedBatch: function() {
     var itemDataCount = this.cache.itemData.length;
-    if (this.moreToLoad) {
-      itemDataCount = itemDataCount - itemDataCount % that.ITEM_COUNT_PER_DISPLAY_BATCH;
+    if (this.moreToFetch) {
+      itemDataCount = itemDataCount - itemDataCount % this.ITEM_COUNT_PER_DISPLAY_BATCH;
     }
-    return (this.cache.nextUnprocessedBatch - 1) * this.ITEM_COUNT_PER_DISPLAY_BATCH < itemDataCount;
+    return this.cache.nextUnprocessedBatch * this.ITEM_COUNT_PER_DISPLAY_BATCH < itemDataCount;
   },
   
   
@@ -415,7 +419,7 @@ View.Cascade.Base = Backbone.View.extend({
     cache.batchProcessed.push(false);
     var processingBatch = cache.nextUnprocessedBatch;
     ++cache.nextUnprocessedBatch;
-    that.attachBatch(processingBatch, true);
+    this.attachBatch(processingBatch, true);
   },
   
   
@@ -438,12 +442,12 @@ View.Cascade.Base = Backbone.View.extend({
     this.resetDisplayModeParameter(maxWidth);
     this.resetItemPositionGenerator();
     this.resetCascadeContainer();
-    this.readyToLoad = true;
-    this.moreToLoad = true;
+    this.readyToFetch = true;
+    this.moreToFetch = true;
     
     var countPerBatch = this.ITEM_COUNT_PER_DISPLAY_BATCH;
     var batch = 0;
-    var eagerLoadedBatchCount = 0;
+    var batchDisplayBelowViewport = 0;
     
     while (batch < reusableBatchCount) {
       var heightOffset = cache.cascadeHeight;
@@ -460,9 +464,10 @@ View.Cascade.Base = Backbone.View.extend({
       this.attachBatch(batch, true);
       ++batch;
       
-      if (this.isEnoughForScroll()) {
-        if (eagerLoadedBatchCount < this.BATCH_LOAD_WHEN_SCROLL_TO_BOTTOM) {
-          ++eagerLoadedBatchCount;
+      console.log(batch + "   " + batchDisplayBelowViewport + "   " + this.BATCH_EAGER_DISPLAY_BELOW_VIEWPORT);
+      if (this.beAbleToScrollDown()) {
+        if (batchDisplayBelowViewport < this.BATCH_EAGER_DISPLAY_BELOW_VIEWPORT) {
+          ++batchDisplayBelowViewport;
         } else {
           break;
         }
@@ -473,14 +478,11 @@ View.Cascade.Base = Backbone.View.extend({
     if (batch < reusedBatchCount) {
       reusedBatchCount = batch;
     }
+    console.log(reusedBatchCount + "   " + reusableBatchCount);
     cache.nextUnprocessedBatch = reusedBatchCount;
     cache.batchTopPosition = cache.batchTopPosition.slice(0, reusedBatchCount);
     cache.batchContainer = cache.batchContainer.slice(0, reusedBatchCount);
-    var itemDataCount = cache.itemData.length;
     var reusedItemDataCount = reusedBatchCount * countPerBatch;
-    if (reusedItemDataCount > itemDataCount) {
-      reusedItemDataCount = itemDataCount;
-    }
     cache.itemData = cache.itemData.slice(0, reusedItemDataCount);
 
     this.onScroll();
@@ -534,13 +536,6 @@ View.Cascade.Base = Backbone.View.extend({
           }
         }
       }
-    }
-  },
-  
-  
-  onWidthChange: function() {
-    if (this.ADJUST_CASCADE_WHEN_VIEWPORT_WIDTH_CHANGE) {
-      this.widthChangeHandler();
     }
   },
   
@@ -607,6 +602,7 @@ View.Cascade.Base = Backbone.View.extend({
     
     var jumpToScrollTop = GlobalVariable.Browser.Document.height() * cache.scrollPercentage;
     cache.scrollTop = jumpToScrollTop;
+    console.log(jumpToScrollTop + "   " + cache.scrollPercentage);
     GlobalVariable.Browser.Window.scrollTop(jumpToScrollTop);
     this.onScroll();
   },
@@ -673,11 +669,13 @@ View.Cascade.Base = Backbone.View.extend({
       if (batchEagerDisplayBelowViewport > 0) {
         for (var index = lastVisibleBatch + 1; index <= lastOnBoardBatch; ++index) {
           if (index > lastBatch) {
-            lastBatch = lastOnBoardBatch;
             if (this.hasWellFetchedButUnprocessedBatch()) {
               this.processNextUnprocessedBatch();
+              if (!this.beAbleToScrollDown()) {
+                this.onScroll();
+              }
             } else {
-              if (autoFetchWhenScrollToBottom && this.readyToLoad && this.moreToLoad) {
+              if (autoFetchWhenScrollToBottom && this.readyToFetch && this.moreToFetch) {
                 // prevent loading the same contents more than once
                 clearTimeout(this.fetchDataTimeout);
                 this.fetchDataTimeout = setTimeout(this.fetchData, 300);
@@ -688,8 +686,12 @@ View.Cascade.Base = Backbone.View.extend({
             this.attachBatch(index, false);
           }
         }
+        
+        if (lastBatch < lastOnBoardBatch) {
+          lastBatch = lastOnBoardBatch;
+        }
       } else {
-        if (lastVisibleBatch >= lastBatch && autoFetchWhenScrollToBottom && this.readyToLoad && this.moreToLoad) {
+        if (lastVisibleBatch >= lastBatch && autoFetchWhenScrollToBottom && this.readyToFetch && this.moreToFetch) {
           // prevent loading the same contents more than once
           clearTimeout(this.fetchDataTimeout);
           this.fetchDataTimeout = setTimeout(this.fetchData, 300);

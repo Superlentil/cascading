@@ -16,10 +16,10 @@ View.Article.Index = Backbone.View.extend({
   },
   
   
-  fetchFunction: function(batchToLoad, articlesPerBatch, fetchOptions, callbacks) {
+  fetchFunction: function(fetchSequenceNumber, articlesPerFetch, fetchOptions, callbacks) {
     var articles = new Collection.Article.All({
-      batch: batchToLoad,
-      articlesPerBatch: articlesPerBatch,
+      fetchSequenceNumber: fetchSequenceNumber,
+      articlesPerFetch: articlesPerFetch,
       pageLoadTime: fetchOptions.pageLoadTime
     });
     articles.fetch(callbacks);

@@ -2,8 +2,8 @@
 View.Article.CoverCascade = View.Cascade.Base.extend({
   CASCADE_CONTENT_CONTAINER_ID: "article-cover-cascade-content",
   
-  COUNT_PER_BATCH: 30,
-  BATCH_LOAD_WHEN_SCROLL_TO_BOTTOM: 1,
+  ITEM_COUNT_PER_FETCH: 30,
+  ITEM_COUNT_PER_DISPLAY_BATCH: 29,
   
   MAX_COLUMN_COUNT: 5,
   ENABLE_COMPACT_MODE: true,
@@ -82,11 +82,6 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
     };
     
     return itemData;
-  },
-  
-  
-  hasMoreDataToFetch: function(currentFetchedData) {
-    return currentFetchedData.models.length === this.COUNT_PER_BATCH;
   },
   
   

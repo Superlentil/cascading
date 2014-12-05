@@ -51,38 +51,21 @@ View.Article.ShowCascade = View.Cascade.Base.extend({
   },
   
   
-  storeFetchedDataIntoCache: function(fetchedData) {
-    var items = fetchedData.models;
+  createItemData: function(fetchedItem) {
+    var itemData = {
+      id: fetchedItem.get("id"),
+      title: fetchedItem.get("title"),
+      picUrl: fetchedItem.get("cover_picture_url"),
+      picHeight: fetchedItem.get("cover_picture_height"),
+      picWidth: this.ITEM_PICTURE_WIDTH,
+      width: this.cache.itemWidth
+    };
     
-    if (items.length > 0) {
-      var cache = this.cache;
-      var itemPictureWidth = this.ITEM_PICTURE_WIDTH;
-      var cacheItemData = cache.itemData;
-       
-      _.each(items, function(item) {          
-        var originalItemPictureHeight = item.get("cover_picture_height");
-        
-        var data = {
-          id: item.get("id"),
-          title: item.get("title"),
-          picUrl: item.get("cover_picture_url"),
-          picHeight: item.get("cover_picture_height"),
-          picWidth: itemPictureWidth,
-          width: cache.itemWidth
-        };
-        
-        cacheItemData.push(data);
-      });
-      
-      return true;   // stored
-    } else {
-      return false;   // not stored
-    }
+    return itemData;
   },
   
   
-  isEnoughForScroll: function() {
-    console.log(this.cache.cascadeHeight + "   " + this.articleShowContainer.height());
+  beAbleToScrollDown: function() {
     return this.cache.cascadeHeight > this.articleShowContainer.height();
   },
 });
