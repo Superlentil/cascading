@@ -5,6 +5,11 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
   ITEM_COUNT_PER_FETCH: 30,
   ITEM_COUNT_PER_DISPLAY_BATCH: 29,
   
+  BATCH_EAGER_DISPLAY_ABOVE_VIEWPORT: 0,
+  BATCH_EAGER_DISPLAY_BELOW_VIEWPORT: 0,
+  
+  AUTO_FETCH_WHEN_SCROLL_TO_BOTTOM: true,
+  
   MAX_COLUMN_COUNT: 5,
   ENABLE_COMPACT_MODE: true,
   MAX_AUTO_COMPACT_MODE_WIDTH: 720.0,   // if compact mode is enabled and the cascading area width is smaller than this value, then the initial display mode will be automatically set to compact.

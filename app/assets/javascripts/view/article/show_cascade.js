@@ -2,8 +2,13 @@
 View.Article.ShowCascade = View.Cascade.Base.extend({
   CASCADE_CONTENT_CONTAINER_ID: "article-cover-cascade-content",
   
-  COUNT_PER_BATCH: 1,
-  BATCH_LOAD_WHEN_SCROLL_TO_BOTTOM: 0,
+  ITEM_COUNT_PER_FETCH: 10,
+  ITEM_COUNT_PER_DISPLAY_BATCH: 1,
+
+  BATCH_EAGER_DISPLAY_ABOVE_VIEWPORT: 0,
+  BATCH_EAGER_DISPLAY_BELOW_VIEWPORT: 0,
+  
+  AUTO_FETCH_WHEN_SCROLL_TO_BOTTOM: false,
   
   ADJUST_CASCADE_WHEN_VIEWPORT_WIDTH_CHANGE: false,
   
@@ -31,10 +36,15 @@ View.Article.ShowCascade = View.Cascade.Base.extend({
   },
   
   
-  fetchFunction: function(batchToLoad, articlesPerBatch, fetchOptions, callbacks) {
+  getPageCacheKey: function() {
+    return window.location.href + "-recommendation";
+  },
+  
+  
+  fetchFunction: function(fetchSequenceNumber, articlesPerFetch, fetchOptions, callbacks) {
     var articles = new Collection.Article.All({
-      batch: batchToLoad,
-      articlesPerBatch: articlesPerBatch,
+      fetchSequenceNumber: fetchSequenceNumber,
+      articlesPerFetch: articlesPerFetch,
       pageLoadTime: fetchOptions.pageLoadTime
     });
     articles.fetch(callbacks);
