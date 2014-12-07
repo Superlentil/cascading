@@ -122,7 +122,6 @@ View.Cascade.Base = Backbone.View.extend({
     _.bindAll(this, "fetchData");
     
     this.readyToFetch = true;
-    this.moreToFetch = true;    
     this.readyForWidthChange = false;
 
     // Global Page Cache
@@ -151,6 +150,8 @@ View.Cascade.Base = Backbone.View.extend({
     var cache = this.cache;
     
     cache.lastCacheTime = $.now();
+    cache.moreToFetch = true;
+    
     cache.compactMode = false;
     
     cache.scrollTop = 0;
@@ -344,7 +345,7 @@ View.Cascade.Base = Backbone.View.extend({
   
   
   fetchData: function() {
-    if (this.moreToFetch) {
+    if (this.cache.moreToFetch) {
       this.readyToFetch = false;   // only one load process allowed
       clearTimeout(this.fetchDataTimeout);
       
@@ -355,10 +356,9 @@ View.Cascade.Base = Backbone.View.extend({
       that.fetchFunction(that.getFetchSequenceNumber(), itemCountPerFetch, that.generateFetchOptions(), {
         success: function(fetchedData) {
           var allFetchedItems = fetchedData.models;
-          that.moreToFetch = allFetchedItems.length === itemCountPerFetch;   // if the current time is a full fetch, there may be more data to fetch
+          cache.moreToFetch = allFetchedItems.length === itemCountPerFetch;   // if the current time is a full fetch, there may be more data to fetch
     
           if (allFetchedItems.length > 0) {
-            var cache = that.cache;
             var cacheItemData = cache.itemData;
              
             _.each(allFetchedItems, function(fetchedItem) {
@@ -393,7 +393,7 @@ View.Cascade.Base = Backbone.View.extend({
               that.fetchData();
             }
           } else {
-            that.moreToFetch = false;
+            cache.moreToFetch = false;
           }
         },
         
@@ -408,11 +408,20 @@ View.Cascade.Base = Backbone.View.extend({
   
   // if there is no more data to fetch, the last not full batch is also considered as a well fetched batch
   hasWellFetchedButUnprocessedBatch: function() {
-    var itemDataCount = this.cache.itemData.length;
-    if (this.moreToFetch) {
-      itemDataCount = itemDataCount - itemDataCount % this.ITEM_COUNT_PER_DISPLAY_BATCH;
+    var cache = this.cache;
+    var itemDataCount = cache.itemData.length;
+    var nextUnprocessedBatch = cache.nextUnprocessedBatch;
+    var countPerBatch = this.ITEM_COUNT_PER_DISPLAY_BATCH;
+    
+    if ((nextUnprocessedBatch + 1) * countPerBatch <= itemDataCount) {
+      return true;
+    } else {
+      if (!cache.moreToFetch && nextUnprocessedBatch * countPerBatch < itemDataCount) {
+        return true;
+      } else {
+        return false;
+      }
     }
-    return this.cache.nextUnprocessedBatch * this.ITEM_COUNT_PER_DISPLAY_BATCH < itemDataCount;
   },
   
   
@@ -451,7 +460,7 @@ View.Cascade.Base = Backbone.View.extend({
     this.resetItemPositionGenerator();
     this.resetCascadeContainer();
     this.readyToFetch = true;
-    this.moreToFetch = true;
+    cache.moreToFetch = true;
     
     var batch = 0;
     var batchDisplayedBelowViewport = 0;
@@ -659,8 +668,13 @@ View.Cascade.Base = Backbone.View.extend({
       }
     }
 
-    var batchEagerDisplayBelowViewport = this.BATCH_EAGER_DISPLAY_BELOW_VIEWPORT;    
-    if (firstVisibleBatch !== cache.firstVisibleBatch || lastVisibleBatch !== cache.lastVisibleBatch) {
+    var batchEagerDisplayBelowViewport = this.BATCH_EAGER_DISPLAY_BELOW_VIEWPORT;
+    var stillBeAbleToScrollDownAfterThisScroll = this.beAbleToScrollDown();
+    
+    if (firstVisibleBatch !== cache.firstVisibleBatch
+      || lastVisibleBatch !== cache.lastVisibleBatch
+      || (batchEagerDisplayBelowViewport == 0 && !stillBeAbleToScrollDownAfterThisScroll)
+    ) {
       cache.firstVisibleBatch = firstVisibleBatch;
       cache.lastVisibleBatch = lastVisibleBatch;
       
@@ -681,11 +695,8 @@ View.Cascade.Base = Backbone.View.extend({
           if (index > lastBatch) {
             if (this.hasWellFetchedButUnprocessedBatch()) {
               this.processNextUnprocessedBatch();
-              if (!this.beAbleToScrollDown()) {
-                this.onScroll();
-              }
             } else {
-              if (autoFetchWhenScrollToBottom && this.readyToFetch && this.moreToFetch) {
+              if (autoFetchWhenScrollToBottom && this.readyToFetch && cache.moreToFetch) {
                 // prevent loading the same contents more than once
                 clearTimeout(this.fetchDataTimeout);
                 this.fetchDataTimeout = setTimeout(this.fetchData, 300);
@@ -701,11 +712,15 @@ View.Cascade.Base = Backbone.View.extend({
           lastBatch = lastOnBoardBatch;
         }
       } else {
-        if (lastVisibleBatch >= lastBatch && autoFetchWhenScrollToBottom && this.readyToFetch && this.moreToFetch) {
-          // prevent loading the same contents more than once
-          clearTimeout(this.fetchDataTimeout);
-          this.fetchDataTimeout = setTimeout(this.fetchData, 300);
-        }
+        if (!stillBeAbleToScrollDownAfterThisScroll) {
+          if (this.hasWellFetchedButUnprocessedBatch()) {
+            this.processNextUnprocessedBatch();
+          } else if (autoFetchWhenScrollToBottom && this.readyToFetch && cache.moreToFetch) {
+            // prevent loading the same contents more than once
+            clearTimeout(this.fetchDataTimeout);
+            this.fetchDataTimeout = setTimeout(this.fetchData, 300);
+          }
+        } 
       }
       
       // detach batches that should not be on board.
@@ -724,6 +739,10 @@ View.Cascade.Base = Backbone.View.extend({
             cache.batchContainer[index] = null;
           }
         }
+      }
+      
+      if (autoFetchWhenScrollToBottom && !this.beAbleToScrollDown()) {
+        this.onScroll();
       }
     }
   },
