@@ -108,7 +108,7 @@ Router = Backbone.Router.extend({
   
    
   articleShow: function(id) {
-    var viewShow = new View.Article.Show();
+    var viewShow = new View.Article.Show.Main();
     viewShow.render({id: id});
     return viewShow;
   },

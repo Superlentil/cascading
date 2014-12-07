@@ -1,4 +1,4 @@
-View.Article.Comment = Backbone.View.extend({
+View.Article.Show.Comment = Backbone.View.extend({
   initialize: function(options) {
     this.articleId = options.articleId;
   },
@@ -7,7 +7,7 @@ View.Article.Comment = Backbone.View.extend({
   el: "div#article_comments_container",
   
   
-  template: JST["template/article/comment"],
+  template: JST["template/article/show/comment"],
   
   
   render: function() {

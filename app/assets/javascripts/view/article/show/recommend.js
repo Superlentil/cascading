@@ -1,5 +1,5 @@
 // define a cascade view for article covers
-View.Article.ShowCascade = View.Cascade.Base.extend({
+View.Article.Show.Recommend = View.Cascade.Base.extend({
   CASCADE_CONTENT_CONTAINER_ID: "article-cover-cascade-content",
   
   ITEM_COUNT_PER_FETCH: 10,
@@ -27,8 +27,8 @@ View.Article.ShowCascade = View.Cascade.Base.extend({
   
   el: "#article-show-recommend",
     
-  mainTemplate: JST["template/article/show_cascade/main"],
-  itemTemplate: JST["template/article/show_cascade/cover"],
+  mainTemplate: JST["template/article/show/recommend/cascade_main"],
+  itemTemplate: JST["template/article/show/recommend/cascade_item"],
   
   
   initializeHelper: function(options) {
