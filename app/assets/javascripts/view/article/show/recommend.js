@@ -1,7 +1,5 @@
 // define a cascade view for article covers
 View.Article.Show.Recommend = View.Cascade.Base.extend({
-  CASCADE_CONTENT_CONTAINER_ID: "article-cover-cascade-content",
-  
   ITEM_COUNT_PER_FETCH: 10,
   ITEM_COUNT_PER_DISPLAY_BATCH: 1,
 
@@ -25,14 +23,22 @@ View.Article.Show.Recommend = View.Cascade.Base.extend({
   },
   
   
-  el: "#article-show-recommend",
+  el: "#article-show-recommend-cascade",
     
-  mainTemplate: JST["template/article/show/recommend/cascade_main"],
-  itemTemplate: JST["template/article/show/recommend/cascade_item"],
+  mainTemplate: JST["template/article/show/recommend/cascade_main"],   // override cascade base class
+  itemTemplate: JST["template/article/show/recommend/cascade_item"],   // override cascade base class
+  regularRecommendTemplate: JST["template/article/show/recommend/regular"],
   
   
   initializeHelper: function(options) {
-    this.articleShowContainer = options.articleShowContainer;
+    this.articleContainer = options.articleContainer;
+    this.regularRecommendContainer = options.regularRecommendContainer;
+    this.hasRenderedRegularRecommend = false;
+  },
+  
+  
+  resetCacheHelper: function() {
+    this.cache.itemDataFetched = false;
   },
   
   
@@ -56,6 +62,22 @@ View.Article.Show.Recommend = View.Cascade.Base.extend({
   },
   
   
+  fetchDataSuccessHelper: function() {
+    if (!this.hasRenderedRegularRecommend) {
+      this.hasRenderedRegularRecommend = true;
+      this.cache.itemDataFetched = true;
+      this.regularRecommendContainer.html(this.regularRecommendTemplate({itemData: this.cache.itemData}));
+    }
+  },
+  
+  
+  renderHelper: function() {
+    if (this.cache.itemDataFetched) {
+      this.fetchDataSuccessHelper();
+    }
+  },
+  
+  
   resetCacheHelper: function() {
     this.cache.pageLoadTimeSinceEpoch = $.now();   // in the unit "millisecond"
   },
@@ -76,6 +98,14 @@ View.Article.Show.Recommend = View.Cascade.Base.extend({
   
   
   beAbleToScrollDown: function() {
-    return this.cache.cascadeHeight > this.articleShowContainer.height();
+    return this.cache.cascadeHeight > this.articleContainer.height();
   },
+  
+  
+  onWidthChange: function() {
+    if (this.$el.is(":visible")) {
+      this.cache.firstVisibleBatch = -1;
+      this.onScroll();
+    }
+  }
 });

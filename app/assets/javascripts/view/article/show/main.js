@@ -26,8 +26,13 @@ View.Article.Show.Main = Backbone.View.extend({
               that.deleteArticle(event);
             });
             
-            var viewShowCascade = new View.Article.Show.Recommend({articleShowContainer: $("#article-show")});
-            viewShowCascade.render();
+            var viewRecommendCascade = new View.Article.Show.Recommend({
+              articleContainer: $("#article-show-content"),
+              regularRecommendContainer: $("#article-show-recommend-regular")
+            });
+            that.allSubviews.push(viewRecommendCascade);
+            viewRecommendCascade.render();
+            that.viewRecommendCascade = viewRecommendCascade;
             
             var viewComment = new View.Article.Show.Comment({articleId: options.id});
             that.allSubviews.push(viewComment);
@@ -94,6 +99,13 @@ View.Article.Show.Main = Backbone.View.extend({
         articleContainer.css({"opacity": "1.0"});
       });
     }    
+  },
+  
+  
+  onWidthChange: function() {
+    if (this.viewRecommendCascade) {
+      this.viewRecommendCascade.onWidthChange();
+    }
   },
   
   

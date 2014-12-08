@@ -1,7 +1,5 @@
 // define a cascade view for article covers
 View.Article.CoverCascade = View.Cascade.Base.extend({
-  CASCADE_CONTENT_CONTAINER_ID: "article-cover-cascade-content",
-  
   ITEM_COUNT_PER_FETCH: 30,
   ITEM_COUNT_PER_DISPLAY_BATCH: 23,
   
