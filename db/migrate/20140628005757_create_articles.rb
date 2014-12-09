@@ -19,6 +19,8 @@ class CreateArticles < ActiveRecord::Migration
       t.timestamps
     end
     
+    add_index :articles, :views
+    add_index :articles, :like
     add_index :articles, :status
     add_index :articles, :publish_time
   end

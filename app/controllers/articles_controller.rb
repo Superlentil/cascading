@@ -71,6 +71,30 @@ class ArticlesController < ApplicationController
     respond_with search.results
   end
   
+  
+  def recommend
+    fetchSequenceNumber = params[:fetch_sequence_number].to_i
+    articlesPerFetch = params[:articles_per_fetch].to_i
+    categoryName = params[:category]
+    random = params[:random].to_f
+    
+    if @@recommendCache[categoryName].nil? || @@recommendCache[categoryName].expireTime < Time.now.to_i
+      generateRecommendCacheForCategory(categoryName)
+    end
+    
+    recommends = @@recommendCache[categoryName].articles
+    totalCount = recommends.length
+    start = (totalCount * random).floor
+    
+    @recommendArticles = []
+    articlesPerFetch.times do
+      if start >= totalCount
+        start = 0
+      end
+      @recommendArticles << recommends[start]
+    end
+  end
+  
 
   def show
     @article = Article.find(params[:id])
@@ -132,6 +156,78 @@ class ArticlesController < ApplicationController
  
 private
   INVALID_ARTICLE_COVER_PICTURE_ID = -1
+  
+  
+  # cache for recommend articles
+  # @@recommendCache{:categoryName => {:expireTime, :articles}}
+  MAX_RECOMMEND_COUNT_EACH_ENTRY = 1000
+  RECOMMEND_CACHE_TIME_IN_SECOND = 86400   # 24 hours
+  @@recommendCache = {}
+  
+  
+  def generateRecommendCacheForCategory(categoryName)
+    newCache = {}
+    newCache.expireTime = Time.now.to_i + RECOMMEND_CACHE_TIME_IN_SECOND
+    newCache.articles = []
+    
+    categoryArticles = Article.where(category_name: categoryName)
+      .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, author, user_id, category_name, category_id")
+      .limit((MAX_RECOMMEND_COUNT_EACH_ENTRY / 2).floor).order(like: :desc, view: :desc, publish_time: :desc)
+      
+    categoryArticlesCount = categoryArticles.length
+       
+    generalArticles = Article.where("category_name <> ?", categoryName)
+      .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, author, user_id, category_name, category_id")
+      .limit(MAX_RECOMMEND_COUNT_EACH_ENTRY - categoryRecommendArticles.length).order(like: :desc, view: :desc, publish_time: :desc)
+      
+    generalArticlesCount = generalArticles.length
+    
+    if categoryArticlesCount == 0
+      generalArticles.each do |article|
+        newCache.articles << article
+      end
+    elsif generalArticlesCount == 0
+      categoryArticles.each do |article|
+        newCache.articles << article
+      end
+    elsif generalArticlesCount >= categoryArticlesCount
+      interval = (generalArticlesCount.to_f / categoryArticlesCount.to_f).round
+      generalArticles = generalArticles.to_a
+      generalArticleIndex = 0
+      categoryArticles.each do |categoryArticle|  
+        newCache.articles << categoryArticle
+        interval.times do
+          if generalArticleIndex < generalArticlesCount
+            newCache.articles << generalArticles[generalArticleIndex]
+            generalArticleIndex += 1
+          end
+        end
+      end
+      while generalArticleIndex < generalArticlesCount
+        newCache.articles << generalArticles[generalArticleIndex]
+        generalArticleIndex += 1
+      end
+    else
+      interval = (categoryArticlesCount.to_f / generalArticlesCount.to_f).round
+      categoryArticles = categoryArticles.to_a
+      categoryArticleIndex = 0
+      generalArticles.each do |generalArticle|
+        interval.times do
+          if categoryArticleIndex < categoryArticlesCount
+            newCache.articles << categoryArticles[categoryArticleIndex]
+            generalArticleIndex += 1
+          end
+        end  
+        newCache.articles << generalArticle
+      end
+      while categoryArticleIndex < categoryArticlesCount
+        newCache.articles << categoryArticles[categoryArticleIndex]
+        categoryArticleIndex += 1
+      end
+    end
+    
+    @@recommendCache[categoryName] = newCache
+  end
 
 
   def articleParams
