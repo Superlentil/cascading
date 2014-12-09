@@ -145,6 +145,7 @@ View.Article.Publish = Backbone.View.extend({
   
   
   uploadCover: function(event) {
+    console.log("starting upload cover");
     event.preventDefault();
     var that = this;    
    
