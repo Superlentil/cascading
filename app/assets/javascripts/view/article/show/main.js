@@ -1,5 +1,5 @@
 // define the view Show
-View.Article.Show = Backbone.View.extend({
+View.Article.Show.Main = Backbone.View.extend({
   initialize: function() {
     this.allSubviews = [];
   },
@@ -8,25 +8,36 @@ View.Article.Show = Backbone.View.extend({
   el: "#layout-content",
   
   
-  template: JST["template/article/show"],
+  template: JST["template/article/show/main"],
   
   
   render: function(options) {
     var that = this;
+    var isPreview = options.preview;
     
     if (options.id) {
       var article = new Model.Article({id: options.id});
       article.fetch({
         success: function(fetchedArticle) {
-          that.$el.html(that.template({article: fetchedArticle, contentJsonToHtml: that.contentJsonToHtml, preview: options.preview}));
+          that.$el.html(that.template({article: fetchedArticle, contentJsonToHtml: that.contentJsonToHtml, preview: isPreview}));
           
-          $(".Delete_Article").one("click", function(event) {
-            that.deleteArticle(event);
-          });
-          
-          var viewComment = new View.Article.Comment({articleId: options.id});
-          that.allSubviews.push(viewComment);
-          viewComment.render();
+          if (!isPreview) {
+            $(".Delete_Article").one("click", function(event) {
+              that.deleteArticle(event);
+            });
+            
+            var viewRecommendCascade = new View.Article.Show.Recommend({
+              articleContainer: $("#article-show-content"),
+              regularRecommendContainer: $("#article-show-recommend-regular")
+            });
+            that.allSubviews.push(viewRecommendCascade);
+            viewRecommendCascade.render();
+            that.viewRecommendCascade = viewRecommendCascade;
+            
+            var viewComment = new View.Article.Show.Comment({articleId: options.id});
+            that.allSubviews.push(viewComment);
+            viewComment.render();
+          }
         }
       });
     }
@@ -88,6 +99,13 @@ View.Article.Show = Backbone.View.extend({
         articleContainer.css({"opacity": "1.0"});
       });
     }    
+  },
+  
+  
+  onWidthChange: function() {
+    if (this.viewRecommendCascade) {
+      this.viewRecommendCascade.onWidthChange();
+    }
   },
   
   

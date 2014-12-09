@@ -1,0 +1,76 @@
+@media (min-width: 1050px) {
+  #article-show-content {
+    float: left;
+    margin: 8px 115px 20px 15px;
+  }
+  
+  
+  #article-show-recommend-regular {
+    display: none;
+  }
+}
+
+
+@media (max-width: 1049px) {
+  #article-show-recommend-cascade {
+    display: none;
+    width: 0;
+  }
+}
+
+
+#article-show-recommend-cascade {
+  float: left;
+  width: 250px;
+}
+
+
+.article-show-recommend-cascade-item {
+  opacity: 0.3;
+  text-align: center;
+  
+  &:hover {
+    opacity: 1.0;
+  }
+}
+
+
+#article-show-recommend-regular {
+  width: 100%;
+  padding: 50px 0;
+}
+
+
+#article-show-recommend-header {
+  color: #5e5e5e;
+  font-style: italic;
+  opacity: 0.3;
+}
+
+
+.article-show-recommend-regular-item {
+  padding: 0 5px;
+  opacity: 0.3;
+  text-align: center;
+  
+  &:hover {
+    opacity: 1.0;
+  }
+}
+
+
+.article-show-recommend-regular-pic-link {
+  display: block;
+  position: relative;
+  width: 100%; 
+  padding-top: 75%;
+}
+
+
+.article-show-recommend-regular-pic {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}

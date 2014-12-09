@@ -1,8 +1,8 @@
 Collection.Article.Search = Backbone.Collection.extend({
   initialize: function(options) {
     this.keyword = options.keyword;
-    this.batch = options.batch;
-    this.articlesPerBatch = options.articlesPerBatch;
+    this.fetchSequenceNumber = options.fetchSequenceNumber,
+    this.articlesPerFetch = options.articlesPerFetch,
     this.pageLoadTime = options.pageLoadTime;
   },
   
@@ -12,8 +12,8 @@ Collection.Article.Search = Backbone.Collection.extend({
   
   url: function() {
     return "/articles/search?" + $.param({
-      batch: this.batch,
-      articles_per_batch: this.articlesPerBatch,
+      fetch_sequence_number: this.fetchSequenceNumber,
+      articles_per_fetch: this.articlesPerFetch,
       keyword: this.keyword,
       page_load_time: this.pageLoadTime
     });

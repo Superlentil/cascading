@@ -1,7 +1,7 @@
 Collection.Article.All = Backbone.Collection.extend({
   initialize: function(options) {
-    this.batch = options.batch;
-    this.articlesPerBatch = options.articlesPerBatch;
+    this.fetchSequenceNumber = options.fetchSequenceNumber,
+    this.articlesPerFetch = options.articlesPerFetch,
     this.pageLoadTime = options.pageLoadTime;
   },
   
@@ -10,6 +10,10 @@ Collection.Article.All = Backbone.Collection.extend({
   
   
   url: function() {
-    return "/articles/?" + $.param({batch: this.batch, articles_per_batch: this.articlesPerBatch, page_load_time: this.pageLoadTime});
+    return "/articles/?" + $.param({
+      fetch_sequence_number: this.fetchSequenceNumber,
+      articles_per_fetch: this.articlesPerFetch,
+      page_load_time: this.pageLoadTime
+    });
   }
 });

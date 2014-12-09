@@ -1,4 +1,22 @@
-#article-show, #article-show-preview {
+#article-show-preview {
+  width: 100%;
+  max-width: 600px;
+  
+  font-size: 16px;
+  line-height: 200%;
+  
+  margin: 8px auto 20px auto;
+}
+
+
+#article-show {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+
+#article-show-content {
   width: 100%;
   max-width: 600px;
   

@@ -9,7 +9,8 @@
     <a href="#" class="Delete_Article" data-article-id="<%= article.get("id") %>">delete</a><br>
   </div>
 
-  <div id="article-show">
+  <div id="article-show" class="row">
+  <div id="article-show-content">
 <% } %>
 
   <h1 class="article-show-title"><%= article.get("title") %></h1>
@@ -24,6 +25,11 @@
   <% } %>
   <%= contentJsonToHtml(article.get("content")) %>
   
+  <% if (!preview) { %>
+    <div id="article-show-recommend-regular" class="row"></div>
+  <% } %>
+</div>
+<div id="article-show-recommend-cascade"></div>
 </div>
 
 

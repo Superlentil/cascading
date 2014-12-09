@@ -7,10 +7,18 @@ View.Cascade.Base = Backbone.View.extend({
   // --- common constants ---
   CACHE_LIFETIME: 3600000,   // in the unit "milliseconds"
   
-  CASCADE_CONTENT_CONTAINER_ID: "cascade-content",
+  CASCADE_CONTENT_CONTAINER_CLASS_NAME: "cascade-content",   // for customized style or more freedom of control
   
-  COUNT_PER_BATCH: 30,
-  BATCH_LOAD_WHEN_SCROLL_TO_BOTTOM: 1,   // if this value is set to "0", then it will disable "scroll to load" feature.
+  // make sure: ITEM_COUNT_PER_FETCH >= ITEM_COUNT_PER_DISPLAY_BATCH
+  ITEM_COUNT_PER_FETCH: 30,
+  ITEM_COUNT_PER_DISPLAY_BATCH: 30,   // use "batch" in below code to simplify for "display batch"
+
+  BATCH_EAGER_DISPLAY_ABOVE_VIEWPORT: 1,
+  BATCH_EAGER_DISPLAY_BELOW_VIEWPORT: 1,
+  
+  AUTO_FETCH_WHEN_SCROLL_TO_BOTTOM: true,
+  
+  ADJUST_CASCADE_WHEN_VIEWPORT_WIDTH_CHANGE: true,
   
   MAX_COLUMN_COUNT: 5,
   ENABLE_COMPACT_MODE: true,
@@ -35,7 +43,15 @@ View.Cascade.Base = Backbone.View.extend({
   
   
   // --- specific functions for this kind of cascading design, override them for different cascading designs ---
-  fetchFunction: function(batchToLoad, countPerBatch, fetchOptions, callbacks) {},   // must be overrided
+  initializeHelper: function(options) {},
+  
+  
+  getPageCacheKey: function() {
+    return window.location.href;
+  },
+  
+  
+  fetchFunction: function(fetchSequenceNumber, itemCountPerFetch, fetchOptions, callbacks) {},   // must be overrided
   
   
   generateFetchOptions: function() {
@@ -43,7 +59,12 @@ View.Cascade.Base = Backbone.View.extend({
   },
   
   
-  initializeHelper: function(options) {},
+  fetchDataSuccessHelper: function() {
+  },
+  
+  
+  fetchDataErrorHelper: function() {
+  },
   
   
   resetCacheHelper: function() {},
@@ -52,35 +73,23 @@ View.Cascade.Base = Backbone.View.extend({
   resetDisplayModeParameterHelper: function(maxWidth) {},
   
   
-  // This function needs to return a boolean value about the store status.
-  // If there is nothing that can be stored into the cache, return "false". Otherwise, return "true".
-  // Do not store "item" top position, left position, and height into cache. They will be ignored and automatically recalculated during cascading.
-  storeFetchedDataIntoCache: function(fetchedData) {
-    if (fetchedData) {
-      // storing ...
-      return true;   // stored
-    } else {
-      return false;   // not stored
-    }
-  },
-  
-  
-  hasMoreDataToFetch: function(currentFetchedData) {
-    return true;
+  createItemData: function(fetchedItem) {
+    var itemData = {};
+    return itemData;
   },
   
   
   updateItemDataInCacheAfterDisplayModeChange: function(itemIndex) {},
   
   
-  isEnoughForScroll: function() {
+  beAbleToScrollDown: function() {
     var thisWindow = GlobalVariable.Browser.Window;
     return (this.cache.cascadeHeight > thisWindow.scrollTop() + thisWindow.height());
   },
   
   
   getCascadeContainerWidth: function() {
-    if (this.isEnoughForScroll()) {
+    if (this.beAbleToScrollDown()) {
       return this.$el.width();
     } else {
       return this.$el.width() - GlobalVariable.Browser.ScrollBarWidthInPx;
@@ -102,6 +111,21 @@ View.Cascade.Base = Backbone.View.extend({
     "click #m-cascade-compact-mode": "changeCoverDisplayMode",
     "click #m-cascade-normal-mode": "changeCoverDisplayMode"
   },
+  
+  
+  onWidthChange: function() {
+    if (this.ADJUST_CASCADE_WHEN_VIEWPORT_WIDTH_CHANGE) {
+      this.widthChangeHandler();
+    }
+  },
+  
+  
+  renderHelper: function() { 
+  },
+  
+  
+  removeHelper: function() {
+  },
   // -----------------------------------------------------------------
   // END: parameters or functions that can be overrided by subclasses
   // -----------------------------------------------------------------
@@ -111,15 +135,14 @@ View.Cascade.Base = Backbone.View.extend({
     this.initializeOtherConstants();
     
     _.bindAll(this, "onScroll");
-    _.bindAll(this, "loadData");
+    _.bindAll(this, "fetchData");
     
-    this.readyToLoad = true;
-    this.moreToLoad = true;    
+    this.readyToFetch = true;
     this.readyForWidthChange = false;
 
     // Global Page Cache
     this.renderWithCache = false;
-    var pageCacheKey = window.location.href;
+    var pageCacheKey = this.getPageCacheKey();
     var pageCache = GlobalVariable.PageCache[pageCacheKey];
     if (pageCache && !this.cacheExpired(pageCache)) {
       this.cache = pageCache;
@@ -143,6 +166,8 @@ View.Cascade.Base = Backbone.View.extend({
     var cache = this.cache;
     
     cache.lastCacheTime = $.now();
+    cache.moreToFetch = true;
+    
     cache.compactMode = false;
     
     cache.scrollTop = 0;
@@ -158,7 +183,7 @@ View.Cascade.Base = Backbone.View.extend({
     cache.columnHeight = [];
     cache.columnLeftPosition = [];
         
-    cache.nextBatchToLoad = 0;
+    cache.nextUnprocessedBatch = 0;
     cache.batchContainer = [];
     cache.batchTopPosition = [];
     cache.batchProcessed = [];
@@ -195,7 +220,7 @@ View.Cascade.Base = Backbone.View.extend({
       oldCascadeContainer.remove();
     }
     
-    var newCascadeContainer = $("<div id='" + this.CASCADE_CONTENT_CONTAINER_ID + "' style='width: " + this.cache.cascadeWidth + "px;'></div>");
+    var newCascadeContainer = $("<div class='" + this.CASCADE_CONTENT_CONTAINER_CLASS_NAME + "' style='width: " + this.cache.cascadeWidth + "px;'></div>");
     this.$el.append(newCascadeContainer);
     this.cascadeContainer = newCascadeContainer;
     
@@ -288,10 +313,12 @@ View.Cascade.Base = Backbone.View.extend({
       this.resetDisplayModeParameter(maxWidth);
       this.resetItemPositionGenerator();
       this.resetCascadeContainer();
-      this.loadData();
+      this.fetchData();
     }
     
     this.readyForWidthChange = true;
+    
+    this.renderHelper();
        
     return this;
   },
@@ -330,136 +357,189 @@ View.Cascade.Base = Backbone.View.extend({
   },
   
   
-  loadData: function() {
-    if (this.moreToLoad) {
-      this.readyToLoad = false;   // only one load process allowed
-      clearTimeout(this.loadDataTimeout);
+  getFetchSequenceNumber: function() {
+    return Math.floor(this.cache.itemData.length / this.ITEM_COUNT_PER_FETCH);
+  },
+  
+  
+  fetchData: function() {
+    if (this.cache.moreToFetch) {
+      this.readyToFetch = false;   // only one load process allowed
+      clearTimeout(this.fetchDataTimeout);
       
       var that = this;
-      var cache = this.cache;
-
-      var loadingBatch = cache.nextBatchToLoad;
-      var countPerBatch = this.COUNT_PER_BATCH;
+      var cache = that.cache;
+      var itemCountPerFetch = that.ITEM_COUNT_PER_FETCH;
       
-      this.fetchFunction(loadingBatch, countPerBatch, this.generateFetchOptions(), {
+      that.fetchFunction(that.getFetchSequenceNumber(), itemCountPerFetch, that.generateFetchOptions(), {
         success: function(fetchedData) {
-          if (that.storeFetchedDataIntoCache(fetchedData)) {
-            var heightOffset = cache.cascadeHeight;
-            cache.batchTopPosition.push(heightOffset);
-            cache.batchContainer.push(null);
-            cache.batchProcessed.push(false);
+          var allFetchedItems = fetchedData.models;
+          cache.moreToFetch = allFetchedItems.length === itemCountPerFetch;   // if the current time is a full fetch, there may be more data to fetch
+    
+          if (allFetchedItems.length > 0) {
+            var cacheItemData = cache.itemData;
+             
+            _.each(allFetchedItems, function(fetchedItem) {
+              cacheItemData.push(that.createItemData(fetchedItem));
+            });
             
-            ++cache.nextBatchToLoad;
-            cache.lastCacheTime = $.now();
-            
-            that.attachBatch(loadingBatch, true);
-                        
-            that.moreToLoad = that.hasMoreDataToFetch(fetchedData);
-          } else {
-            that.moreToLoad = false;
-          }
-          
-          that.readyToLoad = true;
-          
-          if (that.moreToLoad) {
-            if (!that.isEnoughForScroll()) {
-              that.loadData();
-            } else {
-              var lastVisibleBatch = cache.lastVisibleBatch;
-              var lastOnboardBatch = lastVisibleBatch + that.BATCH_LOAD_WHEN_SCROLL_TO_BOTTOM;
-              for (var index = lastVisibleBatch; index <= lastOnboardBatch; ++index) {
-                if (!cache.batchContainer[index]) {
-                  that.loadData();
-                  break;
-                }
+            if (that.cascadeContainer.is(":visible")) {
+              var needMoreFetch = false;
+              
+              while (that.hasWellFetchedButUnprocessedBatch() && !that.beAbleToScrollDown()) {
+                that.processNextUnprocessedBatch();
               }
+              
+              if (that.beAbleToScrollDown()) {
+                var lastVisibleBatch = cache.lastVisibleBatch;
+                var lastOnboardBatch = lastVisibleBatch + that.BATCH_EAGER_DISPLAY_BELOW_VIEWPORT;
+                for (var index = lastVisibleBatch; index <= lastOnboardBatch; ++index) {
+                  if (!cache.batchContainer[index]) {
+                    if (that.hasWellFetchedButUnprocessedBatch()) {
+                      that.processNextUnprocessedBatch();
+                    } else {
+                      needMoreFetch = true;
+                      break;
+                    }
+                  }
+                }
+              } else {
+                needMoreFetch = true;
+              }
+  
+              that.readyToFetch = true;
+              if (needMoreFetch) {
+                that.fetchData();
+              }
+            } else {
+              that.readyToFetch = true;
             }
+          } else {
+            cache.moreToFetch = false;
           }
+          
+          that.fetchDataSuccessHelper();
         },
         
         error: function() {
           // TODO: put some error handling logic here
-          that.readyToLoad = true;
+          that.readyToFetch = true;
+          that.fetchDataErrorHelper();
         }
       });
     }
   },
   
   
+  // if there is no more data to fetch, the last not full batch is also considered as a well fetched batch
+  hasWellFetchedButUnprocessedBatch: function() {
+    var cache = this.cache;
+    var itemDataCount = cache.itemData.length;
+    var nextUnprocessedBatch = cache.nextUnprocessedBatch;
+    var countPerBatch = this.ITEM_COUNT_PER_DISPLAY_BATCH;
+    
+    if ((nextUnprocessedBatch + 1) * countPerBatch <= itemDataCount) {
+      return true;
+    } else {
+      if (!cache.moreToFetch && nextUnprocessedBatch * countPerBatch < itemDataCount) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  },
+  
+  
+  processNextUnprocessedBatch: function() {
+    var cache = this.cache;
+    var heightOffset = cache.cascadeHeight;
+    cache.batchTopPosition.push(heightOffset);
+    cache.batchContainer.push(null);
+    cache.batchProcessed.push(false);
+    var processingBatch = cache.nextUnprocessedBatch;
+    ++cache.nextUnprocessedBatch;
+    this.attachBatch(processingBatch, true);
+  },
+  
+  
   changeCoverDisplayMode: function(event) {
     event.preventDefault();
     
-    var cache = this.cache;
-    
-    var reusableBatchCount = cache.nextBatchToLoad;
-    if (this.cacheExpired(cache)) {
-      this.resetCache();
-      reusableBatchCount = 0;
-    }
-    
-    var compactMode = $(event.currentTarget).data("displayMode") === "compact";
-    var maxWidth = this.getCascadeContainerWidth();
-    cache.columnCount = this.getColumnCount(maxWidth, this.NORMAL_COLUMN_WIDTH, this.NORMAL_VERTICAL_GAP, compactMode);
-    cache.compactMode = compactMode;
-    
-    this.resetDisplayModeParameter(maxWidth);
-    this.resetItemPositionGenerator();
-    this.resetCascadeContainer();
-    this.readyToLoad = true;
-    this.moreToLoad = true;
-    
-    var countPerBatch = this.COUNT_PER_BATCH;
-    var batch = 0;
-    var eagerLoadedBatchCount = 0;
-    
-    while (batch < reusableBatchCount) {
-      var heightOffset = cache.cascadeHeight;
-      cache.batchContainer[batch] = null;
-      cache.batchTopPosition[batch] = heightOffset;
+    if (this.cascadeContainer && this.cascadeContainer.is(":visible")) {
+      var cache = this.cache;
       
-      var firstItemIndexInThisBatch = batch * countPerBatch;
-      var firstItemIndexInNextBatch = this.getFirstItemIndexInNextBatch(firstItemIndexInThisBatch);
+      var countPerFetch = this.ITEM_COUNT_PER_FETCH;
+      var countPerBatch = this.ITEM_COUNT_PER_DISPLAY_BATCH;
+      var reusableBatchCount = Math.floor(Math.floor(cache.itemData.length / countPerFetch) * countPerFetch / countPerBatch);
       
-      for (var index = firstItemIndexInThisBatch; index < firstItemIndexInNextBatch; ++index) {           
-        this.updateItemDataInCacheAfterDisplayModeChange(index);
+      if (this.cacheExpired(cache)) {
+        this.resetCache();
+        reusableBatchCount = 0;
       }
       
-      this.attachBatch(batch, true);
-      ++batch;
+      var compactMode = $(event.currentTarget).data("displayMode") === "compact";
+      var maxWidth = this.getCascadeContainerWidth();
+      cache.columnCount = this.getColumnCount(maxWidth, this.NORMAL_COLUMN_WIDTH, this.NORMAL_VERTICAL_GAP, compactMode);
+      cache.compactMode = compactMode;
       
-      if (this.isEnoughForScroll()) {
-        if (eagerLoadedBatchCount < this.BATCH_LOAD_WHEN_SCROLL_TO_BOTTOM) {
-          ++eagerLoadedBatchCount;
-        } else {
-          break;
+      this.resetDisplayModeParameter(maxWidth);
+      this.resetItemPositionGenerator();
+      this.resetCascadeContainer();
+      this.readyToFetch = true;
+      cache.moreToFetch = true;
+      
+      var batch = 0;
+      var batchDisplayedBelowViewport = 0;
+      
+      while (batch < reusableBatchCount) {
+        var heightOffset = cache.cascadeHeight;
+        cache.batchContainer[batch] = null;
+        cache.batchTopPosition[batch] = heightOffset;
+        
+        var firstItemIndexInThisBatch = batch * countPerBatch;
+        var firstItemIndexInNextBatch = this.getFirstItemIndexInNextBatch(firstItemIndexInThisBatch);
+        
+        for (var index = firstItemIndexInThisBatch; index < firstItemIndexInNextBatch; ++index) {           
+          this.updateItemDataInCacheAfterDisplayModeChange(index);
         }
+        
+        this.attachBatch(batch, true);
+        
+        if (this.beAbleToScrollDown()) {
+          if (batchDisplayedBelowViewport < this.BATCH_EAGER_DISPLAY_BELOW_VIEWPORT) {
+            ++batchDisplayedBelowViewport;
+          } else {
+            break;
+          }
+        }
+        
+        ++batch;
       }
+      
+      var reusedBatchCount = reusableBatchCount;
+      if (batch < reusedBatchCount) {
+        reusedBatchCount = batch + 1;
+      }
+      cache.nextUnprocessedBatch = reusedBatchCount;
+      cache.batchTopPosition = cache.batchTopPosition.slice(0, reusedBatchCount);
+      cache.batchContainer = cache.batchContainer.slice(0, reusedBatchCount);
+      var reusedFetchCount = Math.floor(reusedBatchCount * countPerBatch / countPerFetch);
+      if ((reusedBatchCount * countPerBatch) % countPerFetch > 0) {
+        ++reusedFetchCount;
+      }
+      cache.itemData = cache.itemData.slice(0, reusedFetchCount * countPerFetch);
+  
+      this.onScroll();
     }
-    
-    var reusedBatchCount = reusableBatchCount;
-    if (batch < reusedBatchCount) {
-      reusedBatchCount = batch;
-    }
-    cache.nextBatchToLoad = reusedBatchCount;
-    cache.batchTopPosition = cache.batchTopPosition.slice(0, reusedBatchCount);
-    cache.batchContainer = cache.batchContainer.slice(0, reusedBatchCount);
-    var itemDataCount = cache.itemData.length;
-    var reusedItemDataCount = reusedBatchCount * countPerBatch;
-    if (reusedItemDataCount > itemDataCount) {
-      reusedItemDataCount = itemDataCount;
-    }
-    cache.itemData = cache.itemData.slice(0, reusedItemDataCount);
-
-    this.onScroll();
   },
    
  
   attachBatch: function(batchIndex, isInitialAttach) {
     var cache = this.cache;
     
-    if (0 <= batchIndex && batchIndex < cache.nextBatchToLoad) {   // safer    
+    if (0 <= batchIndex && batchIndex < cache.nextUnprocessedBatch) {   // safer    
       if ((!cache.batchContainer[batchIndex] && cache.batchProcessed[batchIndex]) || isInitialAttach) {       
-        var countPerBatch = this.COUNT_PER_BATCH;
+        var countPerBatch = this.ITEM_COUNT_PER_DISPLAY_BATCH;
         var firstItemIndexInThisBatch = batchIndex * countPerBatch;
         var firstItemIndexInNextBatch = this.getFirstItemIndexInNextBatch(firstItemIndexInThisBatch);
   
@@ -505,21 +585,23 @@ View.Cascade.Base = Backbone.View.extend({
   },
   
   
-  onWidthChange: function() {
+  widthChangeHandler: function() {
     var cache = this.cache;
     
-    if (this.readyForWidthChange) {   
+    if (this.readyForWidthChange && this.cascadeContainer.is(":visible")) {   
       var maxWidth = this.getCascadeContainerWidth();
       var newColumnCount = this.getColumnCount(maxWidth, cache.columnWidth, cache.verticalGap, false);
       
       if (newColumnCount !== cache.columnCount) {
+        var nextUnprocessedBatch = cache.nextUnprocessedBatch;
+        
         cache.columnCount = newColumnCount;
         this.resetItemPositionGenerator();
         this.resetCascadeContainer();
 
-        var countPerBatch = this.COUNT_PER_BATCH;
+        var countPerBatch = this.ITEM_COUNT_PER_DISPLAY_BATCH;
         var batchIndex = 0;
-        var itemDataCount = cache.itemData.length;
+        var itemDataCount = Math.min(cache.itemData.length, nextUnprocessedBatch * countPerBatch);
         for (var firstItemIndexInThisBatch = 0; firstItemIndexInThisBatch < itemDataCount; firstItemIndexInThisBatch += countPerBatch) {
           var firstItemIndexInNextBatch = this.getFirstItemIndexInNextBatch(firstItemIndexInThisBatch);
           
@@ -551,7 +633,7 @@ View.Cascade.Base = Backbone.View.extend({
   
   getFirstItemIndexInNextBatch: function(firstItemIndexInThisBatch) {
     var itemDataCount = this.cache.itemData.length;
-    var firstItemIndexInNextBatch = firstItemIndexInThisBatch + this.COUNT_PER_BATCH;
+    var firstItemIndexInNextBatch = firstItemIndexInThisBatch + this.ITEM_COUNT_PER_DISPLAY_BATCH;
     if (firstItemIndexInNextBatch > itemDataCount) {
       firstItemIndexInNextBatch = itemDataCount;
     }
@@ -573,90 +655,123 @@ View.Cascade.Base = Backbone.View.extend({
   
   
   onScroll: function(event) {
-    var cache = this.cache;
-    
-    var thisWindow = GlobalVariable.Browser.Window;
-    var scrollTopPosition = thisWindow.scrollTop();
-    var oldScrollTopPosition = cache.scrollTop;
-    cache.scrollPercentage = scrollTopPosition / GlobalVariable.Browser.Document.height();
-    cache.scrollTop = scrollTopPosition;
-    
-    var firstVisibleBatch = 0;
-    var lastVisibleBatch = 0;
-    var lastBatch = cache.batchContainer.length - 1;
-    
-    if (lastBatch >= 0) {
-      if (scrollTopPosition >= cache.batchTopPosition[lastBatch]) {
-        firstVisibleBatch = lastBatch;
-        lastVisibleBatch = lastBatch;
-      } else {
-        for (var ii = lastBatch; ii > 0; --ii) {
-          if (scrollTopPosition < cache.batchTopPosition[ii] && scrollTopPosition >= cache.batchTopPosition[ii - 1]) {
-            firstVisibleBatch = ii - 1;
-            lastVisibleBatch = firstVisibleBatch;
-            
-            var scrollBottmPosition = scrollTopPosition + thisWindow.height();
-            if (scrollBottmPosition >= cache.batchTopPosition[lastBatch]) {
-              lastVisibleBatch = lastBatch;
-            } else {
-              for (var jj = firstVisibleBatch + 1; jj <= lastBatch; ++jj) {
-                if (scrollBottmPosition < cache.batchTopPosition[jj]) {
-                  lastVisibleBatch = jj - 1;
-                  break;
+    if (this.cascadeContainer.is(":visible")) {
+      var cache = this.cache;
+      
+      var thisWindow = GlobalVariable.Browser.Window;
+      var scrollTopPosition = thisWindow.scrollTop();
+      var oldScrollTopPosition = cache.scrollTop;
+      cache.scrollPercentage = scrollTopPosition / GlobalVariable.Browser.Document.height();
+      cache.scrollTop = scrollTopPosition;
+      
+      var firstVisibleBatch = 0;
+      var lastVisibleBatch = 0;
+      var lastBatch = cache.batchContainer.length - 1;
+      
+      if (lastBatch >= 0) {
+        if (scrollTopPosition >= cache.batchTopPosition[lastBatch]) {
+          firstVisibleBatch = lastBatch;
+          lastVisibleBatch = lastBatch;
+        } else {
+          for (var ii = lastBatch; ii > 0; --ii) {
+            if (scrollTopPosition < cache.batchTopPosition[ii] && scrollTopPosition >= cache.batchTopPosition[ii - 1]) {
+              firstVisibleBatch = ii - 1;
+              lastVisibleBatch = firstVisibleBatch;
+              
+              var scrollBottmPosition = scrollTopPosition + thisWindow.height();
+              if (scrollBottmPosition >= cache.batchTopPosition[lastBatch]) {
+                lastVisibleBatch = lastBatch;
+              } else {
+                for (var jj = firstVisibleBatch + 1; jj <= lastBatch; ++jj) {
+                  if (scrollBottmPosition < cache.batchTopPosition[jj]) {
+                    lastVisibleBatch = jj - 1;
+                    break;
+                  }
                 }
               }
+              
+              break;
             }
-            
-            break;
           }
         }
       }
-    }
-    
-    if (firstVisibleBatch !== cache.firstVisibleBatch || lastVisibleBatch !== cache.lastVisibleBatch) {
-      cache.firstVisibleBatch = firstVisibleBatch;
-      cache.lastVisibleBatch = lastVisibleBatch;
+  
+      var batchEagerDisplayBelowViewport = this.BATCH_EAGER_DISPLAY_BELOW_VIEWPORT;
+      var stillBeAbleToScrollDownAfterThisScroll = this.beAbleToScrollDown();
       
-      for(var index = firstVisibleBatch; index <= lastVisibleBatch; ++index) {
-        this.attachBatch(index, false);
-      }
-
-      var eagerLoadBatchCount = this.BATCH_LOAD_WHEN_SCROLL_TO_BOTTOM;
-      var firstOnBoardBatch = firstVisibleBatch - eagerLoadBatchCount;
-      for (var index = firstOnBoardBatch; index < firstVisibleBatch; ++index) {
-        this.attachBatch(index, false);
-      }
-
-      var lastOnBoardBatch = lastVisibleBatch + eagerLoadBatchCount;
-      for (var index = lastVisibleBatch + 1; index <= lastOnBoardBatch; ++index) {
-        if (index > lastBatch) {
-          if (this.readyToLoad && this.moreToLoad) {
-            // prevent loading the same contents more than once
-            clearTimeout(this.loadDataTimeout);
-            this.loadDataTimeout = setTimeout(this.loadData, 300);
-          }
-          lastBatch = lastOnBoardBatch;
-          break;
-        } else {
+      if (firstVisibleBatch !== cache.firstVisibleBatch
+        || lastVisibleBatch !== cache.lastVisibleBatch
+        || (batchEagerDisplayBelowViewport == 0 && !stillBeAbleToScrollDownAfterThisScroll)
+      ) {
+        cache.firstVisibleBatch = firstVisibleBatch;
+        cache.lastVisibleBatch = lastVisibleBatch;
+        
+        for(var index = firstVisibleBatch; index <= lastVisibleBatch; ++index) {
           this.attachBatch(index, false);
         }
-      }
-      
-      // detach batches that should not be on board.
-      if (scrollTopPosition !== oldScrollTopPosition) {
-        var firstBatchNeedToBeRemoved = 0;
-        var lastBatchNeedToBeRemoved = lastBatch;
-        if (scrollTopPosition > oldScrollTopPosition) {   // scroll down
-          lastBatchNeedToBeRemoved = firstOnBoardBatch - 1;
-        } else if (scrollTopPosition < oldScrollTopPosition) {   // scroll up
-          firstBatchNeedToBeRemoved = lastOnBoardBatch + 1;
+  
+        var firstOnBoardBatch = firstVisibleBatch - this.BATCH_EAGER_DISPLAY_ABOVE_VIEWPORT;
+        for (var index = firstOnBoardBatch; index < firstVisibleBatch; ++index) {
+          this.attachBatch(index, false);
         }
-        for (var index = firstBatchNeedToBeRemoved; index <= lastBatchNeedToBeRemoved; ++index) {
-          var batchContainer = cache.batchContainer[index];
-          if (batchContainer) {
-            batchContainer.remove();
-            cache.batchContainer[index] = null;
+  
+        var autoFetchWhenScrollToBottom = this.AUTO_FETCH_WHEN_SCROLL_TO_BOTTOM;
+        var lastOnBoardBatch = lastVisibleBatch + batchEagerDisplayBelowViewport;
+        
+        if (batchEagerDisplayBelowViewport > 0) {
+          for (var index = lastVisibleBatch + 1; index <= lastOnBoardBatch; ++index) {
+            if (index > lastBatch) {
+              if (this.hasWellFetchedButUnprocessedBatch()) {
+                this.processNextUnprocessedBatch();
+              } else {
+                if (autoFetchWhenScrollToBottom && this.readyToFetch && cache.moreToFetch) {
+                  // prevent loading the same contents more than once
+                  clearTimeout(this.fetchDataTimeout);
+                  this.fetchDataTimeout = setTimeout(this.fetchData, 300);
+                }
+                break;
+              }
+            } else {
+              this.attachBatch(index, false);
+            }
           }
+          
+          if (lastBatch < lastOnBoardBatch) {
+            lastBatch = lastOnBoardBatch;
+          }
+        } else {
+          if (!stillBeAbleToScrollDownAfterThisScroll) {
+            if (this.hasWellFetchedButUnprocessedBatch()) {
+              this.processNextUnprocessedBatch();
+            } else if (autoFetchWhenScrollToBottom && this.readyToFetch && cache.moreToFetch) {
+              // prevent loading the same contents more than once
+              clearTimeout(this.fetchDataTimeout);
+              this.fetchDataTimeout = setTimeout(this.fetchData, 300);
+            }
+          } 
+        }
+        
+        // detach batches that should not be on board.
+        if (scrollTopPosition !== oldScrollTopPosition) {
+          var firstBatchNeedToBeRemoved = 0;
+          var lastBatchNeedToBeRemoved = lastBatch;
+          if (scrollTopPosition > oldScrollTopPosition) {   // scroll down
+            lastBatchNeedToBeRemoved = firstOnBoardBatch - 1;
+          } else if (scrollTopPosition < oldScrollTopPosition) {   // scroll up
+            firstBatchNeedToBeRemoved = lastOnBoardBatch + 1;
+          }
+          for (var index = firstBatchNeedToBeRemoved; index <= lastBatchNeedToBeRemoved; ++index) {
+            var batchContainer = cache.batchContainer[index];
+            if (batchContainer) {
+              batchContainer.remove();
+              cache.batchContainer[index] = null;
+            }
+          }
+        }
+        
+        // this is very important to prevent too fast scrolling
+        if (autoFetchWhenScrollToBottom && !this.beAbleToScrollDown()) {
+          this.onScroll();
         }
       }
     }
@@ -664,6 +779,8 @@ View.Cascade.Base = Backbone.View.extend({
   
   
   remove: function() {
+    this.removeHelper();
+    
     this.removeScrollListener();
     
     this.cascadeContainer = null;
