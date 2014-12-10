@@ -46,7 +46,7 @@ View.Article.Show.Recommend = View.Cascade.Base.extend({
   
   
   getPageCacheKey: function() {
-    return window.location.href + "-recommendation";
+    return window.location.href + "-recommend";
   },
   
   

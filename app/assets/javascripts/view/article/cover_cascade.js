@@ -36,6 +36,19 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
   itemTemplate: JST["template/article/cover_cascade/cover"],
   
   
+  getPageCacheKey: function() {
+    var href = window.location.href;
+    if (href.indexOf("#") === -1) {
+      if (href.charAt(href.length - 1) === '/') {
+        href += "#";
+      } else {
+        href += "/#";
+      }
+    }
+    return href;
+  },
+  
+  
   initializeHelper: function(options) {
     this.fetchFunction = options.fetchFunction;
   },
