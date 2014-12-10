@@ -1,4 +1,4 @@
-Collection.Article.Search = Backbone.Collection.extend({
+Collection.Article.Recommend = Backbone.Collection.extend({
   initialize: function(options) {
     this.articleId = options.articleId;
     this.category = options.category;

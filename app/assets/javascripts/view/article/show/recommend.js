@@ -51,7 +51,7 @@ View.Article.Show.Recommend = View.Cascade.Base.extend({
   
   
   fetchFunction: function(fetchSequenceNumber, articlesPerFetch, fetchOptions, callbacks) {
-    var articles = new Collection.Article.All({
+    var articles = new Collection.Article.Recommend({
       fetchSequenceNumber: fetchSequenceNumber,
       articlesPerFetch: articlesPerFetch,
       articleId: this.articleId,

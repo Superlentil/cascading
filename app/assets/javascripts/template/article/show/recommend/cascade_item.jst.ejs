@@ -1,12 +1,12 @@
-<div class="article-show-recommend-cascade-item" style="position:absolute; top: <%= top %>px; left: <%= left %>px; width: <%= width %>px;">
+<div style="position:absolute; top: <%= top %>px; left: <%= left %>px; width: <%= width %>px;">
   <div style="width: 100%; height: <%= Math.floor((Math.random() * 50) + 50) %>px;"></div>
   <% var sign = Math.floor((Math.random() * 2)) == 1 ? -1 : 1; %>
-  <div style="transform: rotate(<%= sign * Math.floor((Math.random() * 20) + 5) %>deg);">
+  <div class="article-show-recommend-cascade-item" style="transform: rotate(<%= sign * Math.floor((Math.random() * 20) + 5) %>deg);">
     <a href="#/article/<%= id %>">
       <img style="height: <%= picHeight %>px; width: <%= picWidth %>px; border-radius: <%= Math.floor(Math.random() * 51) %>%;" src="<%= picUrl %>">
     </a>
     <div style="margin: 0; padding: 0;">
-      <div style="word-break: break-all; word-wrap: break-word; text-align: center;"><strong><a href="#/article/<%= id %>"><%= title %></a></strong></div>
+      <h4><a href="#/article/<%= id %>"><%= title %></h4>
     </div>
   </div>
   <div style="width: 100%; height: <%= Math.floor((Math.random() * 50) + 50) %>px;"></div>
