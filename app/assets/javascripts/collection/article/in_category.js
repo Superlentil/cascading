@@ -1,8 +1,8 @@
 Collection.Article.InCategory = Backbone.Collection.extend({
   initialize: function(options) {
     this.categoryId = options.categoryId;
-    this.fetchSequenceNumber = options.fetchSequenceNumber,
-    this.articlesPerFetch = options.articlesPerFetch,
+    this.fetchSequenceNumber = options.fetchSequenceNumber;
+    this.articlesPerFetch = options.articlesPerFetch;
     this.pageLoadTime = options.pageLoadTime;
   },
   

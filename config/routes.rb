@@ -32,6 +32,7 @@ Rails.application.routes.draw do
       get "byUser"
       get "byUserAndCategory"
       get "search"
+      get "recommend"
     end
   end
 

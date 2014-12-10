@@ -2,8 +2,8 @@ Collection.Article.ByUserAndCategory = Backbone.Collection.extend({
   initialize: function(options) {
     this.userId = options.userId;
     this.categoryId = options.categoryId;
-    this.fetchSequenceNumber = options.fetchSequenceNumber,
-    this.articlesPerFetch = options.articlesPerFetch,
+    this.fetchSequenceNumber = options.fetchSequenceNumber;
+    this.articlesPerFetch = options.articlesPerFetch;
     this.pageLoadTime = options.pageLoadTime;
   },
   

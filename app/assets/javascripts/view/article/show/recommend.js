@@ -34,6 +34,9 @@ View.Article.Show.Recommend = View.Cascade.Base.extend({
     this.articleContainer = options.articleContainer;
     this.regularRecommendContainer = options.regularRecommendContainer;
     this.hasRenderedRegularRecommend = false;
+    this.articleId = options.articleId;
+    this.category = options.category;
+    this.random = Math.random();
   },
   
   
@@ -51,14 +54,11 @@ View.Article.Show.Recommend = View.Cascade.Base.extend({
     var articles = new Collection.Article.All({
       fetchSequenceNumber: fetchSequenceNumber,
       articlesPerFetch: articlesPerFetch,
-      pageLoadTime: fetchOptions.pageLoadTime
+      articleId: this.articleId,
+      category: this.category,
+      random: this.random
     });
     articles.fetch(callbacks);
-  },
-  
-  
-  generateFetchOptions: function() {
-    return {pageLoadTime: this.cache.pageLoadTimeSinceEpoch};
   },
   
   

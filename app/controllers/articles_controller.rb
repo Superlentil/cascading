@@ -75,6 +75,7 @@ class ArticlesController < ApplicationController
   def recommend
     fetchSequenceNumber = params[:fetch_sequence_number].to_i
     articlesPerFetch = params[:articles_per_fetch].to_i
+    articleId = params[:article_id]
     categoryName = params[:category]
     random = params[:random].to_f
     
@@ -83,15 +84,20 @@ class ArticlesController < ApplicationController
     end
     
     recommends = @@recommendCache[categoryName].articles
-    totalCount = recommends.length
-    start = (totalCount * random).floor
+    lastIndex = recommends.length - 1
+    start = ((lastIndex * random).floor + fetchSequenceNumber * articlesPerFetch) % lastIndex
     
     @recommendArticles = []
     articlesPerFetch.times do
-      if start >= totalCount
+      if start >= lastIndex
         start = 0
       end
-      @recommendArticles << recommends[start]
+      if recommends[start].id == articleId
+        @recommendArticles << recommends[lastIndex]
+      else
+        @recommendArticles << recommends[start]
+      end
+      start += 1
     end
   end
   

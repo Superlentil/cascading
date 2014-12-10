@@ -28,7 +28,9 @@ View.Article.Show.Main = Backbone.View.extend({
             
             var viewRecommendCascade = new View.Article.Show.Recommend({
               articleContainer: $("#article-show-content"),
-              regularRecommendContainer: $("#article-show-recommend-regular")
+              regularRecommendContainer: $("#article-show-recommend-regular"),
+              articleId: fetchedArticle.get("id"),
+              category: fetchedArticle.get("category_name")
             });
             that.allSubviews.push(viewRecommendCascade);
             viewRecommendCascade.render();
