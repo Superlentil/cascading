@@ -1,3 +1,6 @@
+<div id="article-publish">
+<div class="one-central-column-container">
+  <div class="central-column">
 <% if (coverPictureId !== -1 || contentPictures.length > 0) { %>
   <div id="choose_cover_picture_container">
     <h3>Choose a picture in the article as a cover picture:</h3>
@@ -16,15 +19,19 @@
 
 <div id="upload_cover_picture_container">
   <h3>Upload a new picture as a cover picture:</h3>
-  <div id="upload_preview"></div>
-  <input type="file" id="new_cover_picture" />
-  <input type="button" id="upload_picture_button" value="upload" />
+  <div class="row" id="upload_preview">
+  <span class="inline-block col-xs-8 padding-s-lr"><input type="file" id="new_cover_picture" /></span>
+  <span class="inline-block col-xs-4 padding-s-lr"><input id="upload_picture_button" class="button" type="button"  value="upload" /></span>
+  </div>
 </div>
 
 <br /><br />
 
-<div>
-  <input type="button" id="confirm_button" value="confirm" />
-  <input type="button" id="cancel_button" value="cancel" />
-  <input type="button" id="skip_button" value="skip (not recommend)" />
+<div clsss="row">
+  <span class="inline-block col-xs-4 padding-s-lr"><input id="confirm_button" class="button" type="button" value="confirm" /></span>
+  <span class="inline-block col-xs-4 padding-s-lr"><input id="cancel_button" class="button" type="button"  value="cancel" /></span>
+  <span class="inline-block col-xs-4 padding-s-lr"><input id="skip_button" class="button" type="button" value="skip (not recommend)"/></span>
+</div>
+</div>
+</div>
 </div>
