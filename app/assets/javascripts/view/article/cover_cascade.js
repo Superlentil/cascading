@@ -79,6 +79,14 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
   },
   
   
+  fetchDataSuccessHelperBeforeAllActions: function(fetchedData) {
+    console.log(this.cache.pageLoadTimeSinceEpoch);
+    if (this.cache.pageLoadTimeSinceEpoch === 0) {
+      this.cache.pageLoadTimeSinceEpoch = fetchedData.pageLoadTime;
+    }
+  },
+  
+  
   createItemData: function(fetchedItem) {
     var cache = this.cache;
     var itemPictureScale = cache.itemPictureScale;

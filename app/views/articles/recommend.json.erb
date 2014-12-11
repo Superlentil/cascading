@@ -1,1 +1,12 @@
-<%= render partial: "article_cover_collection", locals: {allArticleCovers: @recommendArticles, pageLoadTime: nil} %>
+[
+  <% unless @recommendArticles.empty? %>
+    <% lastIndex = @recommendArticles.length - 1 %>
+    <% @recommendArticles.each_with_index do |article, index| %>
+      <% if index == lastIndex %>
+        <%= render partial: "article_cover", locals: {articleCover: article} %>
+      <% else %>
+        <%= render partial: "article_cover", locals: {articleCover: article} %>,
+      <% end %>
+    <% end %>
+  <% end %>
+]

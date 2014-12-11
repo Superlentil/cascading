@@ -1,13 +1,10 @@
-Collection.Article.ByUser = Backbone.Collection.extend({
+Collection.Article.ByUser = Collection.Article.CoverCascade.extend({
   initialize: function(options) {
     this.userId = options.userId;
     this.fetchSequenceNumber = options.fetchSequenceNumber;
     this.articlesPerFetch = options.articlesPerFetch;
     this.pageLoadTime = options.pageLoadTime;
   },
-  
-  
-  model: Model.Article,
   
   
   url: function() {

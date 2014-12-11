@@ -59,7 +59,11 @@ View.Cascade.Base = Backbone.View.extend({
   },
   
   
-  fetchDataSuccessHelper: function() {
+  fetchDataSuccessHelperBeforeAllActions: function(fetchedData) {
+  },
+  
+  
+  fetchDataSuccessHelperAfterAllActions: function(fetchedData) {
   },
   
   
@@ -373,6 +377,9 @@ View.Cascade.Base = Backbone.View.extend({
       
       that.fetchFunction(that.getFetchSequenceNumber(), itemCountPerFetch, that.generateFetchOptions(), {
         success: function(fetchedData) {
+          console.log(fetchedData);
+          that.fetchDataSuccessHelperBeforeAllActions(fetchedData);
+          
           var allFetchedItems = fetchedData.models;
           cache.moreToFetch = allFetchedItems.length === itemCountPerFetch;   // if the current time is a full fetch, there may be more data to fetch
     
@@ -418,10 +425,11 @@ View.Cascade.Base = Backbone.View.extend({
             cache.moreToFetch = false;
           }
           
-          that.fetchDataSuccessHelper();
+          that.fetchDataSuccessHelperAfterAllActions(fetchedData);
         },
         
         error: function() {
+          console.log("error");
           // TODO: put some error handling logic here
           that.readyToFetch = true;
           that.fetchDataErrorHelper();

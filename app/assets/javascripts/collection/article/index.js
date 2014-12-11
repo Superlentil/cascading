@@ -1,12 +1,9 @@
-Collection.Article.All = Backbone.Collection.extend({
+Collection.Article.Index = Collection.Article.CoverCascade.extend({
   initialize: function(options) {
     this.fetchSequenceNumber = options.fetchSequenceNumber;
     this.articlesPerFetch = options.articlesPerFetch;
     this.pageLoadTime = options.pageLoadTime;
   },
-  
-  
-  model: Model.Article,
   
   
   url: function() {

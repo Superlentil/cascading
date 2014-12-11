@@ -17,7 +17,7 @@ View.Article.Index = Backbone.View.extend({
   
   
   fetchFunction: function(fetchSequenceNumber, articlesPerFetch, fetchOptions, callbacks) {
-    var articles = new Collection.Article.All({
+    var articles = new Collection.Article.Index({
       fetchSequenceNumber: fetchSequenceNumber,
       articlesPerFetch: articlesPerFetch,
       pageLoadTime: fetchOptions.pageLoadTime

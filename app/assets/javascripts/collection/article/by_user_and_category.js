@@ -1,4 +1,4 @@
-Collection.Article.ByUserAndCategory = Backbone.Collection.extend({
+Collection.Article.ByUserAndCategory = Collection.Article.CoverCascade.extend({
   initialize: function(options) {
     this.userId = options.userId;
     this.categoryId = options.categoryId;
@@ -6,9 +6,6 @@ Collection.Article.ByUserAndCategory = Backbone.Collection.extend({
     this.articlesPerFetch = options.articlesPerFetch;
     this.pageLoadTime = options.pageLoadTime;
   },
-  
-  
-  model: Model.Article,
   
   
   url: function() {

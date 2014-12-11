@@ -62,7 +62,7 @@ View.Article.Show.Recommend = View.Cascade.Base.extend({
   },
   
   
-  fetchDataSuccessHelper: function() {
+  fetchDataSuccessHelperAfterAllActions: function(fetchedData) {
     if (!this.hasRenderedRegularRecommend) {
       this.hasRenderedRegularRecommend = true;
       this.cache.itemDataFetched = true;

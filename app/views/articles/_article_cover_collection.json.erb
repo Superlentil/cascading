@@ -1,18 +1,15 @@
 {
-<% unless pageLoadTime.nil? %>
-page_load_time: <%= pageLoadTime.to_i %>,
-<% end %>
-article_covers:
-[
-  <% unless allArticleCovers.empty? %>
-    <% lastIndex = allArticleCovers.length - 1 %>
-    <% allArticleCovers.each_with_index do |articleCover, index| %>
-      <% if index == lastIndex %>
-        <%= render partial: "article_cover", locals: {articleCover: articleCover} %>
-      <% else %>
-        <%= render partial: "article_cover", locals: {articleCover: articleCover} %>,
+  "page_load_time": <%= pageLoadTime.to_i %>,
+  "article_covers": [
+    <% unless allArticleCovers.empty? %>
+      <% lastIndex = allArticleCovers.length - 1 %>
+      <% allArticleCovers.each_with_index do |articleCover, index| %>
+        <% if index == lastIndex %>
+          <%= render partial: "article_cover", locals: {articleCover: articleCover} %>
+        <% else %>
+          <%= render partial: "article_cover", locals: {articleCover: articleCover} %>,
+        <% end %>
       <% end %>
     <% end %>
-  <% end %>
-]
+  ]
 }

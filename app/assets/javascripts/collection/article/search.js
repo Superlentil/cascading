@@ -1,13 +1,10 @@
-Collection.Article.Search = Backbone.Collection.extend({
+Collection.Article.Search = Collection.Article.CoverCascade.extend({
   initialize: function(options) {
     this.keyword = options.keyword;
     this.fetchSequenceNumber = options.fetchSequenceNumber;
     this.articlesPerFetch = options.articlesPerFetch;
     this.pageLoadTime = options.pageLoadTime;
   },
-  
-  
-  model: Model.Article,
   
   
   url: function() {
