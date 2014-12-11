@@ -190,34 +190,15 @@ View.Article.Edit = Backbone.View.extend({
   },
   
   
-  uploadAllPictures: function() {
-    $(".article-edit-editor").each(function(index) {
-      var editor = $(this);
-      var paragraph = editor.children(".m-paragraph");
-      var type = paragraph.data("type");
-
-      if (type === "picture") {
-        var img = paragraph.children("img");
-        if (img.length === 0) {
-          var uploadPictureInput = editor.children(".Upload_Picture");
-          if (uploadPictureInput.length > 0 && uploadPictureInput.val() !== "") {
-            editor.children(".Upload_Button").trigger("click");
-          }
-        }
-      }
-    });
-  },
-  
-  
   allPicturesUploaded: function() {
     var allUploaded = true;
-    $(".article-edit-editor").each(function(index) {
+    $(".article-editor").each(function(index) {
       var editor = $(this);
       var paragraph = editor.children(".m-paragraph");
       var type = paragraph.data("type");
 
       if (type === "picture") {
-        var uploadPictureInput = editor.children(".Upload_Picture");
+        var uploadPictureInput = editor.children(".m-file-uploader");
         var img = paragraph.children("img");
         if (img.length === 0 && uploadPictureInput.val() !== "") {
           allUploaded = false;
@@ -235,7 +216,6 @@ View.Article.Edit = Backbone.View.extend({
     }
     
     var that = this;
-    that.uploadAllPictures();
     
     function waitingForUpload() {
       if (that.allPicturesUploaded()) {
