@@ -6,8 +6,8 @@ class ArticlesController < ApplicationController
   
   
   def index
-    respond_with fetchArticles(params[:fetch_sequence_number], params[:articles_per_fetch], params[:page_load_time], {})
-    return
+    @pageLoadTime = getPageLoadTime(params[:page_load_time])
+    @articleCovers = fetchArticles(params[:fetch_sequence_number], params[:articles_per_fetch], @pageLoadTime, {})
   end
   
   
@@ -19,30 +19,31 @@ class ArticlesController < ApplicationController
   
   
   def inCategory
+    @pageLoadTime = getPageLoadTime(params[:page_load_time])
     queryConditions = {category_id: params[:category_id].to_i}
-    
-    respond_with fetchArticles(params[:fetch_sequence_number], params[:articles_per_fetch], params[:page_load_time], queryConditions)
+    @articleCovers = fetchArticles(params[:fetch_sequence_number], params[:articles_per_fetch], @pageLoadTime, queryConditions)
   end
   
   
   def byUser
+    @pageLoadTime = getPageLoadTime(params[:page_load_time])
     queryConditions = {user_id: params[:user_id].to_i}
-    
-    respond_with fetchArticles(params[:fetch_sequence_number], params[:articles_per_fetch], params[:page_load_time], queryConditions)
+    @articleCovers = fetchArticles(params[:fetch_sequence_number], params[:articles_per_fetch], @pageLoadTime, queryConditions)
   end
   
   
   def byUserAndCategory
+    @pageLoadTime = getPageLoadTime(params[:page_load_time])
     queryConditions = {user_id: params[:user_id].to_i, category_id: params[:category_id].to_i}
-    
-    respond_with fetchArticles(params[:fetch_sequence_number], params[:articles_per_fetch], params[:page_load_time], queryConditions)
+    @articleCovers = fetchArticles(params[:fetch_sequence_number], params[:articles_per_fetch], @pageLoadTime, queryConditions)
   end
   
   
   def search
     adjustedFetchSequenceNumber = params[:fetch_sequence_number].to_i + 1
     articlesPerFetch = params[:articles_per_fetch].to_i
-    keyword = params[:keyword]  
+    keyword = params[:keyword]
+    @pageLoadTime = getPageLoadTime(params[:page_load_time])
     
     search = Article.search(:select => [
       :id,
@@ -62,13 +63,13 @@ class ArticlesController < ApplicationController
       end
       
       with :status, GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED
-      with(:publish_time).less_than Time.at(params[:page_load_time].to_i / 1000.0)
+      with(:publish_time).less_than @pageLoadTime
       order_by :id, :desc
 
       paginate :page => adjustedFetchSequenceNumber, :per_page => articlesPerFetch
     end
     
-    respond_with search.results
+    @articleCovers = search.results
   end
   
   
@@ -209,7 +210,6 @@ private
         lessCount = categoryArticlesCount
       end
       interval = (moreCount.to_f / lessCount.to_f).round
-      more = more.to_a
       index = 0
       less.each do |article|  
         recommendArticles << article
@@ -254,10 +254,21 @@ private
   end
   
   
+  def getPageLoadTime(pageLoadTime)
+    time = pageLoadTime.to_i
+    if time > 0
+      time = Time.at(time)
+    else
+      time = Time.now
+    end
+    return time
+  end
+  
+  
   def fetchArticles(fetchSequenceNumber, articlesPerFetch, pageLoadTime, queryConditions)
     countPerFetch = articlesPerFetch.to_i
     queryConditions[:status] = GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED;
-    return Article.where("publish_time < ?", Time.at(pageLoadTime.to_i / 1000.0)).where(queryConditions)
+    return Article.where("publish_time < ?", pageLoadTime).where(queryConditions)
       .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, author, user_id, category_name, category_id")
       .limit(countPerFetch).offset(fetchSequenceNumber.to_i * countPerFetch).order(id: :desc)
   end

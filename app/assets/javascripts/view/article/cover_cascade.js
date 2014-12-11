@@ -63,7 +63,7 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
     var cache = this.cache;
     cache.itemPadding = 0;
     cache.itemPictureScale = 1.0;
-    cache.pageLoadTimeSinceEpoch = $.now();   // in the unit "millisecond"
+    cache.pageLoadTimeSinceEpoch = 0;   // in the unit "second", and server will update the value if it is set to 0
   },
   
   
