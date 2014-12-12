@@ -19,8 +19,9 @@ var GlobalConstant = {
   
   
   UserTier: {   // If this enumeration needs to be modified, please modify the corresponding one in the "Ruby on Rails" code together.
-    ADMINISTRATOR: 0,
-    FREE_USER: 1
+    UNVERIFIED: 0,
+    ADMINISTRATOR: 1,
+    FREE_USER: 2
   }
 };
 

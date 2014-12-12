@@ -14,8 +14,9 @@ class GlobalConstant
   
   
   class UserTier   # If this enumeration needs to be modified, please modify the corresponding one in the "Javascript" code together.
-    ADMINISTRATOR = 0
-    FREE_USER = 1
+    UNVERIFIED = 0
+    ADMINISTRATOR = 1
+    FREE_USER = 2
   end
   
   
