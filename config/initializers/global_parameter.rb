@@ -1,22 +1,29 @@
 class GlobalConstant
-  class ArticleStatus   # If this enumeration needs to be modified, please modify the corresponding one in the "Javascript" code together.
-    INITIAL_TEMPORARILY_CREATED = 0
-    DRAFT = 1
-    PRIVATE_PUBLISHED = 2
-    PUBLIC_PUBLISHED = 3
+  class Article
+    class Status   # If this enumeration needs to be modified, please modify the corresponding one in the "Javascript" code together.
+      INITIAL_TEMPORARILY_CREATED = 0
+      DRAFT = 1
+      PRIVATE_PUBLISHED = 2
+      PUBLIC_PUBLISHED = 3
+    end
+    
+    class CategoryType
+      PREDEFINED = 0
+      CUSTOMIZED = 1
+    end
   end
   
   
-  class ArticleCategoryType
-    PREDEFINED = 0
-    CUSTOMIZED = 1
-  end
-  
-  
-  class UserTier   # If this enumeration needs to be modified, please modify the corresponding one in the "Javascript" code together.
-    UNVERIFIED = 0
-    ADMINISTRATOR = 1
-    FREE_USER = 2
+  class User
+    class Tier   # If this enumeration needs to be modified, please modify the corresponding one in the "Javascript" code together.
+      ADMINISTRATOR = 0
+      FREE_USER = 1
+    end
+    
+    class Status   # If this enumeration needs to be modified, please modify the corresponding one in the "Javascript" code together.
+      UNVERIFIED = 0
+      VERIFIED = 1
+    end
   end
   
   

@@ -68,7 +68,7 @@ View.User.New = View.User.ModifyInputValidator.extend({
       if (avatarInput.val()) {
         formData.append("user[avatar]", avatarInput.get(0).files[0]);
       }
-      formData.append("user[tier]", GlobalConstant.UserTier.FREE_USER);
+      formData.append("user[tier]", GlobalConstant.User.Tier.UNVERIFIED);
       
       var user = new Model.User();
       

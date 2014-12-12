@@ -127,7 +127,7 @@ namespace :data_generator do
       article.cover_picture_url = coverPicture.src.url(:thumb)
       article.cover_picture_id = coverPicture.id
       article.cover_picture_height = Paperclip::Geometry.from_file(coverPicture.src.path(:thumb)).height.to_i
-      article.status = GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED
+      article.status = GlobalConstant::Article::Status::PUBLIC_PUBLISHED
       article.content = articleContent
       article.publish_time = Time.now
       

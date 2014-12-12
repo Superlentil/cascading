@@ -27,7 +27,7 @@ module LoginSessionsHelper
   
   
   def administrator?
-    return session.has_key?(:user_tier) && session[:user_tier] == GlobalConstant::UserTier::ADMINISTRATOR
+    return session.has_key?(:user_tier) && session[:user_tier] == GlobalConstant::User::Tier::ADMINISTRATOR
   end
   
   

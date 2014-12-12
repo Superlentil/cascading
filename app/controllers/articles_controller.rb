@@ -12,7 +12,7 @@ class ArticlesController < ApplicationController
   
   
   def draftByUser
-    @articleDrafts = Article.where(user_id: params[:user_id], status: GlobalConstant::ArticleStatus::DRAFT)
+    @articleDrafts = Article.where(user_id: params[:user_id], status: GlobalConstant::Article::Status::DRAFT)
       .select("id, cover_picture_url, title, created_at, content")
       .order(id: :desc)
   end
@@ -62,7 +62,7 @@ class ArticlesController < ApplicationController
         boost_fields :category_name => 5.0
       end
       
-      with :status, GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED
+      with :status, GlobalConstant::Article::Status::PUBLIC_PUBLISHED
       with(:publish_time).less_than pageLoadTime
       order_by :id, :desc
 
@@ -106,7 +106,7 @@ class ArticlesController < ApplicationController
 
   def show
     @article = Article.find(params[:id])
-    if @article.status == GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED || correctLoggedInUser?(@article.user_id)
+    if @article.status == GlobalConstant::Article::Status::PUBLIC_PUBLISHED || correctLoggedInUser?(@article.user_id)
       respond_with @article
     end
     return
@@ -119,7 +119,7 @@ class ArticlesController < ApplicationController
       @article = Article.new(inputParams)
       @article.save
       respond_with @article
-      Article.where("id < ? AND user_id = ? AND status = ?", @article.id, inputParams[:user_id].to_i, GlobalConstant::ArticleStatus::INITIAL_TEMPORARILY_CREATED).destroy_all
+      Article.where("id < ? AND user_id = ? AND status = ?", @article.id, inputParams[:user_id].to_i, GlobalConstant::Article::Status::INITIAL_TEMPORARILY_CREATED).destroy_all
     end
     return
   end
@@ -130,7 +130,7 @@ class ArticlesController < ApplicationController
     inputParams = articleParams
     if correctLoggedInUser?(@article.user_id)
       ActiveRecord::Base.transaction do
-        if inputParams[:status] && inputParams[:status].to_i == GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED
+        if inputParams[:status] && inputParams[:status].to_i == GlobalConstant::Article::Status::PUBLIC_PUBLISHED
           if inputParams[:cover_picture_id].to_i < 0
             assignCoverPicture(inputParams)
           end
@@ -178,13 +178,13 @@ private
     newCache[:expireTime] = Time.now.to_i + RECOMMEND_CACHE_TIME_IN_SECOND
     recommendArticles = []
     
-    categoryArticles = Article.where(category_name: categoryName).where(status: GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED)
+    categoryArticles = Article.where(category_name: categoryName).where(status: GlobalConstant::Article::Status::PUBLIC_PUBLISHED)
       .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, author, user_id, category_name, category_id")
       .limit((MAX_RECOMMEND_COUNT_EACH_ENTRY / 2).floor).order(like: :desc, views: :desc, publish_time: :desc)
       
     categoryArticlesCount = categoryArticles.length
        
-    generalArticles = Article.where("category_name <> ?", categoryName).where(status: GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED)
+    generalArticles = Article.where("category_name <> ?", categoryName).where(status: GlobalConstant::Article::Status::PUBLIC_PUBLISHED)
       .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, author, user_id, category_name, category_id")
       .limit(MAX_RECOMMEND_COUNT_EACH_ENTRY - categoryArticlesCount).order(like: :desc, views: :desc, publish_time: :desc)
       
@@ -268,7 +268,7 @@ private
   
   def fetchArticles(fetchSequenceNumber, articlesPerFetch, pageLoadTime, queryConditions)
     countPerFetch = articlesPerFetch.to_i
-    queryConditions[:status] = GlobalConstant::ArticleStatus::PUBLIC_PUBLISHED;
+    queryConditions[:status] = GlobalConstant::Article::Status::PUBLIC_PUBLISHED;
     
     return Article.where("publish_time < ?", pageLoadTime).where(queryConditions)
       .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, author, user_id, category_name, category_id")

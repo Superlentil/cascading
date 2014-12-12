@@ -8,7 +8,8 @@ class CreateUsers < ActiveRecord::Migration
       t.timestamp :temporary_password_expire_time
       t.string :nickname
       t.attachment :avatar
-      t.integer :tier, default: GlobalConstant::UserTier::UNVERIFIED
+      t.integer :tier, default: GlobalConstant::User::Tier::FREE_USER
+      t.integer :status, default: GlobalConstant::User::Status::UNVERIFIED
 
       t.timestamps
     end

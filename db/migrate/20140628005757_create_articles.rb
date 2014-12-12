@@ -11,7 +11,7 @@ class CreateArticles < ActiveRecord::Migration
       t.text :content, limit: 2000000000
       t.integer :views, default: 0
       t.integer :like, default: 0
-      t.integer :status, default: GlobalConstant::ArticleStatus::INITIAL_TEMPORARILY_CREATED
+      t.integer :status, default: GlobalConstant::Article::Status::INITIAL_TEMPORARILY_CREATED
       t.timestamp :publish_time, default: nil
       t.references :user, index: true
       t.references :category, index: true

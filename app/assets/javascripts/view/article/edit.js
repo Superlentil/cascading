@@ -183,7 +183,7 @@ View.Article.Edit = Backbone.View.extend({
       "category_id": categoryId,
       "category_name": categoryName,
       "content": JSON.stringify(articleContent),
-      "status": GlobalConstant.ArticleStatus.DRAFT
+      "status": GlobalConstant.Article.Status.DRAFT
     });
     
     return this.model;

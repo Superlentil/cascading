@@ -68,7 +68,7 @@ View.Article.Publish = Backbone.View.extend({
       if (!hasCoverPicture) {
         this.resetCoverPicture();
       }
-      article.set("status", GlobalConstant.ArticleStatus.PUBLIC_PUBLISHED);
+      article.set("status", GlobalConstant.Article.Status.PUBLIC_PUBLISHED);
       article.set("cover_picture_id", this.coverPictureId);
       article.set("cover_picture_url", this.coverPictureUrl);
       article.set("cover_picture_imported", this.coverPictureImported);

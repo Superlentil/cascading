@@ -45,7 +45,9 @@ class UsersController < ApplicationController
     end
     if @user.save
       setUserLoginSession(@user)
-      UserMailer.welcome(@user).deliver
+      Thread.new {
+        UserMailer.welcome(@user).deliver
+      }
     else
       setResponseMessage("error", "Fail to create user!")
     end

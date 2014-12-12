@@ -1,3 +1,5 @@
+<% var isVerifiedUser = parseInt(user.get("status")) !== GlobalConstant.User.Status.UNVERIFIED %>
+
 <div id="user-show-container">
   <div class="one-central-column-container">
     <div class="central-column">
@@ -5,6 +7,12 @@
         <div class="left"><img src="<%= user.get("avatar_url") %>" /></div>
         <div class="right"><div id="user-show-nickname">welcome, <strong><%= user.get("nickname") %></strong></div></div>
       </div>
+      
+    <% if (!isVerifiedUser) { %>
+      <div class="row user-show-option-group">
+        You are almost there! An verification email should be sent to your shortly. Please follow the instruction in it to verify your account. Thanks! 
+      </div>
+    <% } %>
       
       <div class="row user-show-option-group">
         <div class="user-show-option">
@@ -15,6 +23,7 @@
         </div>
       </div>
       
+    <% if (isVerifiedUser) { %>
       <div class="row user-show-option-group">
         <div class="user-show-option">
           <a href="#/articles/user/<%= user.get("id") %>">All My Published Articles</a>
@@ -32,6 +41,7 @@
           <a href="#/articles/new">Write a New Article</a>
         </div>
       </div>
+    <% } %>
     </div>
   </div>
 </div>
