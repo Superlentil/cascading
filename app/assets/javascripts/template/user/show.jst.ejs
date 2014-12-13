@@ -10,7 +10,15 @@
       
     <% if (!isVerifiedUser) { %>
       <div class="row user-show-option-group">
-        You are almost there! An verification email should be sent to your shortly. Please follow the instruction in it to verify your account. Thanks! 
+        <p>You are almost there!</p>
+        <p>An verification email should be sent to your shortly.</p>
+        <p>Please follow the instruction in it to verify your account.</p>
+        <p>Thanks!</p>
+        <br>
+        <br>
+        <p>If you haven't received the email by chance, please click button below to get a new one.</p>
+        <p><button id="m-resend-verify-email">Resend</button></p>
+        <p id="m-resend-status"></p>
       </div>
     <% } %>
       

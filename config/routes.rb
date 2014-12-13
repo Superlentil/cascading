@@ -23,6 +23,8 @@ Rails.application.routes.draw do
     member do
       get "publicInfo"
       get "finalizeEmailVerification"
+      post "resendSignUpEmailVerification"
+      post "sendEditEmailVerification"
     end
   end
   

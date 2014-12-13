@@ -8,7 +8,7 @@ class UsersController < ApplicationController
   
 ###### Local Constants ######
   VERIFY_SIGN_UP_EMAIL = 0
-  VERIFY_EDITED_EMAIL = 1
+  VERIFY_EDIT_EMAIL = 1
 #############################
   
   
@@ -60,28 +60,23 @@ class UsersController < ApplicationController
   end
   
   
-  def verifyEmail(user, action)
-    verificationCode = SecureRandom.urlsafe_base64
-    verificationUrl = finalizeEmailVerification_user_url(user.id, verification_code: verificationCode)
-    user.temporary_password = verificationCode
-    user.temporary_password_expire_time = Time.now + GlobalConstant::User::TEMPORARY_PASSWORD_LIFETIME_IN_SECOND
-    
-    if user.save
-      Thread.new {
-        begin
-          if action == VERIFY_SIGN_UP_EMAIL
-            UserMailer.verifySignUpEmail(user, verificationUrl).deliver
-          elsif action == VERIFY_EDITED_EMAIL
-          end
-        rescue
-          logger.fatal "Fail to send the verification email."
-        end
-      }
-    else
-      logger.fatal "Fail to set user's temporary_password and temporary_password_expire_time."
+  def resendSignUpEmailVerification
+    user = User.find(params[:id])
+    if correctLoggedInUser?(user.id)
+      verifyEmail(user, VERIFY_SIGN_UP_EMAIL, false)
     end
+    render nothing: true
   end
   
+  
+  def sendEditEmailVerification
+    user = User.find(params[:id])
+    if correctLoggedInUser?(user.id)
+      verifyEmail(user, VERIFY_EDIT_EMAIL, false)
+    end
+    render nothing: true
+  end
+   
   
   def finalizeEmailVerification
     user = User.find(params[:id])
@@ -163,4 +158,35 @@ private
     params.require(:user).permit(:email, :password, :nickname, :avatar, :tier)
   end
 
+
+  def generateVerificationEmail(user, action, verificationUrl)
+    begin
+      if action == VERIFY_SIGN_UP_EMAIL
+        UserMailer.verifySignUpEmail(user, verificationUrl).deliver
+      elsif action == VERIFY_EDIT_EMAIL
+      end
+    rescue
+      logger.fatal "Fail to send the verification email."
+    end
+  end
+  
+  
+  def verifyEmail(user, action, asynchronous = true)
+    verificationCode = SecureRandom.urlsafe_base64
+    verificationUrl = finalizeEmailVerification_user_url(user.id, verification_code: verificationCode)
+    user.temporary_password = verificationCode
+    user.temporary_password_expire_time = Time.now + GlobalConstant::User::TEMPORARY_PASSWORD_LIFETIME_IN_SECOND
+    
+    if user.save
+      if asynchronous
+        Thread.new do
+          generateVerificationEmail(user, action, verificationUrl)
+        end
+      else
+        generateVerificationEmail(user, action, verificationUrl)
+      end
+    else
+      logger.fatal "Fail to set user's temporary_password and temporary_password_expire_time."
+    end
+  end
 end
