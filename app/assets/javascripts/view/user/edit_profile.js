@@ -88,7 +88,7 @@ View.User.EditProfile = View.User.ModifyInputValidator.extend({
             }
           } else {
             that.signInHandler(null, null, true);
-            Backbone.history.navigate("user/" + userId, {trigger: true});
+            Backbone.history.navigate("#/user/" + userId, {trigger: true});
           }
         },
         
@@ -105,7 +105,7 @@ View.User.EditProfile = View.User.ModifyInputValidator.extend({
   
   onCancel: function(event) {
     event.preventDefault();
-    Backbone.history.navigate("user/" + this.userId, {trigger: true});
+    Backbone.history.navigate("#/user/" + this.userId, {trigger: true});
   },
   
   

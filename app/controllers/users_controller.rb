@@ -80,43 +80,45 @@ class UsersController < ApplicationController
   
   def finalizeEmailVerification
     user = User.find(params[:id])
-    if user
-      if Time.now < user.temporary_password_expire_time
-        if user.temporary_password == params[:verification_code]
-          user.status = GlobalConstant::User::Status::VERIFIED
-          validEmail = true
-          if user.email == user.unverified_email
-            user.unverified_email = ""
+    unless user.nil?
+      if user.validVerificationCode?(params[:verification_code])
+        user.status = GlobalConstant::User::Status::VERIFIED
+        validEmail = true
+        if user.email == user.unverified_email
+          user.unverified_email = ""
+        else
+          if User.exists?(email: user.unverified_email)
+            validEmail = false
           else
-            if User.exists?(email: user.unverified_email)
-              validEmail = false
-            else
-              user.email = user.unverified_email
-              user.unverified_email = ""
-            end
+            user.email = user.unverified_email
+            user.unverified_email = ""
           end
-          
+        end
+        user.resetVerificationCode
+        
+        if user.save
           if validEmail
-            if user.save
-              setUserLoginSession(user)
-            else
-              logger.fatal "Fail to set user's email and status."
-            end
+            setUserLoginSession(user)
           else
             # TODO
             logger.info "email is no longer valid"
           end
         else
-          # TODO
-          logger.info "verification_code is not correct"
+          logger.fatal "Fail to set user's email and status."
         end
       else
         # TODO
-        logger.info "temporary_password expired"
+        logger.info "verification_code is not correct or expired"
       end
+      
+      if correctLoggedInUser?(user.id)
+        redirect_to root_path :anchor => "/user/#{user.id}"
+      else
+        redirect_to root_path
+      end
+    else
+      redirect_to root_path
     end
-    
-    redirect_to root_path
   end
 
 
@@ -174,19 +176,21 @@ private
   def verifyEmail(user, action, asynchronous = true)
     verificationCode = SecureRandom.urlsafe_base64
     verificationUrl = finalizeEmailVerification_user_url(user.id, verification_code: verificationCode)
-    user.temporary_password = verificationCode
-    user.temporary_password_expire_time = Time.now + GlobalConstant::User::TEMPORARY_PASSWORD_LIFETIME_IN_SECOND
+    user.verificationCode = verificationCode
     
     if user.save
       if asynchronous
-        Thread.new do
-          generateVerificationEmail(user, action, verificationUrl)
-        end
+        semaphore = Mutex.new
+        Thread.new {
+          semaphore.synchronize {
+            generateVerificationEmail(user, action, verificationUrl)
+          }
+        }
       else
         generateVerificationEmail(user, action, verificationUrl)
       end
     else
-      logger.fatal "Fail to set user's temporary_password and temporary_password_expire_time."
+      logger.fatal "Fail to save user's verification code."
     end
   end
 end

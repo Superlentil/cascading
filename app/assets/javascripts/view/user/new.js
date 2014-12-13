@@ -75,7 +75,7 @@ View.User.New = View.User.ModifyInputValidator.extend({
       user.save(formData, {
         success: function(savedUser) {
           that.signInHandler(null, null, true);
-          Backbone.history.navigate("user/" + savedUser.id, {trigger: true});
+          Backbone.history.navigate("#/user/" + savedUser.id, {trigger: true});
         },
         
         error: function(unsavedUser, response) {
@@ -91,6 +91,6 @@ View.User.New = View.User.ModifyInputValidator.extend({
   
   onCancel: function(event) {
     event.preventDefault();
-    Backbone.history.navigate("", {trigger: true});
+    Backbone.history.navigate("#", {trigger: true});
   }
 });

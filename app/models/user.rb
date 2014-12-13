@@ -20,6 +20,16 @@ class User < ActiveRecord::Base
   
   validates :email, uniqueness: true
 
+
+###### Local Constants ######
+  DELIMITER_BETWEEN_TEMPORARY_IDENTITY_HASHES = "{{;}}"
+  DELIMITER_INSIDE_TEMPORARY_IDENTITY_HASH = "{{:}}"
+  TEMPORARY_IDENTITY_HASHES_LENGTH_LIMIT = 2000
+  
+  EMAIL_VERIFICATION_CODE = "0"
+  TEMPORARY_PASSWORD = "1"
+#############################
+
   
   def password=(newPassword)
     @password = Password.create(newPassword)
@@ -32,13 +42,91 @@ class User < ActiveRecord::Base
   end
   
   
-  def temporary_password=(newTemporaryPassword)
-    @temporaryPassword = Password.create(newTemporaryPassword)
-    self.temporary_password_hash = @temporaryPassword
+  def verificationCode=(newVerificationCode)
+    insertNewTemporaryIdentity(newVerificationCode, EMAIL_VERIFICATION_CODE)
   end
   
   
-  def temporary_password
-    @temporaryPassword || Password.new(temporary_password_hash)
+  def validVerificationCode?(inputVerificationCode)
+    return validTemporaryIdentity?(inputVerificationCode, EMAIL_VERIFICATION_CODE)
+  end
+  
+  
+  def resetVerificationCode
+    resetTemporaryIdentities
+  end
+  
+  
+  def temporaryPassword=(newTemporaryPassword)
+    insertNewTemporaryIdentity(newTemporaryPassword, TEMPORARY_PASSWORD)
+  end
+  
+  
+  def validTemporaryPassword?(inputTemporaryPassword)
+    return validTemporaryIdentity?(inputTemporaryPassword, TEMPORARY_PASSWORD)
+  end
+  
+  
+  def resetTemporaryPassword
+    resetTemporaryIdentities
+  end
+  
+
+private
+  # "temporary_identity_hashes" should be in the format of:
+  # EXPIRE_TIME{{:}}TYPE{{:}}TEMPORARY_IDENTITY_HASH{{;}}EXPIRE_TIME{{:}}TYPE{{:}}TEMPORARY_IDENTITY_HASH{{;}} ...
+  def insertNewTemporaryIdentity(newTemporaryIdentity, identityType)
+    newTemporaryIdentityHash = Password.create(newTemporaryIdentity)
+    expireTime = Time.now + GlobalConstant::User::TEMPORARY_IDENTITY_LIFETIME_IN_SECOND
+    
+    oldTemporaryIdentityHashes = self.temporary_identity_hashes
+    self.temporary_identity_hashes = "#{expireTime.to_i}#{DELIMITER_INSIDE_TEMPORARY_IDENTITY_HASH}#{identityType}#{DELIMITER_INSIDE_TEMPORARY_IDENTITY_HASH}#{newTemporaryIdentityHash}#{DELIMITER_BETWEEN_TEMPORARY_IDENTITY_HASHES}"
+    
+    unless oldTemporaryIdentityHashes.nil? || oldTemporaryIdentityHashes.empty?
+      oldTemporaryIdentityHashes = oldTemporaryIdentityHashes.split(DELIMITER_BETWEEN_TEMPORARY_IDENTITY_HASHES)
+      currentTime = Time.now.to_i
+      delimiterLength = DELIMITER_BETWEEN_TEMPORARY_IDENTITY_HASHES.length
+
+      oldTemporaryIdentityHashes.each do |hash|
+        temporaryIdentity = hash.split(DELIMITER_INSIDE_TEMPORARY_IDENTITY_HASH)
+        if temporaryIdentity.length == 3
+          if temporaryIdentity[0].to_i > currentTime
+            if self.temporary_identity_hashes.length + hash.length + delimiterLength > TEMPORARY_IDENTITY_HASHES_LENGTH_LIMIT
+              break
+            else
+              self.temporary_identity_hashes << hash << DELIMITER_BETWEEN_TEMPORARY_IDENTITY_HASHES
+            end
+          else
+            break
+          end
+        end
+      end
+    end
+  end
+  
+  
+  def validTemporaryIdentity?(inputIdentity, identityType)
+    unless self.temporary_identity_hashes.nil? || self.temporary_identity_hashes.empty?
+      temporaryIdentityHashes = self.temporary_identity_hashes.split(DELIMITER_BETWEEN_TEMPORARY_IDENTITY_HASHES)
+      currentTime = Time.now.to_i
+      temporaryIdentityHashes.each do |hash|
+        temporaryIdentity = hash.split(DELIMITER_INSIDE_TEMPORARY_IDENTITY_HASH)
+        if temporaryIdentity.length == 3
+          if temporaryIdentity[0].to_i > currentTime
+            if temporaryIdentity[1] == identityType && Password.new(temporaryIdentity[2]) == inputIdentity
+              return true
+            end
+          else
+            return false
+          end
+        end
+      end
+    end
+    return false
+  end
+  
+  
+  def resetTemporaryIdentities
+    self.temporary_identity_hashes = ""
   end
 end

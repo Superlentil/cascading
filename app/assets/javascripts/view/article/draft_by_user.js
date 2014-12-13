@@ -39,11 +39,11 @@ View.Article.DraftByUser = Backbone.View.extend({
     var article = new Model.Article({id: id});
     article.destroy({
       success: function() {
-        Backbone.history.navigate("", {trigger: true});
+        Backbone.history.navigate("#", {trigger: true});
       },
       error: function() {
         alert("Delete article failed. Please try it again. Thanks!");
-        Backbone.history.navigate("", {trigger: true});
+        Backbone.history.navigate("#", {trigger: true});
       }
     });
   },

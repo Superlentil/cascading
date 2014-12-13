@@ -232,12 +232,12 @@ View.Layout.Main = Backbone.View.extend({
     loginSession.save("login_session", {"type": "log out"}, {
       success: function() {
         that.renderUserAvatar();
-        if (that.userAvatar.css("display") === "none") {
+        if (that.userAvatar.is(":hidden")) {
           that.closeNav(null, true);
         }        
         that.viewHeader.render();
         that.viewRightNav.render();
-        Backbone.history.loadUrl();
+        Backbone.history.navigate("#", {trigger: true});
       }
     });
   },

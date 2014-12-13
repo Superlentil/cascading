@@ -2,8 +2,8 @@
 View.Article.Edit = Backbone.View.extend({
   initialize: function() {
     this.allSubviews = [];
-    _.bindAll(this, 'preview');
-    _.bindAll(this, 'publish');
+    _.bindAll(this, "preview");
+    _.bindAll(this, "publish");
   },
   
   
@@ -90,7 +90,7 @@ View.Article.Edit = Backbone.View.extend({
         }
       });
     } else {
-      Backbone.history.navigate("", {trigger: true});
+      Backbone.history.navigate("#", {trigger: true});
     }
   },
   

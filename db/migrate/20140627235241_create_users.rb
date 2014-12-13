@@ -4,8 +4,7 @@ class CreateUsers < ActiveRecord::Migration
       t.string :email
       t.string :unverified_email, default: ""
       t.string :password_hash
-      t.string :temporary_password_hash
-      t.timestamp :temporary_password_expire_time
+      t.text :temporary_identity_hashes, limit: 2000   # be able to hold 20 temporary passwords
       t.string :nickname
       t.attachment :avatar
       t.integer :tier, default: GlobalConstant::User::Tier::FREE_USER

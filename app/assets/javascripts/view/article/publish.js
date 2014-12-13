@@ -74,12 +74,12 @@ View.Article.Publish = Backbone.View.extend({
       article.set("cover_picture_imported", this.coverPictureImported);
       article.save(article.toJSON(), {
         success: function(savedArticle) {
-          Backbone.history.navigate("article/" + savedArticle.get("id"), {trigger: true});
+          Backbone.history.navigate("#/article/" + savedArticle.get("id"), {trigger: true});
         },
         
         error: function(unsavedArticle) {
           alert("Publish failed. Please try it again. Thanks!");
-          Backbone.history.loadUrl("article/" + unsavedArticle.get("id") + "/edit");
+          Backbone.history.loadUrl("#/article/" + unsavedArticle.get("id") + "/edit");
         }
       });
     }
@@ -192,7 +192,7 @@ View.Article.Publish = Backbone.View.extend({
   
   
   cancelPublish: function() {
-    Backbone.history.loadUrl("article/" + this.article.get("id") + "/edit");
+    Backbone.history.loadUrl("#/article/" + this.article.get("id") + "/edit");
   },
   
   

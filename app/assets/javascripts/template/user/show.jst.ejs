@@ -17,37 +17,25 @@
         <br>
         <br>
         <p>If you haven't received the email by chance, please click button below to get a new one.</p>
-        <p><button id="m-resend-verify-email">Resend</button></p>
+        <p><button id="m-resend-email">Resend</button></p>
         <p id="m-resend-status"></p>
       </div>
     <% } %>
       
       <div class="row user-show-option-group">
-        <div class="user-show-option">
-          <a href="#/user/<%= user.get("id") %>/edit/profile">Edit My Profile</a>
-        </div>
-        <div class="user-show-option">
-          <a href="#/user/<%= user.get("id") %>/edit/password">Edit My Password</a>
-        </div>
+        <a class="user-show-option" href="#/user/<%= user.get("id") %>/edit/profile">Edit My Profile</a>
+        <a class="user-show-option" href="#/user/<%= user.get("id") %>/edit/password">Edit My Password</a>
       </div>
       
     <% if (isVerifiedUser) { %>
       <div class="row user-show-option-group">
-        <div class="user-show-option">
-          <a href="#/articles/user/<%= user.get("id") %>">All My Published Articles</a>
-        </div>
-        <div class="user-show-option">
-          <a href="#/categories/user/<%= user.get("id") %>">All My Article Categories</a>
-        </div>
+        <a class="user-show-option" href="#/articles/user/<%= user.get("id") %>">All My Published Articles</a>
+        <a class="user-show-option" href="#/categories/user/<%= user.get("id") %>">All My Article Categories</a>
       </div>
       
       <div class="row user-show-option-group">
-        <div class="user-show-option">
-          <a href="#/articles/draft/user/<%= user.get("id") %>">All My Drafts</a>
-        </div>
-        <div class="user-show-option">
-          <a href="#/articles/new">Write a New Article</a>
-        </div>
+        <a class="user-show-option" href="#/articles/draft/user/<%= user.get("id") %>">All My Drafts</a>
+        <a class="user-show-option" href="#/articles/new">Write a New Article</a>
       </div>
     <% } %>
     </div>
