@@ -15,6 +15,8 @@ class GlobalConstant
   
   
   class User
+    TEMPORARY_PASSWORD_LIFETIME_IN_SECOND = 660   # set to 11 minutes, and tell user 10 minutes in case of some delay.
+    
     class Tier   # If this enumeration needs to be modified, please modify the corresponding one in the "Javascript" code together.
       ADMINISTRATOR = 0
       FREE_USER = 1

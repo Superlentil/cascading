@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     end
     member do
       get "publicInfo"
+      get "finalizeEmailVerification"
     end
   end
   

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1>Email Verification for <a href="http://haigy.com/" target="_blank">Haigy.com</a></h1>
+    <br>
+    <p>Hi <%= @user.nickname %>,</p>
+    <br>
+    <p>Thank you very much for signing up with <a href="http://haigy.com/" target="_blank">Haigy.com</a></p>
+    <p>You are almost there! Please click on the link below (will expire in 10 minutes) to verify your email and enable all functionality on <a href="http://haigy.com/" target="_blank">Haigy.com</a></p>
+    <p><a href="<%= @verificationUrl %>" target="_blank"><%= @verificationUrl %></a></p>
+    <p>If you have issue to visit the link above, please simply copy and paste it into your web browser.</p>
+    <br>
+    <p>Thank you again!</p>
+    <p>Haigy Team</p>
+  </body>
+</html>

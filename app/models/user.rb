@@ -21,14 +21,24 @@ class User < ActiveRecord::Base
   validates :email, uniqueness: true
 
   
-  def password
-    @password ||= Password.new(password_hash)
-  end
-
-
-  def password=(new_password)
-    @password = Password.create(new_password)
+  def password=(newPassword)
+    @password = Password.create(newPassword)
     self.password_hash = @password
   end
   
+  
+  def password
+    @password ||= Password.new(password_hash)
+  end
+  
+  
+  def temporary_password=(newTemporaryPassword)
+    @temporaryPassword = Password.create(newTemporaryPassword)
+    self.temporary_password_hash = @temporaryPassword
+  end
+  
+  
+  def temporary_password
+    @temporaryPassword || Password.new(temporary_password_hash)
+  end
 end
