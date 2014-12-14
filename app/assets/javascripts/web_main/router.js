@@ -21,7 +21,9 @@ Router = Backbone.Router.extend({
     "users/new": "userNew",
     "user/:id": "userShow",
     "user/:id/edit/profile": "userEditProfile",
-    "user/:id/edit/password": "userEditPassword"
+    "user/:id/edit/email": "userEditEmail",
+    "user/:id/edit/password": "userEditPassword",
+    "user/:id/retrieve/password": "userRetrievePassword"
   },
   
   
@@ -160,9 +162,21 @@ Router = Backbone.Router.extend({
   },
   
   
+  userEditEmail: function(id) {
+    var viewEditEmail = new View.User.EditEmail({signInHandler: this.layout.signIn});
+    viewEditEmail.render({userId: id});
+    return viewEditEmail;
+  },
+  
+  
   userEditPassword: function(id) {
     var viewEditPassword = new View.User.EditPassword({signInHandler: this.layout.signIn});
     viewEditPassword.render({userId: id});
     return viewEditPassword;
+  },
+  
+  
+  userRetrievePassword: function(id) {
+    
   }
 });

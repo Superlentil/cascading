@@ -24,7 +24,7 @@ Rails.application.routes.draw do
       get "publicInfo"
       get "finalizeEmailVerification"
       post "resendSignUpEmailVerification"
-      post "sendEditEmailVerification"
+      post "resendEditEmailVerification"
     end
   end
   

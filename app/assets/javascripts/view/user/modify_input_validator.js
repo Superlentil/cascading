@@ -130,6 +130,22 @@ View.User.ModifyInputValidator = Backbone.View.extend({
   },
   
   
+  // valid only when "this.verifyPassword" and "this.verifyPasswordError" both exist
+  validateVerifyPassword: function(event) {
+    var verifyPasswordInput = this.verifyPassword;
+    var verifyPasswordError = this.verifyPasswordError;
+    if (verifyPasswordInput && verifyPasswordError) {
+      if (GlobalValidator.Password(verifyPasswordInput.val())) {
+        this.removeMark(verifyPasswordInput);
+        verifyPasswordError.hide(500);
+      } else {
+        this.markInvalid(verifyPasswordInput);
+        verifyPasswordError.show(500);
+      }
+    }
+  },
+  
+  
   validatePassword: function(event) {
     this.validate(this.password, this.passwordError, GlobalValidator.Password);
     this.validateRepeatPassword();

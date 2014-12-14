@@ -54,6 +54,8 @@
   @include transition(200ms);
   
   &:hover, &:active {
+    color: #ff00ff;
+    font-weight: bold;
     @include transform(translateX(20px));
     background-color: #f8f8f8;
   }

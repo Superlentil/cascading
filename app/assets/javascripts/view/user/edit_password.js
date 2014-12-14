@@ -40,17 +40,20 @@ View.User.EditPassword = View.User.ModifyInputValidator.extend({
     "click #user-edit-save": "onSave",
     "click #user-edit-cancel": "onCancel",
     
+    "blur #user-edit-verify-password": "validateVerifyPassword",
     "blur #user-edit-password": "validatePassword",
-    "blur #user-edit-repeat-password": "validateRepeatPassword",
-    "change #user-edit-verify-password": "onVerifyPasswordChange"
+    "blur #user-edit-repeat-password": "validateRepeatPassword"
   },
   
   
   onSave: function(event) {
     event.preventDefault();
     
+    var validator = GlobalValidator;
+    var verifyPassword = this.verifyPassword.val();
     var password = this.password.val();
-    if (GlobalValidator.Password(password) && password === this.repeatPassword.val()) {
+    
+    if (validator.Password(verifyPassword) && validator.Password(password) && password === this.repeatPassword.val()) {
       var that = this;
       
       that.saveError.hide(500);
@@ -58,7 +61,7 @@ View.User.EditPassword = View.User.ModifyInputValidator.extend({
       var formData = new FormData();
       formData.append("user[id]", that.userId);
       formData.append("user[password]", password);
-      formData.append("user[verify_password]", that.verifyPassword.val());
+      formData.append("user[verify_password]", verifyPassword);
       
       var user = new Model.User();
       
@@ -71,7 +74,6 @@ View.User.EditPassword = View.User.ModifyInputValidator.extend({
               that.verifyPassword.addClass("input-invalid");
             }
           } else {
-            that.signInHandler(null, null, true);
             Backbone.history.navigate("#/user/" + response.id, {trigger: true});
           }
         },
@@ -90,12 +92,5 @@ View.User.EditPassword = View.User.ModifyInputValidator.extend({
   onCancel: function(event) {
     event.preventDefault();
     Backbone.history.navigate("#/user/" + this.userId, {trigger: true});
-  },
-  
-  
-  onVerifyPasswordChange: function(event) {
-    this.verifyPasswordError.hide(500);
-    this.verifyPassword.removeClass("input-invalid");
-    this.refreshSaveError();
   }
 });

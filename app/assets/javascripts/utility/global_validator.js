@@ -4,7 +4,7 @@ var GlobalValidator = {
   },
   
   Password: function(password) {
-    return /\S{6,20}/.test(password);
+    return /^\S{6,20}$/.test(password);
   },
   
   Nickname: function(nickname) {

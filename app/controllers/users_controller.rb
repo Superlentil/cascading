@@ -69,7 +69,7 @@ class UsersController < ApplicationController
   end
   
   
-  def sendEditEmailVerification
+  def resendEditEmailVerification
     user = User.find(params[:id])
     if correctLoggedInUser?(user.id)
       verifyEmail(user, VERIFY_EDIT_EMAIL, false)
@@ -129,6 +129,9 @@ class UsersController < ApplicationController
         params[:user].delete(:verify_password)
         if @user.update(userParams)
           setUserLoginSession(@user)
+          unless params[:user][:unverified_email].nil?
+            verifyEmail(@user, VERIFY_EDIT_EMAIL, false)
+          end
         else
           setResponseMessage("error", "Fail to update user!")
         end
@@ -157,7 +160,7 @@ class UsersController < ApplicationController
   
 private
   def userParams
-    params.require(:user).permit(:email, :password, :nickname, :avatar, :tier)
+    params.require(:user).permit(:id, :email, :unverified_email, :password, :nickname, :avatar, :tier)
   end
 
 
@@ -166,6 +169,7 @@ private
       if action == VERIFY_SIGN_UP_EMAIL
         UserMailer.verifySignUpEmail(user, verificationUrl).deliver
       elsif action == VERIFY_EDIT_EMAIL
+        UserMailer.verifySignUpEmail(user, verificationUrl).deliver
       end
     rescue
       logger.fatal "Fail to send the verification email."
