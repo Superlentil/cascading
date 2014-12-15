@@ -1,4 +1,10 @@
 View.User.EditEmail = View.User.ModifyInputValidator.extend({
+  initializeHelper: function(options) {
+    _.bindAll(this, "onSave");
+    _.bindAll(this, "resendEmail");
+  },
+  
+  
   el: "#layout-content",
   
   
@@ -13,7 +19,7 @@ View.User.EditEmail = View.User.ModifyInputValidator.extend({
       var user = new Model.User({id: userId});
       user.fetch({
         success: function(fetchedUser) {
-          that.userId = fetchedUser.get("id");
+          that.userId = userId;
           that.resetIndicators(true);
           var oldEmail = fetchedUser.get("email");
 
@@ -30,6 +36,12 @@ View.User.EditEmail = View.User.ModifyInputValidator.extend({
           that.verifyPasswordError = $("#user-edit-verify-password-error");
           that.saveError = $("#user-edit-save-error");
           
+          that.saveButton = $("#user-edit-save");
+          that.saveButton.one("click", that.onSave);
+          
+          that.resendEmailButton = $("#m-resend-email");
+          that.resendEmailButton.one("click", that.resendEmail);
+          
           return that;
         }
       });
@@ -41,7 +53,6 @@ View.User.EditEmail = View.User.ModifyInputValidator.extend({
   
   
   events: {
-    "click #user-edit-save": "onSave",
     "click #user-edit-cancel": "onCancel",
     
     "blur #user-edit-email": "validateEmail",
@@ -78,7 +89,8 @@ View.User.EditEmail = View.User.ModifyInputValidator.extend({
               that.verifyPasswordError.show(500);
             }
           } else {
-            $("#user-edit-save-callback-info").html("Sent an Email! Check it!");
+            $("#user-edit-email-form").hide();
+            $("#user-edit-email-callback").removeClass("hide");
           }
         },
         
@@ -89,6 +101,7 @@ View.User.EditEmail = View.User.ModifyInputValidator.extend({
       }, "PUT", "/" + user.urlRoot + "/" + userId);
     } else {
       this.saveError.show(500);
+      this.saveButton.one("click", this.onSave);
     }
   },
   
@@ -96,5 +109,30 @@ View.User.EditEmail = View.User.ModifyInputValidator.extend({
   onCancel: function(event) {
     event.preventDefault();
     Backbone.history.navigate("#/user/" + this.userId, {trigger: true});
+  },
+  
+  
+  resendEmail: function() {
+    var that = this;
+
+    $.ajax({
+      type: "POST",
+      url: "/users/" + that.userId + "/resendEditEmailVerification",
+      beforeSend: function() {
+        $("#m-resend-status").empty();
+      },
+      success: function() {
+        $("#m-resend-status").html(" &#160; &#160; Successfully Resended!");
+      },
+      complete: function() {
+        that.resendEmailButton.one("click", that.resendEmail);
+      }
+    });
+  },
+  
+  
+  removeHelper: function() {
+    this.saveButton.off("click");
+    this.resendEmailButton.off("click");
   }
 });

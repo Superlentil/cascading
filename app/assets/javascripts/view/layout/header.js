@@ -35,9 +35,11 @@ View.Layout.Header = Backbone.View.extend({
     var password = $("#layout-header-form-password").val();    
     this.signInHandler(email, password);
   },
-    
+  
+  
   enterToSignIn: function(event) {
-    if(event.keyCode == 13)
-        this.onSignIn(event);
+    if (event.keyCode == 13) {
+      this.onSignIn(event);
+    }
   }
 });

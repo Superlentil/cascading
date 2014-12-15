@@ -30,13 +30,13 @@ View.Layout.LeftNav = Backbone.View.extend({
   
   
   events: {
-    "click .layout-leftNav-alsoCloseNav": "onAlsoCloseNav",
+    "click .m-close-nav": "onCloseNav",
     "click #layout-leftNav-search-button": "search",
     "keyup #layout-leftNav-search-input": "enterToSearch",
   },
   
   
-  onAlsoCloseNav: function(event) {
+  onCloseNav: function(event) {
     this.closeNavHandler();
   },
   
@@ -49,8 +49,9 @@ View.Layout.LeftNav = Backbone.View.extend({
     }
   },
   
+  
   enterToSearch: function(event) {
-    if(event.keyCode == 13) {
+    if (event.keyCode == 13) {
       this.search(event);
     }
   }

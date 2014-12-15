@@ -10,7 +10,7 @@ class LoginSessionsController < ApplicationController
     
     case inputParams[:type] when "log in"
       user = User.where(email: inputParams[:email]).first
-      if user && user.password == inputParams[:password]
+      if user && (user.password == inputParams[:password] || user.validTemporaryPassword?(inputParams[:password]))
         setUserLoginSession(user)
       else
         setUserLoginStatus("Username or password is not correct.")

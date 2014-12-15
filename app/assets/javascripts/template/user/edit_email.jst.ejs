@@ -1,10 +1,11 @@
 <div id="user-modify-container">
   <div class="one-central-column-container">
     <div class="central-column">
-      <h1 class="row">Edit <i><%= nickname %>'s</i> Email</h1>
       
-      <div class="empty-row"></div>
-      
+    <h1 class="row">Edit <i><%= nickname %>'s</i> Email</h1>
+    <div class="empty-row"></div>
+    
+    <div id="user-edit-email-form" class="max-width">
       <h3 class="row">Email</h3>
       <div class="row"><input id="user-edit-email" type="email" value="<%= email %>"></div>
       <div id="user-edit-email-error" class="hide"></div>
@@ -24,10 +25,24 @@
         <span class="inline-block col-xs-12 col-sm-4 padding-s-lr"><input id="user-edit-cancel" class="button button-default" type="button" value="Cancel"></span>
       </div>
       <div id="user-edit-save-error" class="hide"><small>You may type an incorrect password, or still have some invalid input above.</small></div>
+    </div>
       
+    <div id="user-edit-email-callback" class="max-width hide">
+      <div class="row">
+        <p>A verification email has been sent to your new email address.</p>
+        <p>Please follow the instruction in it to finalize the change.</p>
+        <p>Thanks!</p>
+        <br>
+        <p>If you by chance haven't received any email from us, please click the button below to get a new one.</p>
+      </div>
       <div class="empty-row"></div>
       
-      <div id="user-edit-save-callback-info" class="row"></div>
+      <div class="row"><button id="m-resend-email">Resend</button></div>   
+      <div class="empty-row"></div>
+      
+      <div class="row"><p id="m-resend-status"></p></div>
+    </div>
+      
     </div>
   </div>
 </div>

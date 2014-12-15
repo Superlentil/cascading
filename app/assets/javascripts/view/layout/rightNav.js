@@ -23,7 +23,9 @@ View.Layout.RightNav = Backbone.View.extend({
   events: {
     "click #layout-rightNav-form-submit": "onSignIn",
     "click #layout-rightNav-signOut": "onSignOut",
-    "click .layout-rightNav-alsoCloseNav": "onAlsoCloseNav"
+    "click .m-close-nav": "onCloseNav",
+    "keyup #layout-rightNav-form-email": "enterToSignIn",
+    "keyup #layout-rightNav-form-password": "enterToSignIn"
   },
   
   
@@ -42,7 +44,14 @@ View.Layout.RightNav = Backbone.View.extend({
   },
   
   
-  onAlsoCloseNav: function(event) {
+  onCloseNav: function(event) {
     this.closeNavHandler();
+  },
+  
+  
+  enterToSignIn: function(event) {
+    if (event.keyCode == 13) {
+      this.onSignIn(event);
+    }
   }
 });

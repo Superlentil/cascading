@@ -6,13 +6,13 @@
       Welcome <%= $.cookie("user_nickname") %>!
     </div>
     <div class="row">
-      <a class="layout-rightNav-alsoCloseNav" href="#/user/<%= $.cookie("user_id") %>">My Account</a>
+      <a class="m-close-nav" href="#/user/<%= $.cookie("user_id") %>">My Account</a>
     </div>
     <div class="row">
-      <a class="layout-rightNav-alsoCloseNav" href="#/articles/user/<%= $.cookie("user_id") %>">All My Articles</a>
+      <a class="m-close-nav" href="#/articles/user/<%= $.cookie("user_id") %>">All My Articles</a>
     </div>
     <div class="row">
-      <a class="layout-rightNav-alsoCloseNav" href="#/articles/new">Write a new Article</a>
+      <a class="m-close-nav" href="#/articles/new">Write a new Article</a>
     </div>
     <div class="row">
       <a id="layout-rightNav-signOut" href="#">Sign Out</a>
@@ -25,13 +25,14 @@
     </div>
     <div class="row">
       <input id="layout-rightNav-form-password" type="password" placeholder="Password">
+      <small class="block max-width text-align-center m-close-nav"><em><a href="#/users/retrieve/password">Forget Password?</a></em></small>
     </div>
     <div class="row">
       <input id="layout-rightNav-form-submit" class="button button-primary" type="button" value="Sign In">
     </div>
     <div class="row"></div>
-    <div class="row text-align-center">
-      <em><a class="layout-rightNav-alsoCloseNav" href="#/users/new">Or, join Haigy today!</a></em>
-    </div>
+    <h2 class="row text-align-center">
+      <em><a class="m-close-nav" href="#/users/new">Or, join Haigy today!</a></em>
+    </h2>
   </div>
 <% } %>

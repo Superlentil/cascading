@@ -8,10 +8,12 @@
     <br>
     <p>Hi <%= @user.nickname %>,</p>
     <br>
-    <p>Thank you very much for signing up with <a href="http://haigy.com/" target="_blank">Haigy.com</a></p>
-    <p>You are almost there! Please click on the link below (will expire in 10 minutes) to verify your email and enable all functionalities.</p>
+    <p>Thank you very much for being a member with <a href="http://haigy.com/" target="_blank">Haigy.com</a></p>
+    <p>We received your request to change the email address. Please click on the link below (will expire in 10 minutes) to finalize it.</p>
     <p><a href="<%= @verificationUrl %>" target="_blank"><%= @verificationUrl %></a></p>
     <p>If you have issue to visit the link above, please simply copy and paste it into your web browser.</p>
+    <br>
+    <p>If this request is not from you, your account may have been compromised by another person or a virus. Please change your password as soon as possible to prevent further loss.</p>
     <br>
     <p>Thank you again!</p>
     <p>Haigy Team</p>

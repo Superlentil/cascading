@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   resources :users do
     collection do
       get "emailAvailable"
+      post "retrievePassword"
     end
     member do
       get "publicInfo"

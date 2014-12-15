@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-xs-12 layout-leftNav-row">
-    <a class="haigy-logo layout-leftNav-alsoCloseNav" href="#">Haigy</a>
+    <a class="haigy-logo m-close-nav" href="#">Haigy</a>
   </div>
   
   <div class="col-xs-12 layout-leftNav-row">
@@ -13,12 +13,12 @@
   </div>
   
   <div class="col-xs-12 layout-leftNav-row">
-    <a class="layout-leftNav-alsoCloseNav" href="#/categories">All Categories</a>
+    <a class="m-close-nav" href="#/categories">All Categories</a>
   </div>
 
   <% _.each(categories, function(category) { %>
     <div class="col-xs-12 layout-leftNav-row">
-      <a class="layout-leftNav-alsoCloseNav" href="#/articles/category/<%= category.get("id") %>"><%= category.get("name") %></a>
+      <a class="m-close-nav" href="#/articles/category/<%= category.get("id") %>"><%= category.get("name") %></a>
     </div>
   <% }); %>
 </div>

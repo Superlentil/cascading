@@ -5,6 +5,12 @@ View.User.ModifyInputValidator = Backbone.View.extend({
     }
     
     _.bindAll(this, "markCaptchaStatus");
+    
+    this.initializeHelper(options);
+  },
+  
+  
+  initializeHelper: function(options) {
   },
   
   
@@ -135,7 +141,8 @@ View.User.ModifyInputValidator = Backbone.View.extend({
     var verifyPasswordInput = this.verifyPassword;
     var verifyPasswordError = this.verifyPasswordError;
     if (verifyPasswordInput && verifyPasswordError) {
-      if (GlobalValidator.Password(verifyPasswordInput.val())) {
+      var password = verifyPasswordInput.val();
+      if (password.length === 0 || GlobalValidator.Password(password)) {
         this.removeMark(verifyPasswordInput);
         verifyPasswordError.hide(500);
       } else {
@@ -214,7 +221,13 @@ View.User.ModifyInputValidator = Backbone.View.extend({
   },
   
   
+  removeHelper: function() {
+  },
+  
+  
   remove: function() {
+    this.removeHelper();
+    
     if (this.viewCaptcha) {
       this.viewCaptcha.remove();
     }

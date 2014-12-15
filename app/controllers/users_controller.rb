@@ -60,6 +60,64 @@ class UsersController < ApplicationController
   end
   
   
+  def update
+    @user = User.find(params[:id])
+    if correctLoggedInUser?(@user.id)
+      if @user.password == params[:user][:verify_password]
+        params[:user].delete(:verify_password)
+        unless params[:user][:password].nil?
+          @user.resetTemporaryPassword
+        end
+        if @user.update(userParams)
+          setUserLoginSession(@user)
+          unless params[:user][:unverified_email].nil?
+            verifyEmail(@user, VERIFY_EDIT_EMAIL, false)
+          end
+        else
+          setResponseMessage("error", "Fail to update user!")
+        end
+      else
+        setResponseMessage("error", "Password is not correct!")
+        render :json => {fail: "password is not correct"}
+      end
+    end
+  end
+
+
+  def destroy
+    @user = User.find(params[:id])
+    if @user.destroy
+      clearUserLoginSession
+    else
+      setResponseMessage("error", "Fail to destroy user!")
+    end
+  end
+  
+  
+  def emailAvailable
+    @available = !User.exists?(email: params[:email])
+  end
+  
+  
+  def retrievePassword
+    retrieveEmail = params[:retrieve_email]
+    user = User.where(email: retrieveEmail).first
+    if user.nil?
+      render :json => {fail: "retrieve email is not found"}
+    else
+      temporaryPassword = SecureRandom.urlsafe_base64(6)
+      user.temporaryPassword = temporaryPassword
+      
+      if user.save
+        UserMailer.retrievePassword(user, temporaryPassword).deliver
+      else
+        logger.fatal "Fail to set user's temporary password."
+      end
+      render :json => {}
+    end
+  end
+  
+  
   def resendSignUpEmailVerification
     user = User.find(params[:id])
     if correctLoggedInUser?(user.id)
@@ -120,42 +178,6 @@ class UsersController < ApplicationController
       redirect_to root_path
     end
   end
-
-
-  def update
-    @user = User.find(params[:id])
-    if correctLoggedInUser?(@user.id)
-      if @user.password == params[:user][:verify_password]
-        params[:user].delete(:verify_password)
-        if @user.update(userParams)
-          setUserLoginSession(@user)
-          unless params[:user][:unverified_email].nil?
-            verifyEmail(@user, VERIFY_EDIT_EMAIL, false)
-          end
-        else
-          setResponseMessage("error", "Fail to update user!")
-        end
-      else
-        setResponseMessage("error", "Password is not correct!")
-        render :json => {fail: "password is not correct"}
-      end
-    end
-  end
-
-
-  def destroy
-    @user = User.find(params[:id])
-    if @user.destroy
-      clearUserLoginSession
-    else
-      setResponseMessage("error", "Fail to destroy user!")
-    end
-  end
-  
-  
-  def emailAvailable
-    @available = !User.exists?(email: params[:email])
-  end
   
   
 private
@@ -169,7 +191,7 @@ private
       if action == VERIFY_SIGN_UP_EMAIL
         UserMailer.verifySignUpEmail(user, verificationUrl).deliver
       elsif action == VERIFY_EDIT_EMAIL
-        UserMailer.verifySignUpEmail(user, verificationUrl).deliver
+        UserMailer.verifyEditEmail(user, verificationUrl).deliver
       end
     rescue
       logger.fatal "Fail to send the verification email."
