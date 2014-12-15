@@ -72,7 +72,7 @@ namespace :data_generator do
         file = File.open(allPicturePaths[randInt.rand(0..allPicturePathsLastIndex)])
         Category.create({
           name: "example_category_" + count.to_s,
-          group: GlobalConstant::ArticleCategoryType::PREDEFINED,
+          group: GlobalConstant::Article::CategoryType::PREDEFINED,
           description: "example_category_" + count.to_s + "_description",
           cover_picture: file
         })
