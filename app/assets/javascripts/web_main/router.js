@@ -39,6 +39,7 @@ Router = Backbone.Router.extend({
       }
       
       if (callback) {
+        GlobalVariable.Browser.Window.scrollTop(0);
         that.layout.viewContent = callback.apply(that, args);
       }
     });

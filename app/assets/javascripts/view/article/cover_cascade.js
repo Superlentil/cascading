@@ -10,21 +10,21 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
   
   ADJUST_CASCADE_WHEN_VIEWPORT_WIDTH_CHANGE: true,
   
-  MAX_COLUMN_COUNT: 5,
+  MAX_COLUMN_COUNT: 3,
   ENABLE_COMPACT_MODE: true,
-  MAX_AUTO_COMPACT_MODE_WIDTH: 720.0,   // if compact mode is enabled and the cascading area width is smaller than this value, then the initial display mode will be automatically set to compact.
+  MAX_AUTO_COMPACT_MODE_WIDTH: 894.0,   // if compact mode is enabled and the cascading area width is smaller than this value, then the initial display mode will be automatically set to compact.
   
-  NORMAL_COLUMN_WIDTH: 240.0,   // in the unit "px"
-  NORMAL_VERTICAL_GAP: 8.0,   // in the unit "px"
-  NORMAL_HORIZONTAL_GAP: 8.0,   // in the unit "px"
+  NORMAL_COLUMN_WIDTH: 298.0,   // in the unit "px"
+  NORMAL_VERTICAL_GAP: 16.0,   // in the unit "px"
+  NORMAL_HORIZONTAL_GAP: 24.0,   // in the unit "px"
   
-  COMPACT_COLUMN_WIDTH: 220.0,   // in the unit "px"
-  COMPACT_VERTICAL_GAP: 4.0,   // in the unit "px"
-  COMPACT_HORIZONTAL_GAP: 4.0,   // in the unit "px"
+  COMPACT_COLUMN_WIDTH: 274.0,   // in the unit "px"
+  COMPACT_VERTICAL_GAP: 8.0,   // in the unit "px"
+  COMPACT_HORIZONTAL_GAP: 12.0,   // in the unit "px"
   
   
   initializeOtherConstants: function() {
-    this.ITEM_PICTURE_WIDTH = 200.0;   // in the unit "px"
+    this.ITEM_PICTURE_WIDTH = 250.0;   // in the unit "px"
     this.NORMAL_ITEM_PADDING = 16.0;   // in the unit "px"
     this.COMPACT_ITEM_PADDING = 8.0;   // in the unit "px"
   },

@@ -1,3 +1,6 @@
+@import "compass";
+
+
 #article-cover-cascade {
   margin: 0;
   padding: 0;
@@ -17,7 +20,12 @@
 .article-cover {
   position: absolute;
 
-  background-color: #ebfffd;
+  background-color: #fff;
+  // background-color: #ebfffd;
+  
+  border: 1px solid transparent;
+  @include border-radius(2px);
+  @include box-shadow(1px 1px 1px 1px #b6b6b6);
 }
 
 
