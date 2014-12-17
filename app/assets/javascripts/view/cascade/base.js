@@ -377,7 +377,6 @@ View.Cascade.Base = Backbone.View.extend({
       
       that.fetchFunction(that.getFetchSequenceNumber(), itemCountPerFetch, that.generateFetchOptions(), {
         success: function(fetchedData) {
-          console.log(fetchedData);
           that.fetchDataSuccessHelperBeforeAllActions(fetchedData);
           
           var allFetchedItems = fetchedData.models;
@@ -429,7 +428,6 @@ View.Cascade.Base = Backbone.View.extend({
         },
         
         error: function() {
-          console.log("error");
           // TODO: put some error handling logic here
           that.readyToFetch = true;
           that.fetchDataErrorHelper();
@@ -535,7 +533,13 @@ View.Cascade.Base = Backbone.View.extend({
       if ((reusedBatchCount * countPerBatch) % countPerFetch > 0) {
         ++reusedFetchCount;
       }
-      cache.itemData = cache.itemData.slice(0, reusedFetchCount * countPerFetch);
+      var reusedItemDataCount = reusedFetchCount * countPerFetch;
+      cache.itemData = cache.itemData.slice(0, reusedItemDataCount);
+      for (var index = reusedBatchCount * countPerBatch; index < reusedItemDataCount; ++index) {           
+        this.updateItemDataInCacheAfterDisplayModeChange(index);
+      }
+  
+      console.log(cache.nextUnprocessedBatch + "   " + reusedFetchCount * countPerFetch);
   
       this.onScroll();
     }

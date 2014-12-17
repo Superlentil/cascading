@@ -14,19 +14,20 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
   ENABLE_COMPACT_MODE: true,
   MAX_AUTO_COMPACT_MODE_WIDTH: 894.0,   // if compact mode is enabled and the cascading area width is smaller than this value, then the initial display mode will be automatically set to compact.
   
-  NORMAL_COLUMN_WIDTH: 298.0,   // in the unit "px"
-  NORMAL_VERTICAL_GAP: 16.0,   // in the unit "px"
-  NORMAL_HORIZONTAL_GAP: 24.0,   // in the unit "px"
+  NORMAL_COLUMN_WIDTH: 303.0,   // in the unit "px"
+  NORMAL_VERTICAL_GAP: 30.0,   // in the unit "px"
+  NORMAL_HORIZONTAL_GAP: 20.0,   // in the unit "px"
   
-  COMPACT_COLUMN_WIDTH: 274.0,   // in the unit "px"
-  COMPACT_VERTICAL_GAP: 8.0,   // in the unit "px"
-  COMPACT_HORIZONTAL_GAP: 12.0,   // in the unit "px"
+  COMPACT_COLUMN_WIDTH: 278.0,   // in the unit "px"
+  COMPACT_VERTICAL_GAP: 15.0,   // in the unit "px"
+  COMPACT_HORIZONTAL_GAP: 10.0,   // in the unit "px"
   
   
   initializeOtherConstants: function() {
     this.ITEM_PICTURE_WIDTH = 250.0;   // in the unit "px"
-    this.NORMAL_ITEM_PADDING = 16.0;   // in the unit "px"
-    this.COMPACT_ITEM_PADDING = 8.0;   // in the unit "px"
+    this.NORMAL_ITEM_PADDING = 10.0;   // in the unit "px"
+    this.COMPACT_ITEM_PADDING = 5.0;   // in the unit "px"
+    this.OTHER_NOT_INCLUDED_WIDTH = 3.0;   // in the unit "px"
   },
   
   
@@ -71,7 +72,7 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
     var cache = this.cache;
     if (cache.compactMode) {
       cache.itemPadding = this.COMPACT_ITEM_PADDING;
-      cache.itemPictureScale = (cache.itemWidth - cache.itemPadding * 2.0) / this.ITEM_PICTURE_WIDTH;
+      cache.itemPictureScale = (cache.itemWidth - cache.itemPadding * 2.0 - this.OTHER_NOT_INCLUDED_WIDTH) / this.ITEM_PICTURE_WIDTH;
     } else {
       cache.itemPadding = this.NORMAL_ITEM_PADDING;
       cache.itemPictureScale = 1.0;
@@ -80,7 +81,6 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
   
   
   fetchDataSuccessHelperBeforeAllActions: function(fetchedData) {
-    console.log(this.cache.pageLoadTimeSinceEpoch);
     if (this.cache.pageLoadTimeSinceEpoch === 0) {
       this.cache.pageLoadTimeSinceEpoch = fetchedData.pageLoadTime;
     }

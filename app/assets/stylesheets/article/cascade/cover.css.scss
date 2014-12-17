@@ -20,11 +20,11 @@
 .article-cover {
   position: absolute;
 
-  background-color: #fff;
+  background-color: #FFFAFA;
   // background-color: #ebfffd;
   
   border: 1px solid transparent;
-  @include border-radius(2px);
+  @include border-radius(3px);
   @include box-shadow(1px 1px 1px 1px #b6b6b6);
 }
 
@@ -37,4 +37,8 @@
 .article-cover-img {
   margin: 0 auto;
   display: block;
+}
+
+.article-cover-img {
+  @include border-radius(3px);
 }
