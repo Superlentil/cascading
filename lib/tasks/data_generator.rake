@@ -129,6 +129,7 @@ namespace :data_generator do
       article.cover_picture_height = Paperclip::Geometry.from_file(coverPicture.src.path(:thumb)).height.to_i
       article.status = GlobalConstant::Article::Status::PUBLIC_PUBLISHED
       article.content = articleContent
+      article.abstract = getArticleAbstract(article.content)
       article.publish_time = Time.now
       
       article.save
@@ -178,5 +179,29 @@ namespace :data_generator do
     end
     
     return articleContent
+  end
+  
+  
+###### Local Constants ######
+  ARTICLE_ABSTRACT_LENGTH = 200
+#############################
+
+
+  def getArticleAbstract(articleContent)
+    abstract = ""
+    articleContentJson = JSON.parse(articleContent)
+    articleContentJson.each do |paragraph|
+      if paragraph["type"] == "text"
+        abstractLength = abstract.length
+        text = paragraph["src"]
+        if abstractLength + text.length > ARTICLE_ABSTRACT_LENGTH
+          abstract << text.slice(0, ARTICLE_ABSTRACT_LENGTH - abstractLength) + " ..."
+          break
+        else
+          abstract << text << "  "
+        end
+      end
+    end
+    return abstract
   end
 end

@@ -8,6 +8,7 @@ class CreateArticles < ActiveRecord::Migration
       t.string :title, default: ""
       t.string :author, default: ""
       t.string :category_name, default: ""
+      t.string :abstract, default: ""
       t.text :content, limit: 2000000000
       t.integer :views, default: 0
       t.integer :like, default: 0

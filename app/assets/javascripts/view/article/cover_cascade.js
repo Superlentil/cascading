@@ -95,10 +95,8 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
     var itemData = {
       id: fetchedItem.get("id"),
       title: fetchedItem.get("title"),
-      author: fetchedItem.get("author"),
-      userId: fetchedItem.get("user_id"),
-      category: fetchedItem.get("category_name"),
-      categoryId: fetchedItem.get("category_id"),
+      abstract: fetchedItem.get("abstract"),
+      like: fetchedItem.get("like"),
       picUrl: fetchedItem.get("cover_picture_url"),
       originalPicHeight: originalItemPictureHeight,
       picHeight: Math.floor(originalItemPictureHeight * itemPictureScale),

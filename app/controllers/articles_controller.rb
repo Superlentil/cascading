@@ -5,6 +5,11 @@ class ArticlesController < ApplicationController
   respond_to :json
   
   
+###### Local Constants ######
+  ARTICLE_ABSTRACT_LENGTH = 200
+#############################
+  
+  
   def index
     @pageLoadTime = getPageLoadTime(params[:page_load_time])
     @articleCovers = fetchArticles(params[:fetch_sequence_number], params[:articles_per_fetch], @pageLoadTime, {})
@@ -129,8 +134,10 @@ class ArticlesController < ApplicationController
     @article = Article.find(params[:id])
     inputParams = articleParams
     if correctLoggedInUser?(@article.user_id)
-      ActiveRecord::Base.transaction do
+      ActiveRecord::Base.transaction do       
         if inputParams[:status] && inputParams[:status].to_i == GlobalConstant::Article::Status::PUBLIC_PUBLISHED
+          inputParams[:abstract] = getArticleAbstract(inputParams[:content] || @article.content)
+          
           if inputParams[:cover_picture_id].to_i < 0
             assignCoverPicture(inputParams)
           end
@@ -179,13 +186,13 @@ private
     recommendArticles = []
     
     categoryArticles = Article.where(category_name: categoryName).where(status: GlobalConstant::Article::Status::PUBLIC_PUBLISHED)
-      .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, author, user_id, category_name, category_id")
+      .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, abstract, \"like\"")
       .limit((MAX_RECOMMEND_COUNT_EACH_ENTRY / 2).floor).order(like: :desc, views: :desc, publish_time: :desc)
       
     categoryArticlesCount = categoryArticles.length
        
     generalArticles = Article.where("category_name <> ?", categoryName).where(status: GlobalConstant::Article::Status::PUBLIC_PUBLISHED)
-      .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, author, user_id, category_name, category_id")
+      .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, abstract, \"like\"")
       .limit(MAX_RECOMMEND_COUNT_EACH_ENTRY - categoryArticlesCount).order(like: :desc, views: :desc, publish_time: :desc)
       
     generalArticlesCount = generalArticles.length
@@ -271,7 +278,7 @@ private
     queryConditions[:status] = GlobalConstant::Article::Status::PUBLIC_PUBLISHED;
     
     return Article.where("publish_time < ?", pageLoadTime).where(queryConditions)
-      .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, author, user_id, category_name, category_id")
+      .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, abstract, \"like\"")
       .limit(countPerFetch).offset(fetchSequenceNumber.to_i * countPerFetch).order(id: :desc)
   end
   
@@ -333,6 +340,25 @@ private
       inputParams[:cover_picture_url] = coverPicture.src.url(:thumb)
       inputParams[:cover_picture_imported] = false
     end
+  end
+  
+  
+  def getArticleAbstract(articleContent)
+    abstract = ""
+    articleContentJson = JSON.parse(articleContent)
+    articleContentJson.each do |paragraph|
+      if paragraph["type"] == "text"
+        abstractLength = abstract.length
+        text = paragraph["src"]
+        if abstractLength + text.length > ARTICLE_ABSTRACT_LENGTH
+          abstract << text.slice(0, ARTICLE_ABSTRACT_LENGTH - abstractLength) + " ..."
+          break
+        else
+          abstract << text << "  "
+        end
+      end
+    end
+    return abstract
   end
   
 end

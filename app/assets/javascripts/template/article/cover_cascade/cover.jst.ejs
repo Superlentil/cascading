@@ -3,5 +3,8 @@
     <img class="article-cover-img" style="height: <%= picHeight * 1.25 %>px; width: <%= picWidth %>px;" src="<%= picUrl %>">
   </a>
   <h3 style="word-break: break-all; word-wrap: break-word; padding: 16px 0;"><%= title %></h3>
-  <div><em><a href="#/articles/user/<%= userId %>"><%= author %></a> <a href="#/articles/category/<%= categoryId %>"><%= category %></a></em></div>
+  <% if (abstract.trim().length > 0) { %>
+    <div><%= abstract %></div>
+  <% } %>
+  <div><strong>Like</strong> <%= like %></div>
 </div>
