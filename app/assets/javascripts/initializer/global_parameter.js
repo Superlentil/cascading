@@ -11,6 +11,12 @@ var GlobalConstant = {
       DRAFT: 1,
       PRIVATE_PUBLISHED: 2,
       PUBLIC_PUBLISHED: 3
+    },
+    
+    
+    CoverDisplayMode: {
+      NORMAL: 0,
+      SEARCH_RESULT: 1
     }
   },
     

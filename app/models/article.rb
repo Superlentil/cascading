@@ -12,7 +12,7 @@ class Article < ActiveRecord::Base
     text :author, :stored=>true
     text :category_name, :stored=>true
     
-    text :content do
+    text :content, :stored=>true do
       contentJson = JSON.parse(content)
       content.clear
       contentJson.each do |paragraph|

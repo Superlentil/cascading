@@ -52,19 +52,25 @@ class ArticlesController < ApplicationController
     
     search = Article.search(:select => [
       :id,
-      :cover_picture_url,
-      :cover_picture_id,
-      :cover_picture_height,
       :title,
       :author,
       :user_id,
       :category_name,
-      :category_id
+      :category_id,
+      :cover_picture_url,
+      :cover_picture_id,
+      :cover_picture_height,
+      :abstract,
+      :love
     ]) do
       fulltext keyword do
         boost_fields :title => 10.0
         boost_fields :author => 5.0
         boost_fields :category_name => 5.0
+        highlight :title
+        highlight :author
+        highlight :content, :max_snippets => 3, :fragment_size => 120, :merge_contiguous_fragments => true
+        highlight :category_name
       end
       
       with :status, GlobalConstant::Article::Status::PUBLIC_PUBLISHED
@@ -72,6 +78,29 @@ class ArticlesController < ApplicationController
       order_by :id, :desc
 
       paginate :page => adjustedFetchSequenceNumber, :per_page => articlesPerFetch
+    end
+    
+    search.each_hit_with_result do |hit, result|     
+      hit.highlights(:title).each do |highlight|
+        result.title = highlight.format {|kw| "<span style='color:blue'>#{kw}</span>"}
+      end
+      
+      result.author=""
+      hit.highlights(:author).each do |highlight|
+        result.author = highlight.format {|kw| "<span style='color:blue'>#{kw}</span>"}
+      end
+      
+      result.category_name=""
+      hit.highlights(:category_name).each do |highlight|
+        result.category_name = highlight.format {|kw| "<span style='color:blue'>#{kw}</span>"}
+      end
+      
+      if hit.highlights(:content).length > 0
+        result.abstract=""
+      end
+      hit.highlights(:content).each do |highlight|
+        result.abstract += "... " + highlight.format {|kw| "<span style='color:blue'>#{kw}</span>"} + " ...  "
+      end
     end
     
     @pageLoadTime = pageLoadTime
@@ -186,13 +215,13 @@ private
     recommendArticles = []
     
     categoryArticles = Article.where(category_name: categoryName).where(status: GlobalConstant::Article::Status::PUBLIC_PUBLISHED)
-      .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, abstract, \"like\"")
+      .select("id, title, author, user_id, category_name, category_id, cover_picture_url, cover_picture_id, cover_picture_height, abstract, love")
       .limit((MAX_RECOMMEND_COUNT_EACH_ENTRY / 2).floor).order(like: :desc, views: :desc, publish_time: :desc)
       
     categoryArticlesCount = categoryArticles.length
        
     generalArticles = Article.where("category_name <> ?", categoryName).where(status: GlobalConstant::Article::Status::PUBLIC_PUBLISHED)
-      .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, abstract, \"like\"")
+      .select("id, title, author, user_id, category_name, category_id, cover_picture_url, cover_picture_id, cover_picture_height, abstract, love")
       .limit(MAX_RECOMMEND_COUNT_EACH_ENTRY - categoryArticlesCount).order(like: :desc, views: :desc, publish_time: :desc)
       
     generalArticlesCount = generalArticles.length
@@ -278,7 +307,7 @@ private
     queryConditions[:status] = GlobalConstant::Article::Status::PUBLIC_PUBLISHED;
     
     return Article.where("publish_time < ?", pageLoadTime).where(queryConditions)
-      .select("id, cover_picture_url, cover_picture_id, cover_picture_height, title, abstract, \"like\"")
+      .select("id, title, author, user_id, category_name, category_id, cover_picture_url, cover_picture_id, cover_picture_height, abstract, love")
       .limit(countPerFetch).offset(fetchSequenceNumber.to_i * countPerFetch).order(id: :desc)
   end
   

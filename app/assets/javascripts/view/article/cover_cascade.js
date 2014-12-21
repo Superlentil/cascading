@@ -52,6 +52,10 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
   
   initializeHelper: function(options) {
     this.fetchFunction = options.fetchFunction;
+    this.coverDisplayMode = GlobalConstant.Article.CoverDisplayMode.NORMAL;
+    if (options.coverDisplayMode) {
+      this.coverDisplayMode = options.coverDisplayMode;
+    }
   },
   
   
@@ -93,8 +97,13 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
     var originalItemPictureHeight = fetchedItem.get("cover_picture_height");
     
     var itemData = {
+      displayMode: this.coverDisplayMode,
       id: fetchedItem.get("id"),
       title: fetchedItem.get("title"),
+      author: fetchedItem.get("author"),
+      userId: fetchedItem.get("user_id"),
+      category: fetchedItem.get("category_name"),
+      categoryId: fetchedItem.get("category_id"),
       abstract: fetchedItem.get("abstract"),
       like: fetchedItem.get("like"),
       picUrl: fetchedItem.get("cover_picture_url"),

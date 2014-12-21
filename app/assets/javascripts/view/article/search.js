@@ -16,7 +16,10 @@ View.Article.Search = Backbone.View.extend({
   render: function() {
     this.$el.html(this.template({keyword: this.keyword}));
     
-    this.viewArticleCascade = new View.Article.CoverCascade({fetchFunction: this.fetchFunction});
+    this.viewArticleCascade = new View.Article.CoverCascade({
+      fetchFunction: this.fetchFunction,
+      coverDisplayMode: GlobalConstant.Article.CoverDisplayMode.SEARCH_RESULT
+    });
     this.viewArticleCascade.render();
 
     return this;

@@ -2,10 +2,14 @@
   <% unless articleCover.nil? %>
     "id": <%= articleCover.id %>,
     "title": <%= raw(articleCover.title.to_json) %>,
+    "author": <%= raw(articleCover.author.to_json) %>,
+    "user_id": <%= articleCover.user_id %>,
+    "category_name": <%= raw(articleCover.category_name.to_json) %>,
+    "category_id": <%= articleCover.category_id %>,
     "cover_picture_id": <%= articleCover.cover_picture_id %>,
     "cover_picture_url": <%= raw(articleCover.cover_picture_url.to_json) %>,
     "cover_picture_height": <%= articleCover.cover_picture_height %>,
     "abstract": <%= raw(articleCover.abstract.to_json) %>,
-    "like": <%= articleCover.like %>
+    "like": <%= articleCover.love %>
   <% end %>
 }
