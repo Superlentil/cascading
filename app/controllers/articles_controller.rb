@@ -216,13 +216,13 @@ private
     
     categoryArticles = Article.where(category_name: categoryName).where(status: GlobalConstant::Article::Status::PUBLIC_PUBLISHED)
       .select("id, title, author, user_id, category_name, category_id, cover_picture_url, cover_picture_id, cover_picture_height, abstract, love")
-      .limit((MAX_RECOMMEND_COUNT_EACH_ENTRY / 2).floor).order(like: :desc, views: :desc, publish_time: :desc)
+      .limit((MAX_RECOMMEND_COUNT_EACH_ENTRY / 2).floor).order(love: :desc, views: :desc, publish_time: :desc)
       
     categoryArticlesCount = categoryArticles.length
        
     generalArticles = Article.where("category_name <> ?", categoryName).where(status: GlobalConstant::Article::Status::PUBLIC_PUBLISHED)
       .select("id, title, author, user_id, category_name, category_id, cover_picture_url, cover_picture_id, cover_picture_height, abstract, love")
-      .limit(MAX_RECOMMEND_COUNT_EACH_ENTRY - categoryArticlesCount).order(like: :desc, views: :desc, publish_time: :desc)
+      .limit(MAX_RECOMMEND_COUNT_EACH_ENTRY - categoryArticlesCount).order(love: :desc, views: :desc, publish_time: :desc)
       
     generalArticlesCount = generalArticles.length
     
@@ -281,7 +281,7 @@ private
       :category_name,
       :category_id,
       :views,
-      :like,
+      :love,
       :status,
       :publish_time,
       :user_id,

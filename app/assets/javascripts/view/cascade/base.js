@@ -539,9 +539,11 @@ View.Cascade.Base = Backbone.View.extend({
         this.updateItemDataInCacheAfterDisplayModeChange(index);
       }
   
-      console.log(cache.nextUnprocessedBatch + "   " + reusedFetchCount * countPerFetch);
-  
-      this.onScroll();
+      if (reusedBatchCount > 0) {
+        this.onScroll();
+      } else {
+        this.fetchData();
+      }
     }
   },
    
