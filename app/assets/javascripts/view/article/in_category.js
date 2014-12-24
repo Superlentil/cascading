@@ -4,6 +4,7 @@ View.Article.InCategory = Backbone.View.extend({
     _.bindAll(this, "fetchFunction");
     
     this.categoryId = options.categoryId;
+    this.sortBy = options.sortBy;
   },
   
   
@@ -28,7 +29,8 @@ View.Article.InCategory = Backbone.View.extend({
       categoryId: this.categoryId,
       fetchSequenceNumber: fetchSequenceNumber,
       articlesPerFetch: articlesPerFetch,
-      pageLoadTime: fetchOptions.pageLoadTime
+      pageLoadTime: fetchOptions.pageLoadTime,
+      sortBy: this.sortBy
     });
     articles.fetch(callbacks);
   },

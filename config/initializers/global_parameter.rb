@@ -7,6 +7,12 @@ class GlobalConstant
       PUBLIC_PUBLISHED = 3
     end
     
+    class SortBy   # If this enumeration needs to be modified, please modify the corresponding one in the "Javascript" code together.
+      PUBLISH_TIME_DESC = 0
+      LOVE_DESC = 1
+      VIEW_DESC = 2
+    end
+    
     class CategoryType
       PREDEFINED = 0
       CUSTOMIZED = 1

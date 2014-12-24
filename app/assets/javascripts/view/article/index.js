@@ -1,5 +1,11 @@
 // define the view Index
 View.Article.Index = Backbone.View.extend({
+  initialize: function(options) {
+    _.bindAll(this, "fetchFunction");
+    this.sortBy = options.sortBy;
+  },
+  
+  
   el: "#layout-content",
   
   
@@ -20,7 +26,8 @@ View.Article.Index = Backbone.View.extend({
     var articles = new Collection.Article.Index({
       fetchSequenceNumber: fetchSequenceNumber,
       articlesPerFetch: articlesPerFetch,
-      pageLoadTime: fetchOptions.pageLoadTime
+      pageLoadTime: fetchOptions.pageLoadTime,
+      sortBy: this.sortBy
     });
     articles.fetch(callbacks);
   },

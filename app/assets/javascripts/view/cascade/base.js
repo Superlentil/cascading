@@ -47,7 +47,11 @@ View.Cascade.Base = Backbone.View.extend({
   
   
   getPageCacheKey: function() {
-    return window.location.href;
+    var hash = window.location.hash;
+    if (hash.length === 0) {
+      hash = "#";
+    }
+    return hash;
   },
   
   

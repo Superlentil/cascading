@@ -10,6 +10,7 @@
     "cover_picture_url": <%= raw(articleCover.cover_picture_url.to_json) %>,
     "cover_picture_height": <%= articleCover.cover_picture_height %>,
     "abstract": <%= raw(articleCover.abstract.to_json) %>,
-    "like": <%= articleCover.love %>
+    "like": <%= articleCover.love %>,
+    "views": <%= articleCover.views %>
   <% end %>
 }

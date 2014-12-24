@@ -1,8 +1,16 @@
-<div id="article-cover-cascade-option" class="row">
-  <div class="col-xs-6">
-    <button id="m-cascade-compact-mode" data-display-mode="compact">Fit to Screen Mode</button>
+<div id="article-cover-cascade-option">
+  <div class="row">
+    <div class="col-xs-6">
+      <button id="m-cascade-compact-mode" data-display-mode="compact">Fit to Screen Mode</button>
+    </div>
+    <div class="col-xs-6">
+      <button id="m-cascade-normal-mode" data-display-mode="normal">Normal Mode</button>
+    </div>
   </div>
-  <div class="col-xs-6">
-    <button id="m-cascade-normal-mode" data-display-mode="normal">Normal Mode</button>
+  <br>
+  <div class="row">
+    <div class="col-xs-4 padding-s-lr"><button class="m-sort-by" data-sort-by="<%= GlobalConstant.Article.SortBy.PUBLISH_TIME_DESC %>">Newest</button></div>
+    <div class="col-xs-4 padding-s-lr"><button class="m-sort-by" data-sort-by="<%= GlobalConstant.Article.SortBy.LOVE_DESC %>">Favorite</button></div>
+    <div class="col-xs-4 padding-s-lr"><button class="m-sort-by" data-sort-by="<%= GlobalConstant.Article.SortBy.VIEW_DESC %>">Most Viewed</button></div>
   </div>
 </div>

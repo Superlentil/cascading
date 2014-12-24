@@ -3,12 +3,16 @@ Router = Backbone.Router.extend({
     "forbidden": "forbiddenAccess",
     
     "": "articlesAll",
+    "articles/sort_by/:sort_by_type": "articlesAllSorted",
     
-    "articles/draft/user/:user_id": "articlesDraftByUser",
     "articles/category/:category_id": "articlesInCategory",
+    "articles/category/:category_id/sort_by/:sort_by_type": "articlesInCategorySorted",
     "articles/user/:user_id": "articlesByUser",
+    "articles/user/:user_id/sort_by/:sort_by_type": "articlesByUserSorted",
     "articles/user/:user_id/category/:category_id": "articlesByUserAndCategory",
+    "articles/user/:user_id/category/:category_id/sort_by/:sort_by_type": "articlesByUserAndCategorySorted",
     "articles/search/:keyword": "articlesSearch",
+    "articles/draft/user/:user_id": "articlesDraftByUser",
     
     "articles/new": "articleNew",
     "article/:id": "articleShow",
@@ -54,7 +58,12 @@ Router = Backbone.Router.extend({
 
   
   articlesAll: function() {
-    var viewIndex = new View.Article.Index();
+    return this.articlesAllSorted(GlobalConstant.Article.SortBy.PUBLISH_TIME_DESC);
+  },
+  
+  
+  articlesAllSorted: function(sortByType) {
+    var viewIndex = new View.Article.Index({sortBy: sortByType});
     viewIndex.render();
     return viewIndex;
   },
@@ -68,21 +77,36 @@ Router = Backbone.Router.extend({
   
   
   articlesInCategory: function(categoryId) {
-    var viewArticlesInCategory = new View.Article.InCategory({categoryId: categoryId});
+    return this.articlesInCategorySorted(categoryId, GlobalConstant.Article.SortBy.PUBLISH_TIME_DESC);
+  },
+  
+  
+  articlesInCategorySorted: function(categoryId, sortByType) {
+    var viewArticlesInCategory = new View.Article.InCategory({categoryId: categoryId, sortBy: sortByType});
     viewArticlesInCategory.render();
     return viewArticlesInCategory;
   },
   
   
   articlesByUser: function(userId) {
-    var viewArticlesByUser = new View.Article.ByUser({userId: userId});
+    return this.articlesByUserSorted(userId, GlobalConstant.Article.SortBy.PUBLISH_TIME_DESC);
+  },
+  
+  
+  articlesByUserSorted: function(userId, sortByType) {
+    var viewArticlesByUser = new View.Article.ByUser({userId: userId, sortBy: sortByType});
     viewArticlesByUser.render();
     return viewArticlesByUser;
   },
   
   
   articlesByUserAndCategory: function(userId, categoryId) {
-    var viewArticlesByUserAndCategory = new View.Article.ByUserAndCategory({userId: userId, categoryId: categoryId});
+    return this.articlesByUserAndCategorySorted(userId, categoryId, GlobalConstant.Article.SortBy.PUBLISH_TIME_DESC);
+  },
+  
+  
+  articlesByUserAndCategorySorted: function(userId, categoryId, sortByType) {
+    var viewArticlesByUserAndCategory = new View.Article.ByUserAndCategory({userId: userId, categoryId: categoryId, sortBy: sortByType});
     viewArticlesByUserAndCategory.render();
     return viewArticlesByUserAndCategory;
   },

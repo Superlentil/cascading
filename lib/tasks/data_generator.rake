@@ -130,6 +130,8 @@ namespace :data_generator do
       article.status = GlobalConstant::Article::Status::PUBLIC_PUBLISHED
       article.content = articleContent
       article.abstract = getArticleAbstract(article.content)
+      article.views = randInt.rand(0..10000)
+      article.love = randInt.rand(0..1000)
       article.publish_time = Time.now
       
       article.save

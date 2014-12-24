@@ -12,7 +12,7 @@ class ArticlesController < ApplicationController
   
   def index
     @pageLoadTime = getPageLoadTime(params[:page_load_time])
-    @articleCovers = fetchArticles(params[:fetch_sequence_number], params[:articles_per_fetch], @pageLoadTime, {})
+    @articleCovers = fetchArticles(@pageLoadTime, {})
   end
   
   
@@ -26,21 +26,21 @@ class ArticlesController < ApplicationController
   def inCategory
     @pageLoadTime = getPageLoadTime(params[:page_load_time])
     queryConditions = {category_id: params[:category_id].to_i}
-    @articleCovers = fetchArticles(params[:fetch_sequence_number], params[:articles_per_fetch], @pageLoadTime, queryConditions)
+    @articleCovers = fetchArticles(@pageLoadTime, queryConditions)
   end
   
   
   def byUser
     @pageLoadTime = getPageLoadTime(params[:page_load_time])
     queryConditions = {user_id: params[:user_id].to_i}
-    @articleCovers = fetchArticles(params[:fetch_sequence_number], params[:articles_per_fetch], @pageLoadTime, queryConditions)
+    @articleCovers = fetchArticles(@pageLoadTime, queryConditions)
   end
   
   
   def byUserAndCategory
     @pageLoadTime = getPageLoadTime(params[:page_load_time])
     queryConditions = {user_id: params[:user_id].to_i, category_id: params[:category_id].to_i}
-    @articleCovers = fetchArticles(params[:fetch_sequence_number], params[:articles_per_fetch], @pageLoadTime, queryConditions)
+    @articleCovers = fetchArticles(@pageLoadTime, queryConditions)
   end
   
   
@@ -61,7 +61,8 @@ class ArticlesController < ApplicationController
       :cover_picture_id,
       :cover_picture_height,
       :abstract,
-      :love
+      :love,
+      :views
     ]) do
       fulltext keyword do
         boost_fields :title => 10.0
@@ -215,13 +216,13 @@ private
     recommendArticles = []
     
     categoryArticles = Article.where(category_name: categoryName).where(status: GlobalConstant::Article::Status::PUBLIC_PUBLISHED)
-      .select("id, title, author, user_id, category_name, category_id, cover_picture_url, cover_picture_id, cover_picture_height, abstract, love")
+      .select("id, title, author, user_id, category_name, category_id, cover_picture_url, cover_picture_id, cover_picture_height, abstract, love, views")
       .limit((MAX_RECOMMEND_COUNT_EACH_ENTRY / 2).floor).order(love: :desc, views: :desc, publish_time: :desc)
       
     categoryArticlesCount = categoryArticles.length
        
     generalArticles = Article.where("category_name <> ?", categoryName).where(status: GlobalConstant::Article::Status::PUBLIC_PUBLISHED)
-      .select("id, title, author, user_id, category_name, category_id, cover_picture_url, cover_picture_id, cover_picture_height, abstract, love")
+      .select("id, title, author, user_id, category_name, category_id, cover_picture_url, cover_picture_id, cover_picture_height, abstract, love, views")
       .limit(MAX_RECOMMEND_COUNT_EACH_ENTRY - categoryArticlesCount).order(love: :desc, views: :desc, publish_time: :desc)
       
     generalArticlesCount = generalArticles.length
@@ -302,13 +303,24 @@ private
   end
   
   
-  def fetchArticles(fetchSequenceNumber, articlesPerFetch, pageLoadTime, queryConditions)
-    countPerFetch = articlesPerFetch.to_i
+  def fetchArticles(pageLoadTime, queryConditions)
+    countPerFetch = params[:articles_per_fetch].to_i
     queryConditions[:status] = GlobalConstant::Article::Status::PUBLIC_PUBLISHED;
     
+    case params[:sort_by].to_i
+    when GlobalConstant::Article::SortBy::PUBLISH_TIME_DESC
+      orderByString = "publish_time DESC"
+    when GlobalConstant::Article::SortBy::LOVE_DESC
+      orderByString = "love DESC, publish_time DESC"
+    when GlobalConstant::Article::SortBy::VIEW_DESC
+      orderByString = "views DESC, publish_time DESC"
+    else
+      orderByString = "publish_time DESC"
+    end
+    
     return Article.where("publish_time < ?", pageLoadTime).where(queryConditions)
-      .select("id, title, author, user_id, category_name, category_id, cover_picture_url, cover_picture_id, cover_picture_height, abstract, love")
-      .limit(countPerFetch).offset(fetchSequenceNumber.to_i * countPerFetch).order(id: :desc)
+      .select("id, title, author, user_id, category_name, category_id, cover_picture_url, cover_picture_id, cover_picture_height, abstract, love, views")
+      .limit(countPerFetch).offset(params[:fetch_sequence_number].to_i * countPerFetch).order(orderByString)
   end
   
   

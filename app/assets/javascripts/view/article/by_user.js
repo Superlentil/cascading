@@ -4,6 +4,7 @@ View.Article.ByUser = Backbone.View.extend({
     _.bindAll(this, "fetchFunction");
     
     this.userId = options.userId;
+    this.sortBy = options.sortBy;
   },
   
   
@@ -50,7 +51,8 @@ View.Article.ByUser = Backbone.View.extend({
       userId: this.userId,
       fetchSequenceNumber: fetchSequenceNumber,
       articlesPerFetch: articlesPerFetch,
-      pageLoadTime: fetchOptions.pageLoadTime
+      pageLoadTime: fetchOptions.pageLoadTime,
+      sortBy: this.sortBy
     });
     articles.fetch(callbacks);
   },

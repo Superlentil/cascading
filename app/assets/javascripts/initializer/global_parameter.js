@@ -13,6 +13,11 @@ var GlobalConstant = {
       PUBLIC_PUBLISHED: 3
     },
     
+    SortBy: {   // If this enumeration needs to be modified, please modify the corresponding one in the "Ruby on Rails" code together.
+      PUBLISH_TIME_DESC: 0,
+      LOVE_DESC: 1,
+      VIEW_DESC: 2
+    },
     
     CoverDisplayMode: {
       NORMAL: 0,

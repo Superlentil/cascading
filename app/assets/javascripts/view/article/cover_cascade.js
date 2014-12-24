@@ -37,25 +37,24 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
   itemTemplate: JST["template/article/cover_cascade/cover"],
   
   
-  getPageCacheKey: function() {
-    var href = window.location.href;
-    if (href.indexOf("#") === -1) {
-      if (href.charAt(href.length - 1) === '/') {
-        href += "#";
-      } else {
-        href += "/#";
-      }
-    }
-    return href;
-  },
-  
-  
   initializeHelper: function(options) {
     this.fetchFunction = options.fetchFunction;
     this.coverDisplayMode = GlobalConstant.Article.CoverDisplayMode.NORMAL;
     if (options.coverDisplayMode) {
       this.coverDisplayMode = options.coverDisplayMode;
     }
+  },
+  
+  
+  getPageCacheKey: function() {
+    var hash = window.location.hash;
+    var sortByType = GlobalConstant.Article.SortBy;
+    if (hash.length === 0 || hash === "#") {
+      return "#/articles/sort_by/" + sortByType.PUBLISH_TIME_DESC;
+    } else if (hash.search("/sort_by/") < 0) {
+      return hash + "/sort_by/" + sortByType.PUBLISH_TIME_DESC;
+    }
+    return hash;
   },
   
   
@@ -106,6 +105,7 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
       categoryId: fetchedItem.get("category_id"),
       abstract: fetchedItem.get("abstract"),
       like: fetchedItem.get("like"),
+      views: fetchedItem.get("views"),
       picUrl: fetchedItem.get("cover_picture_url"),
       originalPicHeight: originalItemPictureHeight,
       picHeight: Math.floor(originalItemPictureHeight * itemPictureScale),
@@ -126,5 +126,32 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
     itemData.padding = cache.itemPadding;
     itemData.picHeight = Math.floor(itemData.originalPicHeight * itemPictureScale);
     itemData.picWidth = Math.floor(this.ITEM_PICTURE_WIDTH * itemPictureScale);
+  },
+  
+  
+  events: function() {
+    return _.extend({}, View.Cascade.Base.prototype.events, {
+      "click .m-sort-by": "onSortBy"
+    });
+  },
+  
+  
+  onSortBy: function(event) {
+    event.preventDefault();
+    
+    var sortByType = $(event.currentTarget).data("sortBy");
+    
+    var hash = window.location.hash;
+    if (hash.length === 0 || hash === "#") {
+      hash = "#/articles/sort_by/" + sortByType;
+    } else {
+      var index = hash.search("/sort_by/");
+      if (index >= 0) {
+        hash = hash.substring(0, index);
+      }
+      hash += "/sort_by/" + sortByType;
+    }
+    
+    Backbone.history.navigate(hash, {trigger: true});
   }
 });
