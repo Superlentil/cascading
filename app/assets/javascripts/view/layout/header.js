@@ -1,6 +1,3 @@
-// work here!
-
-
 View.Layout.Header = Backbone.View.extend({
   initialize: function(options) {   
     this.signInHandler = options.signInHandler;
