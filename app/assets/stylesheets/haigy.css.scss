@@ -1,10 +1,12 @@
 @import "compass";
+@import "layout/setting";
 
 
 body {
   // background-color: #e5e5e5;
   // background-color: #e7e7ff;
   background-color: #F5F5F5;
+  min-width: $SUPPORT_VIEWPORT_MIN_WIDTH;
 }
 
 

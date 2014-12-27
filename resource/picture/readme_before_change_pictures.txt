@@ -8,7 +8,8 @@ article_edit_add_text_20141116.png
 button_close_20141116.png
 button_setting_20141116.png
 button_search_20141123.png
-sign_in_up_20141223.png
+sign_in_up_small_20141226.png
+sign_in_up_large_20141226.png
 
 
 

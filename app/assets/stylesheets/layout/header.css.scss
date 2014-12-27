@@ -8,6 +8,7 @@
   height: $LAYOUT_HEADER_HEIGHT;
   left: 0;
   width: 100%;
+  min-width: $SUPPORT_VIEWPORT_MIN_WIDTH;   // the width of a "position: fixed" element is relative to the viewport, not it's parent element
   
   z-index: $LAYOUT_HEADER_Z_INDEX;
     
@@ -28,20 +29,13 @@
 }
 
 
-.layout-header-logo, .layout-header-signin {
+.layout-header-logo {
+  height: $LAYOUT_HEADER_HEIGHT;
   line-height: $LAYOUT_HEADER_HEIGHT;
 }
 
-.layout-header-signin {
-  min-width: 530px;
-  
-  #layout-header-form-email, #layout-header-form-password {
-    max-width: 180px;
-    margin-right: 4px;
-  }
-  
-  #layout-header-form-submit {
-    max-width: 80px;
-    margin-right: 4px;
-  }
+
+.layout-header-signinup {
+  margin-top: ($LAYOUT_HEADER_HEIGHT - 40px) / 2;
+  height: 40px;
 }

@@ -4,11 +4,7 @@
   <a class="haigy-logo layout-header-openLeftNav" href="#">Haigy</a>
 </div>
 
-<div class="right text-align-right hidden-sm-and-smaller layout-header-signin">
 <% if (!$.cookie("user_id")) { %>
-  <input id="layout-header-form-email" type="textfield" placeholder="Email">
-  <input id="layout-header-form-password" type="password" placeholder="Password">
-  <input id="layout-header-form-submit" class="button button-primary" type="button" value="Sign In">
-  <small><em><a href="#/users/new">Sign Up</a></em></small>
+<img class="right hidden-sm-and-smaller layout-header-signinup" src="<%= PrecompiledAsset.Picture.SignInUpLarge %>">
+<img class="right hidden-md-and-larger layout-header-signinup" src="<%= PrecompiledAsset.Picture.SignInUpSmall %>">
 <% } %>
-</div>
