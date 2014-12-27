@@ -31,6 +31,7 @@ View.Layout.Main = Backbone.View.extend({
   menuIconTemplate: JST["template/layout/menuIcon"],
   userAvatarTemplate: JST["template/layout/userAvatar"],
   headerTemplate: JST["template/layout/header"],
+  popupTemplate: JST["template/layout/popup"],
   
   
   render: function() {
@@ -57,19 +58,19 @@ View.Layout.Main = Backbone.View.extend({
     that.viewHeader = new View.Layout.Header({signInHandler: that.signIn});
     that.header.append(that.viewHeader.render().$el);
     
+    that.popup = $(that.popupTemplate());
+    
     that.mainBody = $("<div id='layout-mainBody'></div>");
     that.mainBody.append("<div id='layout-mainBody-clickListener'></div>");
     that.mainBody.append(that.header);
-    that.mainBody.append("<div id='layout-message' class='container'></div><div id='layout-content' class='container'></div>");  
+    that.mainBody.append("<div id='layout-content' class='container'></div>");  
     
     container.append(that.leftNav);
     container.append(that.rightNav);
     container.append(that.menuIcon);
     container.append(that.userAvatar);
+    container.append(that.popup);
     container.append(that.mainBody);
-    
-    that.viewMessage = new View.Layout.Message();
-    that.viewMessage.render();
     
     return that;
   },
@@ -77,10 +78,7 @@ View.Layout.Main = Backbone.View.extend({
   
   refresh: function() {
     this.viewContent.remove();
-    this.viewMessage.remove();
-    $("#layout-mainBody").append("<div id='layout-message' class='container'></div><div id='layout-content' class='container'></div>");
-    this.viewMessage = new View.Layout.Message();
-    this.viewMessage.render();
+    $("#layout-mainBody").append("<div id='layout-content' class='container'></div>");
     return this;
   },
   
@@ -134,8 +132,24 @@ View.Layout.Main = Backbone.View.extend({
   
   
   events: {
+    "click #layout-popup-close": "closePopup",
+    "click #layout-popup": "closePopup",
+    "click #layout-popup-content": "preventPropagation",
     "click #layout-menuIcon": "openLeftNav",
-    "click #layout-userAvatar": "openRightNav",
+    "click #layout-userAvatar": "openRightNav"
+  },
+  
+  
+  closePopup: function(event) {
+    event.preventDefault();
+    
+    $("body").css("overflow", "auto");
+    this.popup.removeClass("m-popped-up");
+  },
+  
+  
+  preventPropagation: function(event) {
+    event.stopPropagation();
   },
   
   
@@ -260,7 +274,6 @@ View.Layout.Main = Backbone.View.extend({
     this.viewLeftNav.remove();
     this.viewRightNav.remove();
     this.viewHeader.remove();
-    this.viewMessage.remove();
     this.viewContent.remove();
     
     this.leftNav = null;

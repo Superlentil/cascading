@@ -20,7 +20,9 @@ View.Layout.Header = Backbone.View.extend({
   events: {
     "click #layout-header-form-submit": "onSignIn",
     "keyup #layout-header-form-password": "enterToSignIn",
-    "keyup #layout-header-form-email": "enterToSignIn"
+    "keyup #layout-header-form-email": "enterToSignIn",
+    
+    "click .layout-header-signinup": "popupSignInForm"
   },
   
   
@@ -37,5 +39,16 @@ View.Layout.Header = Backbone.View.extend({
     if (event.keyCode == 13) {
       this.onSignIn(event);
     }
+  },
+  
+  
+  popupSignInForm: function(event) {
+    event.preventDefault();
+    
+    $("body").css("overflow", "hidden");
+    
+    $(event.currentTarget).transition({scale: 0.7}, 200, "ease").transition({scale: 1}, 200, "ease");
+    
+    $("#layout-popup").addClass("m-popped-up");
   }
 });

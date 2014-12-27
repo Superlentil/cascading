@@ -1,0 +1,81 @@
+@import "compass";
+@import "layout/setting";
+
+
+#layout-popup,
+#layout-popup-background,
+#layout-popup-foreground,
+#layout-popup-container,
+#layout-popup-content {
+  width: 100%;
+  height: 100%;
+}
+
+
+#layout-popup {
+  visibility: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-width: $SUPPORT_VIEWPORT_MIN_WIDTH;   // the width of a "position: fixed" element is relative to the viewport, not it's parent element
+  z-index: $LAYOUT_POPUP_Z_INDEX;
+  
+  @include transform(scale(0.05));
+  @include transition-timing-function(ease-in-out);
+  @include transition(0.4s);
+}
+
+
+#layout-popup-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: transparent;
+}
+
+
+#layout-popup.m-popped-up {
+  @include transform(scale(1.0));
+  visibility: visible;
+}
+
+
+.m-popped-up #layout-popup-background {
+  background-color: gray;
+  @include opacity(0.7);
+  z-index: -1000;
+}
+
+
+#layout-popup-foreground {
+  margin: 0 auto;
+  padding: 30px;
+  max-width: 600px;
+  z-index: 1000;
+}
+
+
+#layout-popup-container {
+  position: relative;
+}
+
+
+#layout-popup-close {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  cursor: pointer;
+  @include background-image(linear-gradient(to right, rgba(255,255,255,0), rgba(67,155,241,.7) 35%, #439bf1 50%, rgba(67,155,241,.7) 65%, rgba(255,255,255,0))); 
+  @include border-radius(8px);
+}
+
+
+#layout-popup-content {
+  background-color: #d4f1f7;
+  padding-top: 30px;
+  @include border-radius(8px);
+}
