@@ -54,6 +54,15 @@ var GlobalVariable = {
   },
   
   
+  Layout: {
+    ViewPopup: null,
+    
+    SignInHandler: null,
+    SignOutHandler: null,
+    CloseNavHandler: null
+  },
+  
+  
   PageCache: {},
   
   

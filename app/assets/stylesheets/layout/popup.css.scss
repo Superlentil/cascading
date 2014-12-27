@@ -49,7 +49,7 @@
 
 #layout-popup-foreground {
   margin: 0 auto;
-  padding: 30px;
+  padding: $SUPPORT_VIEWPORT_MIN_WIDTH / 10;
   max-width: 600px;
   z-index: 1000;
 }
@@ -78,4 +78,5 @@
   background-color: #d4f1f7;
   padding-top: 30px;
   @include border-radius(8px);
+  overflow: auto;
 }

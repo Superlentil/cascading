@@ -1,14 +1,7 @@
-View.Layout.RightNav = Backbone.View.extend({
-  initialize: function(options) {   
-    this.signInHandler = options.signInHandler;
-    this.signOutHandler = options.signOutHandler;
-    this.closeNavHandler = options.closeNavHandler;
-  },
-  
-  
-  tagName: "div",
-  id: "layout-rightNav-content",
-  className: "container",
+View.Layout.RightNav = Backbone.View.extend({  
+  tagName: "nav",
+  id: "layout-rightNav",
+  attributes: {"role": "navigation"},
   
   
   template: JST["template/layout/rightNav"],
@@ -34,18 +27,18 @@ View.Layout.RightNav = Backbone.View.extend({
     
     var email = $("#layout-rightNav-form-email").val();
     var password = $("#layout-rightNav-form-password").val();    
-    this.signInHandler(email, password);
+    GlobalVariable.Layout.SignInHandler(email, password);
   },
   
   
   onSignOut: function(event) {
     event.preventDefault();
-    this.signOutHandler();
+    GlobalVariable.Layout.SignOutHandler();
   },
   
   
   onCloseNav: function(event) {
-    this.closeNavHandler();
+    GlobalVariable.Layout.CloseNavHandler();
   },
   
   

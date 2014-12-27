@@ -1,12 +1,7 @@
 View.Layout.LeftNav = Backbone.View.extend({
-  initialize: function(options) {   
-    this.closeNavHandler = options.closeNavHandler;
-  },
-  
-  
-  tagName: "div",
-  id: "layout-leftNav-content",
-  className: "container",
+  tagName: "nav",
+  id: "layout-leftNav",
+  attributes: {"role": "navigation"},
   
   
   template: JST["template/layout/leftNav"],
@@ -37,7 +32,7 @@ View.Layout.LeftNav = Backbone.View.extend({
   
   
   onCloseNav: function(event) {
-    this.closeNavHandler();
+    GlobalVariable.Layout.CloseNavHandler();
   },
   
   

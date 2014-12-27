@@ -7,6 +7,10 @@ View.Layout.Main = Backbone.View.extend({
     _.bindAll(that, "signOut");
     _.bindAll(that, "closeNav");
     
+    GlobalVariable.Layout.SignInHandler = that.signIn;
+    GlobalVariable.Layout.SignOutHandler = that.signOut;
+    GlobalVariable.Layout.CloseNavHandler = that.closeNav;
+    
     that.leftNavOn = false;
     that.rightNavOn = false;
     that.leftNavWidthInPx = 0;
@@ -31,7 +35,6 @@ View.Layout.Main = Backbone.View.extend({
   menuIconTemplate: JST["template/layout/menuIcon"],
   userAvatarTemplate: JST["template/layout/userAvatar"],
   headerTemplate: JST["template/layout/header"],
-  popupTemplate: JST["template/layout/popup"],
   
   
   render: function() {
@@ -39,32 +42,30 @@ View.Layout.Main = Backbone.View.extend({
     
     var container = that.$el;
     container.empty();
-        
-    that.leftNav = $("<div id='layout-leftNav' role='navigation'></div>");
-    that.rightNav = $("<div id='layout-rightNav' role='navigation'></div>");
+    
+    that.viewLeftNav = new View.Layout.LeftNav();
+    that.leftNav = that.viewLeftNav.render().$el;
+    that.viewRightNav = new View.Layout.RightNav();
+    that.rightNav = that.viewRightNav.render().$el;
+
     that.adjustSideNavWidth();
-    
-    that.viewLeftNav = new View.Layout.LeftNav({closeNavHandler: that.closeNav});
-    that.leftNav.append(that.viewLeftNav.render().$el);
-    
-    that.viewRightNav = new View.Layout.RightNav({signInHandler: that.signIn, signOutHandler: that.signOut, closeNavHandler: that.closeNav});
-    that.rightNav.append(that.viewRightNav.render().$el);
     
     that.menuIcon = $(that.menuIconTemplate());
     that.userAvatar = $("<div id='layout-userAvatar'></div>");
     that.renderUserAvatar();
 
-    that.header = $("<nav id='layout-header' role='navigation'></nav>");
-    that.viewHeader = new View.Layout.Header({signInHandler: that.signIn});
-    that.header.append(that.viewHeader.render().$el);
-    
-    that.popup = $(that.popupTemplate());
+    that.viewHeader = new View.Layout.Header();
+    that.header = that.viewHeader.render().$el;
     
     that.mainBody = $("<div id='layout-mainBody'></div>");
     that.mainBody.append("<div id='layout-mainBody-clickListener'></div>");
     that.mainBody.append(that.header);
     that.mainBody.append("<div id='layout-content' class='container'></div>");  
     
+    that.viewPopup = new View.Layout.Popup();
+    GlobalVariable.Layout.ViewPopup = that.viewPopup;
+    
+    container.append(that.viewPopup.render().$el);
     container.append(that.leftNav);
     container.append(that.rightNav);
     container.append(that.menuIcon);
@@ -100,9 +101,9 @@ View.Layout.Main = Backbone.View.extend({
   
   
   adjustSideNavWidth: function() {  
-    var navWidth = GlobalVariable.Browser.Window.width() * 0.75;
-    if (navWidth > 300) {
-      navWidth = 300;
+    var navWidth = $("body").width() * 0.75;
+    if (navWidth > 360) {
+      navWidth = 360;
     }
     
     if (navWidth !== this.leftNavWidthInPx) {
@@ -132,24 +133,8 @@ View.Layout.Main = Backbone.View.extend({
   
   
   events: {
-    "click #layout-popup-close": "closePopup",
-    "click #layout-popup": "closePopup",
-    "click #layout-popup-content": "preventPropagation",
     "click #layout-menuIcon": "openLeftNav",
     "click #layout-userAvatar": "openRightNav"
-  },
-  
-  
-  closePopup: function(event) {
-    event.preventDefault();
-    
-    $("body").css("overflow", "auto");
-    this.popup.removeClass("m-popped-up");
-  },
-  
-  
-  preventPropagation: function(event) {
-    event.stopPropagation();
   },
   
   
@@ -218,12 +203,15 @@ View.Layout.Main = Backbone.View.extend({
   },
   
   
-  signIn: function(email, password, alreadyHasLoginSession) {
+  signIn: function(email, password, alreadyHasLoginSession, callbacks) {
     if (alreadyHasLoginSession) {
       this.renderUserAvatar();
       this.viewHeader.render();
       this.viewRightNav.render();
       Backbone.history.loadUrl();
+      if (callbacks) {
+        callbacks.success();
+      }
     } else {
       var that = this;
       var loginSession = new Model.LoginSession();
@@ -233,6 +221,9 @@ View.Layout.Main = Backbone.View.extend({
           that.viewHeader.render();
           that.viewRightNav.render();
           Backbone.history.loadUrl();
+          if (callbacks) {
+            callbacks.success();
+          }
         }
       });
     }
@@ -271,6 +262,7 @@ View.Layout.Main = Backbone.View.extend({
     GlobalVariable.Browser.Window.off("resize");
     this.mainBody.off("click");
     
+    this.viewPopup.remove();
     this.viewLeftNav.remove();
     this.viewRightNav.remove();
     this.viewHeader.remove();
