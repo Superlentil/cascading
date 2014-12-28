@@ -19,7 +19,8 @@ View.Layout.Header = Backbone.View.extend({
     "keyup #layout-header-form-password": "enterToSignIn",
     "keyup #layout-header-form-email": "enterToSignIn",
     
-    "click .layout-header-signinup": "popupSignInForm"
+    "click .layout-header-signinup": "popupSignInForm",
+    "click .layout-header-browsing-history": "popupBrowsingHistory"
   },
   
   
@@ -47,6 +48,18 @@ View.Layout.Header = Backbone.View.extend({
     var viewPopup = GlobalVariable.Layout.ViewPopup;
     var viewUserSignIn = new View.User.SignIn();
     viewPopup.renderContent(viewUserSignIn);
+    viewPopup.openPopup();
+  },
+  
+  
+  popupBrowsingHistory: function(event) {
+    event.preventDefault();
+    
+    $(event.currentTarget).transition({scale: 0.7}, 200, "ease").transition({scale: 1}, 200, "ease");
+    
+    var viewPopup = GlobalVariable.Layout.ViewPopup;
+    var viewBrowsingHistory = new View.Article.BrowsingHistory();
+    viewPopup.renderContent(viewBrowsingHistory);
     viewPopup.openPopup();
   }
 });

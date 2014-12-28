@@ -1,0 +1,18 @@
+<% var history = GlobalVariable.BrowsingHistory %>
+<% var historyLength = history.length %>
+
+<% if (historyLength > 0) { %>
+  <% for (var index = historyLength - 1; index >= 0; --index) { %>
+    <div class="row max-width">
+      <h3><a class="m-close-popup" href="#/article/<%= history[index].id %>"><%= history[index].title %></a></h3>
+      <p><em>Written By: <a class="m-close-popup" href="#/articles/user/<%= history[index].authorUserId %>"><%= history[index].author %></a></em></p>
+      <% if (history[index].abstract.trim().length > 0) { %>
+        <p><a class="m-close-popup" href="#/article/<%= history[index].id %>"><%= history[index].abstract %></a></p>
+      <% } %>
+    </div>
+  <% } %>
+<% } else { %>
+  <div class="row">
+    <em>You haven't read any articles.</em>
+  </div>
+<% } %>

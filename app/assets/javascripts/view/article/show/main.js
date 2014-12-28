@@ -26,6 +26,16 @@ View.Article.Show.Main = Backbone.View.extend({
               that.deleteArticle(event);
             });
             
+            // browsing history
+            var historyArticle = {};
+            historyArticle.id = fetchedArticle.get("id");
+            historyArticle.title = fetchedArticle.get("title");
+            historyArticle.author = fetchedArticle.get("author");
+            historyArticle.authorUserId = fetchedArticle.get("user_id");
+            historyArticle.abstract = fetchedArticle.get("abstract");
+            GlobalVariable.BrowsingHistory.push(historyArticle);
+            
+            // recommend
             var viewRecommendCascade = new View.Article.Show.Recommend({
               articleContainer: $("#article-show-content"),
               regularRecommendContainer: $("#article-show-recommend-regular"),
@@ -36,6 +46,7 @@ View.Article.Show.Main = Backbone.View.extend({
             viewRecommendCascade.render();
             that.viewRecommendCascade = viewRecommendCascade;
             
+            // comment
             var viewComment = new View.Article.Show.Comment({articleId: options.id});
             that.allSubviews.push(viewComment);
             viewComment.render();
