@@ -1,4 +1,12 @@
 View.Layout.LeftNav = Backbone.View.extend({
+  initialize: function(options) {
+    _.bindAll(this, "fetchAllCategories");
+    _.bindAll(this, "renderHelper");
+    
+    GlobalVariable.Layout.LeftNav.FetchAllCategories = this.fetchAllCategories;
+  },
+  
+  
   tagName: "nav",
   id: "layout-leftNav",
   attributes: {"role": "navigation"},
@@ -7,20 +15,43 @@ View.Layout.LeftNav = Backbone.View.extend({
   template: JST["template/layout/leftNav"],
   
   
-  render: function() {
+  fetchAllCategories: function(callbacks, callBackOptions) {
     var that = this;
     
-    var allCategories = new Collection.Category.All();
-    allCategories.fetch({
-      success: function(fetchedCategories) {
-        that.$el.html(that.template({categories: fetchedCategories.models}));
-        GlobalVariable.Article.AllCategories = fetchedCategories;
-        
-        that.searchInput = $("#layout-leftNav-search-input");
+    if (GlobalVariable.Article.AllCategories) {
+      if (callbacks) {
+        var successCallBackOptions = null;
+        if (callBackOptions) {
+          successCallBackOptions = callBackOptions.success;
+        }
+        callbacks.success(successCallBackOptions);
       }
-    });
+    } else {
+      var allCategories = new Collection.Category.All();
+      allCategories.fetch({
+        success: function(fetchedCategories) {
+          GlobalVariable.Article.AllCategories = allCategories;
+          var successCallBackOptions = null;
+          if (callBackOptions) {
+            successCallBackOptions = callBackOptions.success;
+          }
+          callbacks.success(successCallBackOptions);
+        }
+      });
+    }
+  },
+  
+  
+  render: function() {
+    this.fetchAllCategories({success: this.renderHelper});
     
-    return that;
+    return this;
+  },
+  
+  
+  renderHelper: function() {
+    this.$el.html(this.template({categories: GlobalVariable.Article.AllCategories.models}));   
+    this.searchInput = $("#layout-leftNav-search-input");
   },
   
   

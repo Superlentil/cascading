@@ -1,12 +1,22 @@
-<div id="layout-menuIconPlaceholder" class="left"></div>
+<div id="layout-header-menu-icon-placeholder" class="left"></div>
 
-<div class="left layout-header-logo">
-  <a class="haigy-logo layout-header-openLeftNav" href="#">Haigy</a>
-</div>
+<% if (subTitle.length > 0) { %>
+  <div class="left hidden-sm-and-smaller layout-header-logo-responsive">
+    <a class="haigy-logo layout-header-openLeftNav" href="#">Haigy</a>
+  </div>
+  <div class="left hidden-sm-and-smaller layout-header-title-delimiter"> | </div>
+  <div class="left layout-header-subtitle"><%= subTitle %></div>
+<% } else { %>
+  <div class="left layout-header-logo">
+    <a class="haigy-logo layout-header-openLeftNav" href="#">Haigy</a>
+  </div>
+<% } %>
 
 <% if (!$.cookie("user_id")) { %>
 <img class="right hidden-sm-and-smaller layout-header-signinup" src="<%= PrecompiledAsset.Picture.SignInUpLarge %>">
 <img class="right hidden-md-and-larger layout-header-signinup" src="<%= PrecompiledAsset.Picture.SignInUpSmall %>">
+<% } else { %>
+  <div id="layout-header-user-avatar-placeholder" class="right"></div>
 <% } %>
 
 <span class="right inline-block layout-header-space"></span>

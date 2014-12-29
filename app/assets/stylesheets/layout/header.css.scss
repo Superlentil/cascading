@@ -1,4 +1,5 @@
 @import "compass";
+@import "html/setting";
 @import "layout/setting";
 
 
@@ -22,16 +23,70 @@
 }
 
 
-#layout-menuIconPlaceholder {
+#layout-header-menu-icon-placeholder {
   width: $LAYOUT_MENU_ICON_WIDTH;
   height: $LAYOUT_HEADER_HEIGHT;
   margin-right: 20px;
 }
 
 
-.layout-header-logo {
+#layout-header-user-avatar-placeholder {
+  width: $LAYOUT_MENU_ICON_WIDTH;
+  height: $LAYOUT_HEADER_HEIGHT;
+}
+
+
+.layout-header-logo,
+.layout-header-logo-responsive,
+.layout-header-title-delimiter,
+.layout-header-subtitle {
   height: $LAYOUT_HEADER_HEIGHT;
   line-height: $LAYOUT_HEADER_HEIGHT;
+}
+
+
+.layout-header-title-delimiter {
+  padding: 0 10px 0 13px;
+  font-size: 20px;
+  color: #989d9f;
+}
+
+
+.layout-header-subtitle {
+  max-width: 30%;
+}
+
+.layout-header-subtitle > a {
+  display: inline-block;
+  max-width: 100%;
+  
+  line-height: 100%;
+  vertical-align: middle;
+  
+  @include link-colors(#5e5e5e, red, red, #5e5e5e);
+  
+  font: italic normal 800 20px arial, sans-serif;
+  
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+
+@media (max-width: $SM_MAX_WIDTH) {
+  // .layout-header-logo-responsive {
+    // display: none;
+    // @include transform(translate(-15px, -12px) scale(0.4));
+    // @include opacity(0.5);
+  // }
+//   
+  .layout-header-subtitle {
+    max-width: 25% !important;
+  }
+  
+  .layout-header-subtitle > a {
+    font-size: 16px !important;
+  }
 }
 
 
@@ -45,5 +100,4 @@
 .layout-header-space {
   height: $LAYOUT_HEADER_HEIGHT;
   width: 4%;
-  
 }

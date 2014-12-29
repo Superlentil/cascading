@@ -1,5 +1,5 @@
 View.Layout.Main = Backbone.View.extend({
-  initialize: function() {
+  initialize: function(options) {
     var that = this;
     
     _.bindAll(that, "onWidthChange");
@@ -79,7 +79,8 @@ View.Layout.Main = Backbone.View.extend({
   
   refresh: function() {
     this.viewContent.remove();
-    $("#layout-mainBody").append("<div id='layout-content' class='container'></div>");
+    this.viewHeader.updateSubTitle();
+    this.mainBody.append("<div id='layout-content' class='container'></div>");
     return this;
   },
   

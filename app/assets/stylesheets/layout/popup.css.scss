@@ -19,10 +19,6 @@
   left: 0;
   min-width: $SUPPORT_VIEWPORT_MIN_WIDTH;   // the width of a "position: fixed" element is relative to the viewport, not it's parent element
   z-index: $LAYOUT_POPUP_Z_INDEX;
-  
-  @include transform(scale(0.05));
-  @include transition-timing-function(ease-in-out);
-  @include transition(0.4s);
 }
 
 
@@ -34,8 +30,20 @@
 }
 
 
+#layout-popup-foreground {
+  margin: 0 auto;
+  padding: $SUPPORT_VIEWPORT_MIN_WIDTH / 10;
+  max-width: 600px;
+  
+  @include transform(scale(0.05));
+  @include transition-timing-function(ease-in-out);
+  @include transition(0.4s);
+  
+  z-index: 1000;
+}
+
+
 #layout-popup.m-popped-up {
-  @include transform(scale(1.0));
   visibility: visible;
 }
 
@@ -47,11 +55,8 @@
 }
 
 
-#layout-popup-foreground {
-  margin: 0 auto;
-  padding: $SUPPORT_VIEWPORT_MIN_WIDTH / 10;
-  max-width: 600px;
-  z-index: 1000;
+.m-popped-up #layout-popup-foreground {
+  @include transform(scale(1.0));
 }
 
 

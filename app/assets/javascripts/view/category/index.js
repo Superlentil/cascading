@@ -1,4 +1,9 @@
 View.Category.Index = Backbone.View.extend({
+  initialize: function(options) {
+    _.bindAll(this, "renderHelper");
+  },
+  
+  
   el: "#layout-content",
   
   
@@ -6,20 +11,13 @@ View.Category.Index = Backbone.View.extend({
   
   
   render: function() {
-    var that = this;
-    
-    var allCategories = GlobalVariable.Article.AllCategories;
-    if (allCategories) {
-      that.$el.html(that.template({allCategories: allCategories.models, userId: null}));
-    } else {
-      allCategories = new Collection.Category.All();
-      allCategories.fetch({
-        success: function(fetchedCategories) {
-          that.$el.html(that.template({allCategories: allCategories.models, userId: null}));
-        }
-      });
-    }
-       
-    return that;
+    GlobalVariable.Layout.LeftNav.FetchAllCategories({success: this.renderHelper});
+
+    return this;
+  },
+  
+  
+  renderHelper: function() {
+    this.$el.html(this.template({allCategories: GlobalVariable.Article.AllCategories.models, userId: null}));
   }
 });

@@ -38,6 +38,10 @@ View.Article.ByUser = Backbone.View.extend({
   
   
   renderHelper: function(user) {
+    var nickname = user.get("nickname");
+    var headerSubTitle = "<a href='#/articles/user/" + user.get("id") + "' title = '" + nickname + "'>" + nickname + "</a>";
+    GlobalVariable.Layout.Header.UpdateSubTitle(headerSubTitle);
+    
     var viewUserHeader = new View.User.Header({user: user});
     $("#article-by-user-header").append(viewUserHeader.render().$el);
     

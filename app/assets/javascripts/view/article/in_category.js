@@ -1,6 +1,7 @@
 // define the view InCategory
 View.Article.InCategory = Backbone.View.extend({
   initialize: function(options) {
+    _.bindAll(this, "renderHelper");
     _.bindAll(this, "fetchFunction");
     
     this.categoryId = options.categoryId;
@@ -14,13 +15,23 @@ View.Article.InCategory = Backbone.View.extend({
   template: JST["template/article/in_category"],
   
   
-  render: function() {
+  render:function() {
+    GlobalVariable.Layout.LeftNav.FetchAllCategories({success: this.renderHelper});
+    
+    return this;
+  },
+  
+  
+  renderHelper: function() {
+    var categoryId = this.categoryId;
+    var categoryName = GlobalVariable.Article.AllCategories.get(categoryId).get("name");
+    var headerSubTitle = "<a href='#/articles/category/" + categoryId + "' title = '" + categoryName + "'>" + categoryName + "</a>";
+    GlobalVariable.Layout.Header.UpdateSubTitle(headerSubTitle);
+    
     this.$el.html(this.template());
     
     this.viewArticleCascade = new View.Article.CoverCascade({fetchFunction: this.fetchFunction});
     this.viewArticleCascade.render();
-
-    return this;
   },
   
   

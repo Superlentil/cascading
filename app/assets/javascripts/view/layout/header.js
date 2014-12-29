@@ -1,4 +1,14 @@
 View.Layout.Header = Backbone.View.extend({
+  initialize: function(options) {
+    var that = this;
+    
+    _.bindAll(that, "updateSubTitle");
+    
+    that.subTitle = "";
+    GlobalVariable.Layout.Header.UpdateSubTitle = that.updateSubTitle;
+  },
+  
+  
   tagName: "nav",
   id: "layout-header",
   className: "container",
@@ -9,8 +19,20 @@ View.Layout.Header = Backbone.View.extend({
   
   
   render: function() {
-    this.$el.html(this.template());
+    this.$el.html(this.template({subTitle: this.subTitle}));
     return this;
+  },
+  
+  
+  updateSubTitle: function(headerSubTitle) {
+    var subTitle = "";
+    if (headerSubTitle) {
+      subTitle = headerSubTitle;
+    }
+    if (subTitle !== this.subTitle) {
+      this.subTitle = subTitle;
+      this.$el.html(this.template({subTitle: subTitle}));
+    }
   },
   
   

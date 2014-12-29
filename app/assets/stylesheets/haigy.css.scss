@@ -13,10 +13,11 @@ body {
 a {
   text-decoration: none;
   outline: 0;
+  @include link-colors(blue, red, red, #c0c);
 }
 
 
-a.haigy-logo {
+.haigy-logo {
   display: inline-block;
   max-width: 80px;
   

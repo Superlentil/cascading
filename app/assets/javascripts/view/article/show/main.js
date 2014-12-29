@@ -26,10 +26,16 @@ View.Article.Show.Main = Backbone.View.extend({
               that.deleteArticle(event);
             });
             
+            // header sub title
+            var id = fetchedArticle.get("id");
+            var title = fetchedArticle.get("title");
+            var titleLink = "<a href='#/article/" + id + "' title = '" + title + "'>" + title + "</a>";
+            GlobalVariable.Layout.Header.UpdateSubTitle(titleLink);
+            
             // browsing history
             var historyArticle = {};
-            historyArticle.id = fetchedArticle.get("id");
-            historyArticle.title = fetchedArticle.get("title");
+            historyArticle.id = id;
+            historyArticle.title = title;
             historyArticle.author = fetchedArticle.get("author");
             historyArticle.authorUserId = fetchedArticle.get("user_id");
             historyArticle.abstract = fetchedArticle.get("abstract");

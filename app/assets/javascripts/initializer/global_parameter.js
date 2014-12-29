@@ -59,7 +59,15 @@ var GlobalVariable = {
     
     SignInHandler: null,
     SignOutHandler: null,
-    CloseNavHandler: null
+    CloseNavHandler: null,
+    
+    Header: {
+      UpdateSubTitle: null
+    },
+    
+    LeftNav: {
+      FetchAllCategories: null
+    }
   },
   
   
