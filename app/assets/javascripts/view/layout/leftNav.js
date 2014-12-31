@@ -56,9 +56,17 @@ View.Layout.LeftNav = Backbone.View.extend({
   
   
   events: {
+    "click #layout-leftNav-logo": "clickLogo",
+    
     "click .m-close-nav": "onCloseNav",
     "click #layout-leftNav-search-button": "search",
     "keyup #layout-leftNav-search-input": "enterToSearch",
+  },
+  
+  
+  clickLogo: function(event) {
+    event.preventDefault();
+    Backbone.history.navigate("#", {trigger: true});
   },
   
   

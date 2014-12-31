@@ -37,12 +37,20 @@ View.Layout.Header = Backbone.View.extend({
   
   
   events: {
+    "click #layout-header-logo": "clickLogo",
+    
     "click #layout-header-form-submit": "onSignIn",
     "keyup #layout-header-form-password": "enterToSignIn",
     "keyup #layout-header-form-email": "enterToSignIn",
     
     "click .layout-header-signinup": "popupSignInForm",
     "click .layout-header-browsing-history": "popupBrowsingHistory"
+  },
+  
+  
+  clickLogo: function(event) {
+    event.preventDefault();
+    Backbone.history.navigate("#", {trigger: true});
   },
   
   
