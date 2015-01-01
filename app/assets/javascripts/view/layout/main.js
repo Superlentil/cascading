@@ -210,7 +210,7 @@ View.Layout.Main = Backbone.View.extend({
       this.viewHeader.render();
       this.viewRightNav.render();
       Backbone.history.loadUrl();
-      if (callbacks) {
+      if (callbacks && $.cookie("user_id")) {
         callbacks.success();
       }
     } else {
@@ -222,7 +222,7 @@ View.Layout.Main = Backbone.View.extend({
           that.viewHeader.render();
           that.viewRightNav.render();
           Backbone.history.loadUrl();
-          if (callbacks) {
+          if (callbacks && $.cookie("user_id")) {
             callbacks.success();
           }
         }

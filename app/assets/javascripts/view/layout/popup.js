@@ -27,7 +27,6 @@ View.Layout.Popup = Backbone.View.extend({
     } else {
       this.content.append(viewContent.render().$el);
     }
-        console.log(this.content);
   },
   
   

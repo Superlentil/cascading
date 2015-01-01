@@ -6,6 +6,8 @@ View.Layout.Header = Backbone.View.extend({
     
     that.subTitle = "";
     GlobalVariable.Layout.Header.UpdateSubTitle = that.updateSubTitle;
+    
+    that.popupCache = {};
   },
   
   
@@ -76,7 +78,7 @@ View.Layout.Header = Backbone.View.extend({
     $(event.currentTarget).transition({scale: 0.7}, 200, "ease").transition({scale: 1}, 200, "ease");
     
     var viewPopup = GlobalVariable.Layout.ViewPopup;
-    var viewUserSignIn = new View.User.SignIn();
+    var viewUserSignIn = new View.User.SignIn({popupCache: this.popupCache});
     viewPopup.renderContent(viewUserSignIn);
     viewPopup.openPopup();
   },
