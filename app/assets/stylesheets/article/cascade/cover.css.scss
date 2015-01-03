@@ -33,9 +33,9 @@ $COLOR: #5A5A5A;
 
 .article-cover-abstract { 
   font: $FONT;
-  font-size: 13px;
+  color: $COLOR;
+  word-wrap: break-word;
   padding: 10px;
-  color: $COLOR
 }
 
 .article-cover-horizontal-line {
@@ -47,14 +47,13 @@ $COLOR: #5A5A5A;
 
 .article-cover {
   position: absolute;
-  border: 1px solid transparent;
   @include border-radius(3px);
+  @include box-shadow(0px 2px 4px #888888);
 }
 
 .article-cover-content {
   background-color: #FFFFFF; 
   @include border-radius(0px 0px 5px 5px);
-  @include box-shadow(0px 2px 1px #b6b6b6);
 }
 
 
@@ -70,7 +69,6 @@ $COLOR: #5A5A5A;
 
 .article-cover-img {
   @include border-radius(5px 5px 0px 0px);
-  @include box-shadow(0px 0px 1px #b6b6b6);
 }
 
 .article-cover-icon-row {
