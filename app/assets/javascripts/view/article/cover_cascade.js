@@ -11,7 +11,7 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
   ADJUST_CASCADE_WHEN_VIEWPORT_WIDTH_CHANGE: true,
   
   MAX_COLUMN_COUNT: 3,
-  ENABLE_COMPACT_MODE: true,
+  ENABLE_COMPACT_MODE: false,
   MAX_AUTO_COMPACT_MODE_WIDTH: 894.0,   // if compact mode is enabled and the cascading area width is smaller than this value, then the initial display mode will be automatically set to compact.
   
   NORMAL_COLUMN_WIDTH: 303.0,   // in the unit "px"
