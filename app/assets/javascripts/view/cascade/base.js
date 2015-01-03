@@ -31,8 +31,6 @@ View.Cascade.Base = Backbone.View.extend({
   COMPACT_COLUMN_WIDTH: 220.0,   // in the unit "px"
   COMPACT_VERTICAL_GAP: 4.0,   // in the unit "px"
   COMPACT_HORIZONTAL_GAP: 4.0,   // in the unit "px"
-
-  DISABLE_COMPACT_MODE: false,
   
   // --- other specific constants for this kind of cascading design, override them for different cascading designs ---
   initializeOtherConstants: function() {},
@@ -476,10 +474,6 @@ View.Cascade.Base = Backbone.View.extend({
   
   changeCoverDisplayMode: function(event) {
     event.preventDefault();
-
-    if (DISABLE_COMPACT_MODE) {
-      return;
-    }
     
     if (this.cascadeContainer && this.cascadeContainer.is(":visible")) {
       var cache = this.cache;
