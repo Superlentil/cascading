@@ -608,6 +608,7 @@ View.Cascade.Base = Backbone.View.extend({
     
     if (this.readyForWidthChange && this.cascadeContainer.is(":visible")) {   
       var maxWidth = this.getCascadeContainerWidth();
+      console.log(maxWidth);
       var newColumnCount = this.getColumnCount(maxWidth, cache.columnWidth, cache.verticalGap, false);
       
       if (newColumnCount !== cache.columnCount) {

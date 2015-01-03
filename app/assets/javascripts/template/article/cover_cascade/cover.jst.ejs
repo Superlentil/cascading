@@ -1,9 +1,14 @@
-<div class="article-cover" style="top: <%= top %>px; left: <%= left %>px; width: <%= width %>px; padding: <%= padding %>px;">
+<div class="article-cover" style="top: <%= top %>px; left: <%= left %>px; width: <%= width %>px; border-radius： 4px">
   <a class="block max-width text-align-center article-cover-img-link" href="#/article/<%= id %>">
-    <img class="article-cover-img" style="height: <%= picHeight * 1.25 %>px; width: <%= picWidth %>px;" src="<%= picUrl %>">
+    <img class="article-cover-img" style="height: <%= picHeight * 1.25 %>px; width: <%= picWidth%>;" src="<%= picUrl %>">
   </a>
-  <h3 style="word-break: break-all; word-wrap: break-word; padding: 16px 0;"><%= title %></h3>
-  
+  <div class="article-cover-content">   
+  	<p class="article-cover-title">
+      <a href="#/article/<%= id %>">
+      <em><%= title %></em>
+    </a>
+    </p>
+    
   <% if (displayMode === GlobalConstant.Article.CoverDisplayMode.SEARCH_RESULT) { %>
     <% if (author.length > 0) { %>
       <div>Author: <a href="#/articles/user/<%= userId %>"><%= author %></a></div>
@@ -14,8 +19,15 @@
   <% } %>
   
   <% if (abstract.trim().length > 0) { %>
-    <div><%= abstract %></div>
+  <hr class="article-cover-horizontal-line">
+  <div><p class="article-cover-abstract"><%= abstract %> <a href="#/article/<%= id %>">Read more</a></p></div>
   <% } %>
-  <div><strong>Like</strong> <%= like %></div>
-  <div><strong>Views</strong> <%= views %></div>
+
+  <div class="article-cover-icon-row">
+    <img id="article-cover-like-icon" src="<%= PrecompiledAsset.Picture.LikeIcon %>">
+    <span id="article-cover-like-count"><%= like %></span>
+    <img id="article-cover-view-icon" src="<%= PrecompiledAsset.Picture.ViewIcon %>"> 
+    <span id="article-cover-view-count"><%= views %></span>
+  </div>
+</div>
 </div>
