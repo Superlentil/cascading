@@ -1,13 +1,13 @@
 <div class="article-cover" style="top: <%= top %>px; left: <%= left %>px; width: <%= width %>px; border-radius： 4px">
   <a class="block max-width text-align-center article-cover-img-link" href="#/article/<%= id %>">
-    <img class="article-cover-img" style="height: <%= picHeight * 1.25 %>px; width: 100%;" src="<%= picUrl %>">
+    <img class="article-cover-img" style="height: <%= picHeight * 1.25 %>px; width: <%= picWidth%>;" src="<%= picUrl %>">
   </a>
   <div class="article-cover-content">   
   	<p class="article-cover-title">
       <a href="#/article/<%= id %>">
-  		<em><%= title %></em>
+      <em><%= title %></em>
     </a>
-  	</p>
+    </p>
     
   <% if (displayMode === GlobalConstant.Article.CoverDisplayMode.SEARCH_RESULT) { %>
     <% if (author.length > 0) { %>

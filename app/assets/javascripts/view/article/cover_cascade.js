@@ -8,7 +8,7 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
   
   AUTO_FETCH_WHEN_SCROLL_TO_BOTTOM: true,
   
-  ADJUST_CASCADE_WHEN_VIEWPORT_WIDTH_CHANGE: true,
+  ADJUST_CASCADE_WHEN_VIEWPORT_WIDTH_CHANGE: false,
   
   MAX_COLUMN_COUNT: 3,
   ENABLE_COMPACT_MODE: true,
