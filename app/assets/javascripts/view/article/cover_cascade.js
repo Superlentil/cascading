@@ -1,7 +1,7 @@
 // define a cascade view for article covers
 View.Article.CoverCascade = View.Cascade.Base.extend({
   ITEM_COUNT_PER_FETCH: 30,
-  ITEM_COUNT_PER_DISPLAY_BATCH: 23,
+  ITEM_COUNT_PER_DISPLAY_BATCH: 30,
   
   BATCH_EAGER_DISPLAY_ABOVE_VIEWPORT: 1,
   BATCH_EAGER_DISPLAY_BELOW_VIEWPORT: 1,
@@ -12,36 +12,29 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
   
   MAX_COLUMN_COUNT: 3,
   ENABLE_COMPACT_MODE: false,
-  MAX_AUTO_COMPACT_MODE_WIDTH: 894.0,   // if compact mode is enabled and the cascading area width is smaller than this value, then the initial display mode will be automatically set to compact.
-  
-  NORMAL_COLUMN_WIDTH: 303.0,   // in the unit "px"
+
+  NORMAL_COLUMN_WIDTH: 300.0,   // in the unit "px"
   NORMAL_VERTICAL_GAP: 30.0,   // in the unit "px"
   NORMAL_HORIZONTAL_GAP: 20.0,   // in the unit "px"
-  
-  COMPACT_COLUMN_WIDTH: 278.0,   // in the unit "px"
-  COMPACT_VERTICAL_GAP: 15.0,   // in the unit "px"
-  COMPACT_HORIZONTAL_GAP: 10.0,   // in the unit "px"
-  
+
   
   initializeOtherConstants: function() {
-    this.ITEM_PICTURE_WIDTH = 250.0;   // in the unit "px"
-    this.NORMAL_ITEM_PADDING = 10.0;   // in the unit "px"
-    this.COMPACT_ITEM_PADDING = 5.0;   // in the unit "px"
-    this.OTHER_NOT_INCLUDED_WIDTH = 3.0;   // in the unit "px"
+    this.ITEM_PICTURE_ORIGINAL_WIDTH = 200;   // in the unit "px"
+    this.ITEM_PICTURE_WIDTH = this.NORMAL_COLUMN_WIDTH - this.NORMAL_VERTICAL_GAP;   // in the unit "px"
   },
   
   
   el: "#article-cover-cascade",
-    
+  
   mainTemplate: JST["template/article/cover_cascade/main"],
   itemTemplate: JST["template/article/cover_cascade/cover"],
   
   
   initializeHelper: function(options) {
     this.fetchFunction = options.fetchFunction;
-    this.coverDisplayMode = GlobalConstant.Article.CoverDisplayMode.NORMAL;
-    if (options.coverDisplayMode) {
-      this.coverDisplayMode = options.coverDisplayMode;
+    this.coverDisplayType = GlobalConstant.Article.CoverDisplayType.NORMAL;
+    if (options.coverDisplayType) {
+      this.coverDisplayType = options.coverDisplayType;
     }
   },
   
@@ -65,21 +58,7 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
   
   resetCacheHelper: function() {
     var cache = this.cache;
-    cache.itemPadding = 0;
-    cache.itemPictureScale = 1.0;
     cache.pageLoadTimeSinceEpoch = 0;   // in the unit "second", and server will update the value if it is set to 0
-  },
-  
-  
-  resetDisplayModeParameterHelper: function(maxWidth) {
-    var cache = this.cache;
-    if (cache.compactMode) {
-      cache.itemPadding = this.COMPACT_ITEM_PADDING;
-      cache.itemPictureScale = (cache.itemWidth - cache.itemPadding * 2.0 - this.OTHER_NOT_INCLUDED_WIDTH) / this.ITEM_PICTURE_WIDTH;
-    } else {
-      cache.itemPadding = this.NORMAL_ITEM_PADDING;
-      cache.itemPictureScale = 1.0;
-    }
   },
   
   
@@ -92,11 +71,9 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
   
   createItemData: function(fetchedItem) {
     var cache = this.cache;
-    var itemPictureScale = cache.itemPictureScale;
-    var originalItemPictureHeight = fetchedItem.get("cover_picture_height");
-    
+
     var itemData = {
-      displayMode: this.coverDisplayMode,
+      displayType: this.coverDisplayType,
       id: fetchedItem.get("id"),
       title: fetchedItem.get("title"),
       author: fetchedItem.get("author"),
@@ -107,25 +84,13 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
       like: fetchedItem.get("like"),
       views: fetchedItem.get("views"),
       picUrl: fetchedItem.get("cover_picture_url"),
-      originalPicHeight: originalItemPictureHeight,
-      picHeight: Math.floor(originalItemPictureHeight * itemPictureScale),
-      picWidth: Math.floor(this.ITEM_PICTURE_WIDTH * itemPictureScale),
+      picHeight: fetchedItem.get("cover_picture_height") * this.ITEM_PICTURE_WIDTH / this.ITEM_PICTURE_ORIGINAL_WIDTH,
+      picWidth: this.ITEM_PICTURE_WIDTH,
       width: cache.itemWidth,
       padding: cache.itemPadding
     };
     
     return itemData;
-  },
-  
-  
-  updateItemDataInCacheAfterDisplayModeChange: function(itemIndex) {
-    var cache = this.cache;
-    var itemPictureScale = cache.itemPictureScale;
-    var itemData = cache.itemData[itemIndex];
-    itemData.width = cache.itemWidth;
-    itemData.padding = cache.itemPadding;
-    itemData.picHeight = Math.floor(itemData.originalPicHeight * itemPictureScale);
-    itemData.picWidth = Math.floor(this.ITEM_PICTURE_WIDTH * itemPictureScale);
   },
   
   
