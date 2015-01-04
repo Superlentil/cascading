@@ -19,7 +19,7 @@ var GlobalConstant = {
       VIEW_DESC: 2
     },
     
-    CoverDisplayMode: {
+    CoverDisplayType: {
       NORMAL: 0,
       SEARCH_RESULT: 1
     }
