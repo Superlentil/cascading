@@ -85,7 +85,6 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
       views: fetchedItem.get("views"),
       picUrl: fetchedItem.get("cover_picture_url"),
       picHeight: fetchedItem.get("cover_picture_height") * this.ITEM_PICTURE_WIDTH / this.ITEM_PICTURE_ORIGINAL_WIDTH,
-      picWidth: this.ITEM_PICTURE_WIDTH,
       width: cache.itemWidth,
       padding: cache.itemPadding
     };
