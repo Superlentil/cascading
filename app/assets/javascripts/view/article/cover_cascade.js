@@ -36,6 +36,17 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
     if (options.coverDisplayType) {
       this.coverDisplayType = options.coverDisplayType;
     }
+    if (options.sortBy) {
+      this.sortBy = options.sortBy;
+    }
+  },
+  
+  
+  renderHelper: function(event) {
+    var sortTypeSelector = $("#article-cover-cascade-sort-type");
+    if (this.sortBy && sortTypeSelector.length > 0) {
+      sortTypeSelector.get(0).selectedIndex = this.sortBy;
+    }
   },
   
   
@@ -95,15 +106,13 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
   
   events: function() {
     return _.extend({}, View.Cascade.Base.prototype.events, {
-      "click .m-sort-by": "onSortBy"
+      "change #article-cover-cascade-sort-type" : "onSortBy"
     });
   },
-  
-  
-  onSortBy: function(event) {
-    event.preventDefault();
-    
-    var sortByType = $(event.currentTarget).data("sortBy");
+
+
+  onSortBy: function (event) {
+    var sortByType = $(event.currentTarget).val();
     
     var hash = window.location.hash;
     if (hash.length === 0 || hash === "#") {

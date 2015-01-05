@@ -1,0 +1,22 @@
+@import "compass";
+
+#article-cover-cascade-sort {
+  width: 100%;
+  text-align: right;
+  
+  & > label {
+    font: italic bold 12px Georgia, serif;
+    color: white;
+    padding-right: 8px;
+  }
+}
+
+#article-cover-cascade-sort-type {
+  width: 40%;
+	min-width: 130px;
+	max-width: 200px;
+}
+
+option {
+	text-align: left;
+}

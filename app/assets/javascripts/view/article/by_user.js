@@ -45,7 +45,7 @@ View.Article.ByUser = Backbone.View.extend({
     var viewUserHeader = new View.User.Header({user: user});
     $("#article-by-user-header").append(viewUserHeader.render().$el);
     
-    this.viewArticleCascade = new View.Article.CoverCascade({fetchFunction: this.fetchFunction});
+    this.viewArticleCascade = new View.Article.CoverCascade({fetchFunction: this.fetchFunction, sortBy: this.sortBy});
     this.viewArticleCascade.render();
   },
   

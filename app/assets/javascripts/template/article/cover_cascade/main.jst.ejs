@@ -1,7 +1,10 @@
-<!--
 <div id="article-cover-cascade-option" class="row">
-  <div class="col-xs-4 padding-s-lr"><button class="m-sort-by" data-sort-by="<%= GlobalConstant.Article.SortBy.PUBLISH_TIME_DESC %>">Newest</button></div>
-  <div class="col-xs-4 padding-s-lr"><button class="m-sort-by" data-sort-by="<%= GlobalConstant.Article.SortBy.LOVE_DESC %>">Favorite</button></div>
-  <div class="col-xs-4 padding-s-lr"><button class="m-sort-by" data-sort-by="<%= GlobalConstant.Article.SortBy.VIEW_DESC %>">Most Viewed</button></div>
+  <div id="article-cover-cascade-sort">
+    <label> Sort by </label>
+    <select id='article-cover-cascade-sort-type'> 
+      <option id="time" value="<%= GlobalConstant.Article.SortBy.PUBLISH_TIME_DESC %>"> most recent </option>
+      <option id="like" value="<%= GlobalConstant.Article.SortBy.LOVE_DESC %>"> most liked </option>
+      <option id="view" value="<%= GlobalConstant.Article.SortBy.VIEW_DESC %>"> most viewed </option>
+    </select>
+  </div>
 </div>
--->
