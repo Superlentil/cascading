@@ -18,7 +18,7 @@ View.Article.Search = Backbone.View.extend({
     
     this.viewArticleCascade = new View.Article.CoverCascade({
       fetchFunction: this.fetchFunction,
-      coverDisplayMode: GlobalConstant.Article.CoverDisplayMode.SEARCH_RESULT
+      coverDisplayType: GlobalConstant.Article.CoverDisplayType.SEARCH_RESULT
     });
     this.viewArticleCascade.render();
 

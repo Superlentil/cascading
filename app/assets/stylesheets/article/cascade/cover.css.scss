@@ -12,20 +12,24 @@ $COLOR: #5A5A5A;
 
 #article-cover-cascade-option {
   padding: 10px 0 20px 0;
-  
-  .col-xs-6 {
+
+  & > .col-xs-6 {
     padding: 2px 6px;
   }
 }
+
 
 .article-cover-title {
   font-family: georgia, palatino, 'book antiqua', 'palatino linotype', serif;
   font-size: 18px;
   word-wrap: break-word; 
   padding: 15px 10px 10px 10px;
-  color: #3F2423;
 
+  & > a {
+    @include link-colors(#3F2423, blue, blue, #3F2423);
+  }
 }
+
 
 .article-cover-abstract { 
   font: $FONT;
