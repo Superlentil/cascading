@@ -1,11 +1,15 @@
-<div class="article-cover" style="top: <%= top %>px; left: <%= left %>px; width: <%= width %>px; border-radius： 4px">
-  <a class="block max-width text-align-center article-cover-img-link" href="#/article/<%= id %>">
-    <img class="article-cover-img" style="height: <%= picHeight %>px; width: 100%;" src="<%= picUrl %>">
-  </a>
-  <div class="article-cover-content">   
-  	<p class="article-cover-title">
-      <a href="#/article/<%= id %>"><em><%= title %></em></a>
-    </p>
+<div class="article-cover" style="top: <%= top %>px; left: <%= left %>px; width: <%= width %>px;">
+
+<a class="article-cover-img-link" href="#/article/<%= id %>" style="height: <%= picHeight %>px;">
+  <img class="article-cover-img" src="<%= picUrl %>">
+</a>
+
+<div class="article-cover-content">
+  <div class="max-fill-fixed-background article-cover-content-background"></div>
+  
+	<p class="article-cover-title">
+    <a href="#/article/<%= id %>"><em><%= title %></em></a>
+  </p>
     
   <% if (displayType === GlobalConstant.Article.CoverDisplayType.SEARCH_RESULT) { %>
     <% if (author.length > 0) { %>
@@ -28,4 +32,5 @@
     <span id="article-cover-view-count"><%= views %></span>
   </div>
 </div>
+
 </div>

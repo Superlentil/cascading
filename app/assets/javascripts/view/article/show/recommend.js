@@ -98,7 +98,7 @@ View.Article.Show.Recommend = View.Cascade.Base.extend({
   
   
   beAbleToScrollDown: function() {
-    return this.cache.cascadeHeight > this.articleContainer.height();
+    return this.cache.cascadeHeight + 200 > this.articleContainer.height();
   },
   
   

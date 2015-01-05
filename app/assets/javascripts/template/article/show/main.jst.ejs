@@ -3,16 +3,17 @@
 <% } else { %>
   <div id="popup_container" class="popup_box"></div>
 
-  <div>
+  <!-- <div>
     <a href="#">All Article</a><br>
     <a href="#/article/<%= article.get("id") %>/edit">edit</a>
     <a href="#" class="Delete_Article" data-article-id="<%= article.get("id") %>">delete</a><br>
-  </div>
+  </div> -->
 
   <div id="article-show" class="row">
   <div id="article-show-content">
 <% } %>
-
+  <div id="article-show-content-background" class="max-fill-fixed-background"></div>
+  
   <h1 class="article-show-title"><%= article.get("title") %></h1>
   <div class="row article-show-info">
     <div class="left article-show-date"><%= GlobalFormater.LocalDate.Chinese(article.get("publish_time") * 1000) %></div>
@@ -21,7 +22,6 @@
   </div>
   <% if (article.get("cover_picture_imported")) { %>
     <pre class="article-show-picture"><img src="<%= article.get("cover_picture_url").replace("/thumb/", "/medium/") %>" title="Cover Picture"></pre>
-    <p>-----------------------------------------------------------------------</p>
   <% } %>
   <%= contentJsonToHtml(article.get("content")) %>
   
@@ -29,6 +29,7 @@
     <div id="article-show-recommend-regular" class="row"></div>
   <% } %>
 </div>
+
 <div id="article-show-recommend-cascade"></div>
 </div>
 
