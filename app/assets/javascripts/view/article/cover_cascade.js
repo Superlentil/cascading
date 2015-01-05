@@ -36,6 +36,7 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
     if (options.coverDisplayType) {
       this.coverDisplayType = options.coverDisplayType;
     }
+    this.on('change:sortType', this.sortByTypeFunc, this);
   },
   
   
@@ -95,15 +96,18 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
   
   events: function() {
     return _.extend({}, View.Cascade.Base.prototype.events, {
-      "click .m-sort-by": "onSortBy"
+      "change .sort-filter select" : "setSort"
     });
   },
   
-  
-  onSortBy: function(event) {
-    event.preventDefault();
-    
-    var sortByType = $(event.currentTarget).data("sortBy");
+  setSort: function (event) {
+    this.sortType = event.currentTarget.value;
+    this.trigger('change:sortType');
+  },
+
+  sortByTypeFunc: function () {
+    var sortByType = 0;
+    sortByType = this.sortType;
     
     var hash = window.location.hash;
     if (hash.length === 0 || hash === "#") {
@@ -117,5 +121,9 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
     }
     
     Backbone.history.navigate(hash, {trigger: true});
+
+    var selectedType = document.getElementById('sort-type');
+    selectedType.selectedIndex = sortByType;
   }
+
 });
