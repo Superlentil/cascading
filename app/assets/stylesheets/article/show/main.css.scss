@@ -1,29 +1,43 @@
+@import "compass";
+
+
 #article-show-preview {
   width: 100%;
-  max-width: 600px;
+  max-width: 700px;
   
   font-size: 16px;
   line-height: 200%;
   
-  margin: 8px auto 20px auto;
+  margin: 0 auto;
 }
 
 
 #article-show {
   width: 100%;
   max-width: 1000px;
-  margin: 0 auto;
+  margin: 10px auto;
 }
 
 
 #article-show-content {
+  position: relative;
+  
   width: 100%;
   max-width: 600px;
   
   font-size: 16px;
   line-height: 200%;
   
-  margin: 8px auto 20px auto;
+  margin: 0 auto;
+  padding: 10px 0;
+}
+
+
+#article-show-content-background {
+  z-index: -1000;
+  
+  background-color: #fff;
+  @include opacity(0.75);
 }
 
 

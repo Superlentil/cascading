@@ -3,10 +3,22 @@
 
 
 body {
-  // background-color: #e5e5e5;
-  // background-color: #e7e7ff;
-  background-color: #F5F5F5;
   min-width: $SUPPORT_VIEWPORT_MIN_WIDTH;
+  
+  // background-color: #cfebff;
+  // @include background-image(linear-gradient(325deg, #cfebff 48%, #000075));
+  // @include background-image(linear-gradient(315deg, #cfebff 35%, #7282c1 69%, #cfebff 98%));
+  // @include background-image(linear-gradient(135deg, #022aa8, #ceeaff));
+  // @include background-image(linear-gradient(135deg, #5aae54, #ceeaff));
+  // background-color: #c9ead5;
+  // background-color: #d6f2e0;
+  // background-color: #def4e6;
+  // @include background-image(linear-gradient(to bottom, #284ebd, #8faee5 88%, #afe833 94%, #a4dc31));
+  // @include background-image(linear-gradient(to bottom, #6885da, #b7cef8 88%, #a4dc31));
+  // @include background-image(linear-gradient(to bottom, #b7d3e8, #dae3ea 88%, #c1e96f));
+  @include background-image(linear-gradient(to bottom, #27465d, #e8f0f6 88%, #d3ee9a));
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 

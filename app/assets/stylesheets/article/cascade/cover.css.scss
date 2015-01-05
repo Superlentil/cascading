@@ -2,20 +2,17 @@
 
 $FONT: normal normal 13px "Open Sans", sans-serif;
 $COLOR: #5A5A5A;
+$BORDER_RADIUS: 5px;
 
 #article-cover-cascade {
-  margin: 0;
+  margin: 10px 0 0 0;
   padding: 0;
   width: 100%;
 }
 
 
 #article-cover-cascade-option {
-  padding: 10px 0 20px 0;
-
-  & > .col-xs-6 {
-    padding: 2px 6px;
-  }
+  padding: 5px 0 15px 0;
 }
 
 
@@ -46,29 +43,43 @@ $COLOR: #5A5A5A;
 
 .article-cover {
   position: absolute;
-  @include border-radius(3px);
+  @include border-radius($BORDER_RADIUS);
   @include box-shadow(0px 2px 4px #888888);
+  background-color: transparent;
 }
+
+
+.article-cover-content,
+.article-cover-content-background {
+  @include border-radius(0 0 $BORDER_RADIUS $BORDER_RADIUS);
+}
+
 
 .article-cover-content {
-  background-color: #FFFFFF; 
-  @include border-radius(0px 0px 5px 5px);
+  position: relative;
+  background-color: transparent;
 }
 
+
+.article-cover-content-background {
+  z-index: -1000;
+  
+  background-color: #fff;
+  @include opacity(0.75);
+}
+
+
+.article-cover-img-link,
+.article-cover-img {
+  display: block;
+  width: 100%;
+  @include border-radius($BORDER_RADIUS $BORDER_RADIUS 0 0);
+}
 
 .article-cover-img-link {
   text-decoration: none;
 }
 
-.article-cover-img-link,
-.article-cover-img {
-  margin: 0;
-  display: block;
-}
-
-.article-cover-img {
-  @include border-radius(5px 5px 0px 0px);
-}
 
 .article-cover-icon-row {
   padding: 0px 10px;

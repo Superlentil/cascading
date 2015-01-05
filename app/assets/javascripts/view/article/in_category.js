@@ -30,7 +30,7 @@ View.Article.InCategory = Backbone.View.extend({
     
     this.$el.html(this.template());
     
-    this.viewArticleCascade = new View.Article.CoverCascade({fetchFunction: this.fetchFunction});
+    this.viewArticleCascade = new View.Article.CoverCascade({fetchFunction: this.fetchFunction, sortBy: this.sortBy});
     this.viewArticleCascade.render();
   },
   
