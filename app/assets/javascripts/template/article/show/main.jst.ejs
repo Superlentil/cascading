@@ -12,8 +12,6 @@
   <div id="article-show" class="row">
   <div id="article-show-content">
 <% } %>
-  <div id="article-show-content-background" class="max-fill-fixed-background"></div>
-  
   <h1 class="article-show-title"><%= article.get("title") %></h1>
   <div class="row article-show-info">
     <div class="left article-show-date"><%= GlobalFormater.LocalDate.Chinese(article.get("publish_time") * 1000) %></div>

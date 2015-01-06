@@ -20,8 +20,6 @@
 
 
 #article-show-content {
-  position: relative;
-  
   width: 100%;
   max-width: 600px;
   
@@ -30,14 +28,8 @@
   
   margin: 0 auto;
   padding: 10px 0;
-}
 
-
-#article-show-content-background {
-  z-index: -1000;
-  
   background-color: #fff;
-  @include opacity(0.75);
 }
 
 

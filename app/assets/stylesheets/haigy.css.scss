@@ -16,7 +16,19 @@ body {
   // @include background-image(linear-gradient(to bottom, #284ebd, #8faee5 88%, #afe833 94%, #a4dc31));
   // @include background-image(linear-gradient(to bottom, #6885da, #b7cef8 88%, #a4dc31));
   // @include background-image(linear-gradient(to bottom, #b7d3e8, #dae3ea 88%, #c1e96f));
-  @include background-image(linear-gradient(to bottom, #27465d, #e8f0f6 88%, #d3ee9a));
+  
+  // Candidate
+  // @include background-image(linear-gradient(to bottom, #27465d, #e8f0f6 88%, #d3ee9a));
+  // @include background-image(linear-gradient(to bottom, #f8efbe, #fff 88%, #d3ee9a));
+  // @include background-image(linear-gradient(to bottom, #ffff75, #fff 31%, #1e338c));
+  // @include background-image(linear-gradient(to bottom, #27465d, #cad2d7));
+  // @include background-image(linear-gradient(to bottom, #4b6578, #cad2d7));
+  // @include background-image(linear-gradient(to bottom, #000, #cad2d7));
+  // @include background-image(linear-gradient(to bottom, #27465d, #fff));
+  // @include background-image(linear-gradient(to right, #27465d, #748897 30%, #748897 70%, #27465d));
+  
+  @include background-image(linear-gradient(to right, #546d7f, #a7b4bd 30%, #a7b4bd 70%, #546d7f));
+  background-size: 100% 150%;
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
