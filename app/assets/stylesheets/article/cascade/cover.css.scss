@@ -49,23 +49,9 @@ $BORDER_RADIUS: 5px;
 }
 
 
-.article-cover-content,
-.article-cover-content-background {
-  @include border-radius(0 0 $BORDER_RADIUS $BORDER_RADIUS);
-}
-
-
 .article-cover-content {
-  position: relative;
-  background-color: transparent;
-}
-
-
-.article-cover-content-background {
-  z-index: -1000;
-  
+  @include border-radius(0 0 $BORDER_RADIUS $BORDER_RADIUS);
   background-color: #fff;
-  @include opacity(0.75);
 }
 
 
