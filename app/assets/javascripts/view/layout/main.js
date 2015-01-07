@@ -6,10 +6,14 @@ View.Layout.Main = Backbone.View.extend({
     _.bindAll(that, "signIn");
     _.bindAll(that, "signOut");
     _.bindAll(that, "closeNav");
+    _.bindAll(that, "hideHeader");
+    _.bindAll(that, "showHeader");
     
     GlobalVariable.Layout.SignInHandler = that.signIn;
     GlobalVariable.Layout.SignOutHandler = that.signOut;
     GlobalVariable.Layout.CloseNavHandler = that.closeNav;
+    GlobalVariable.Layout.Header.Hide = that.hideHeader;
+    GlobalVariable.Layout.Header.Show = that.showHeader;
     
     that.leftNavOn = false;
     that.rightNavOn = false;
@@ -256,6 +260,20 @@ View.Layout.Main = Backbone.View.extend({
     } else {
       this.userAvatar.hide();
     }
+  },
+  
+  
+  hideHeader: function() {
+    this.header.hide();
+    this.menuIcon.hide();
+    this.userAvatar.hide();
+  },
+  
+  
+  showHeader: function() {
+    this.header.show();
+    this.menuIcon.show();
+    this.userAvatar.show();
   },
 
   

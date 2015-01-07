@@ -62,7 +62,9 @@ var GlobalVariable = {
     CloseNavHandler: null,
     
     Header: {
-      UpdateSubTitle: null
+      UpdateSubTitle: null,
+      Hide: null,
+      Show: null
     },
     
     LeftNav: {
