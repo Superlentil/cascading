@@ -106,6 +106,8 @@ View.Article.Show.Main = Backbone.View.extend({
     
     var popupContainer = $("#popup_container");
     if (popupContainer.length > 0) {
+      GlobalVariable.Layout.Header.Hide();
+      
       var picture = $(event.currentTarget);
       var articleContainer = $("#article-show");
       popupContainer.html("<img src='" + picture.attr("src").replace("/medium/", "/original/") + "' />");
@@ -113,6 +115,7 @@ View.Article.Show.Main = Backbone.View.extend({
       articleContainer.css({"opacity": "0.3"});
       
       articleContainer.on("click", function() {
+        GlobalVariable.Layout.Header.Show();
         articleContainer.off("click");
         popupContainer.fadeOut("slow");
         articleContainer.css({"opacity": "1.0"});
