@@ -2,6 +2,7 @@
 View.Article.Show.Main = Backbone.View.extend({
   initialize: function() {
     this.allSubviews = [];
+    this.isGalleryOptionOn = false;
   },
   
   
@@ -9,6 +10,7 @@ View.Article.Show.Main = Backbone.View.extend({
   
   
   template: JST["template/article/show/main"],
+  galleryTemplate: JST["template/article/show/gallery"],
   
   
   render: function(options) {
@@ -100,7 +102,8 @@ View.Article.Show.Main = Backbone.View.extend({
   
   events: {
     "click .article-show-picture": "openGallery",
-    "click #article-show-gallery": "closeGallery"
+    "click #article-show-gallery-img": "galleryOption",
+    "click #article-show-gallery-close": "closeGallery"
   },
   
   
@@ -110,15 +113,28 @@ View.Article.Show.Main = Backbone.View.extend({
     var galleryContainer = this.galleryContainer;
     if (galleryContainer.length > 0) {
       GlobalVariable.Layout.Header.Hide(0);
-      galleryContainer.html("<img src='" + $(event.currentTarget).attr("src").replace("/medium/", "/original/") + "' />");
+      // galleryContainer.html("<img src='" + $(event.currentTarget).attr("src").replace("/medium/", "/original/") + "' />");
+      galleryContainer.html(this.galleryTemplate());
       galleryContainer.fadeIn("slow");
     }    
+  },
+  
+  
+  galleryOption: function(event) {
+    if (this.isGalleryOptionOn) {
+      this.isGalleryOptionOn = false;
+      $("#article-show-gallery-img").transition({y: 0});
+    } else {
+      this.isGalleryOptionOn = true;
+      $("#article-show-gallery-img").transition({y: "-30%"});
+    }
   },
   
   
   closeGallery: function(event) {
     event.preventDefault();
     
+    this.isGalleryOptionOn = false;
     GlobalVariable.Layout.Header.Show("slow");
     this.galleryContainer.fadeOut("slow");
   },
