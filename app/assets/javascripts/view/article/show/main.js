@@ -56,6 +56,8 @@ View.Article.Show.Main = Backbone.View.extend({
             var viewComment = new View.Article.Show.Comment({articleId: options.id});
             that.allSubviews.push(viewComment);
             viewComment.render();
+            
+            that.galleryContainer = $("#article-show-gallery");
           }
         }
       });
@@ -87,9 +89,9 @@ View.Article.Show.Main = Backbone.View.extend({
     var contentHtml = "";
     _.each(contentObj, function(paragraph) {
       if (paragraph.type === "text") {
-        contentHtml += "<pre class='article-show-text'>" + paragraph.src + "</pre>";
+        contentHtml += "<pre class='article-show-text-container'>" + paragraph.src + "</pre>";
       } else if (paragraph.type === "picture") {
-        contentHtml += "<pre class='article-show-picture'><img src='" + paragraph.src.url + "' class='Article_Picture' /></pre>";
+        contentHtml += "<pre class='article-show-picture-container'><img src='" + paragraph.src.url + "' class='article-show-picture' /></pre>";
       }
     });
     return contentHtml;
@@ -97,30 +99,28 @@ View.Article.Show.Main = Backbone.View.extend({
   
   
   events: {
-    "click .Article_Picture": "showOriginalPicture"
+    "click .article-show-picture": "openGallery",
+    "click #article-show-gallery": "closeGallery"
   },
   
   
-  showOriginalPicture: function(event) {
+  openGallery: function(event) {
     event.preventDefault();
     
-    var popupContainer = $("#popup_container");
-    if (popupContainer.length > 0) {
-      GlobalVariable.Layout.Header.Hide();
-      
-      var picture = $(event.currentTarget);
-      var articleContainer = $("#article-show");
-      popupContainer.html("<img src='" + picture.attr("src").replace("/medium/", "/original/") + "' />");
-      popupContainer.fadeIn("slow");
-      articleContainer.css({"opacity": "0.3"});
-      
-      articleContainer.on("click", function() {
-        GlobalVariable.Layout.Header.Show();
-        articleContainer.off("click");
-        popupContainer.fadeOut("slow");
-        articleContainer.css({"opacity": "1.0"});
-      });
+    var galleryContainer = this.galleryContainer;
+    if (galleryContainer.length > 0) {
+      GlobalVariable.Layout.Header.Hide(0);
+      galleryContainer.html("<img src='" + $(event.currentTarget).attr("src").replace("/medium/", "/original/") + "' />");
+      galleryContainer.fadeIn("slow");
     }    
+  },
+  
+  
+  closeGallery: function(event) {
+    event.preventDefault();
+    
+    GlobalVariable.Layout.Header.Show("slow");
+    this.galleryContainer.fadeOut("slow");
   },
   
   

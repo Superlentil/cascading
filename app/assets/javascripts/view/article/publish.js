@@ -90,7 +90,7 @@ View.Article.Publish = Backbone.View.extend({
     "click #choose_cover_picture_container": "chooseCoverPictureMode",
     "click #upload_cover_picture_container": "uploadCoverPictureMode",
 
-    "click .Article_Picture": "chooseCover",    
+    "click .article-publish-thumb-picture": "chooseCover",    
     "click #upload_picture_button": "uploadCover",
     "click #cancel_button": "cancelPublish"
   },
@@ -111,7 +111,7 @@ View.Article.Publish = Backbone.View.extend({
     $("#upload_preview").show();
     $("#upload_cover_picture_container").css({"opacity": "1.0"});
     $("#choose_cover_picture_container").css({"opacity": "0.3"});
-    $(".Article_Picture").css({"margin-bottom": "1em", "border": "0px none"});
+    $(".article-publish-thumb-picture").css({"margin-bottom": "1em", "border": "0px none"});
     if (this.mode === "upload") {
       var previewPicture = $("#upload_preview").children("img");
       if (previewPicture.length > 0) {
@@ -136,7 +136,7 @@ View.Article.Publish = Backbone.View.extend({
     that.coverPictureId = picture.data("pictureId");
     that.coverPictureImported = (picture.data("imported") === "yes");
     that.mode = "choose";
-    $(".Article_Picture").css({"margin-bottom": "1em", "border": "0px none"});
+    $(".article-publish-thumb-picture").css({"margin-bottom": "1em", "border": "0px none"});
     picture.css({"border": "0px outset pink"}).animate({
       "margin-bottom": "0",
       "border-width": "5px"

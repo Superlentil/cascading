@@ -49,19 +49,14 @@
 }
 
 
-.article-show-text, .article-show-picture {
+.article-show-text-container, .article-show-picture-container {
   width: 100%;
   line-height: 200%;
+  word-wrap: break-word;
+  text-align: center;
 }
 
-.article-show-text {
-  word-wrap: break-word;
-}
 
 .article-show-picture {
-  text-align: center;
-  
-  img {
-    max-width: 100%;
-  }
+  max-width: 100%;
 }

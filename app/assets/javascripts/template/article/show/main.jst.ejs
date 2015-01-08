@@ -1,7 +1,7 @@
 <% if (preview) { %>
   <div id="article-show-preview">
 <% } else { %>
-  <div id="popup_container" class="popup_box"></div>
+  <div id="article-show-gallery"></div>
 
   <!-- <div>
     <a href="#">All Article</a><br>
@@ -19,7 +19,7 @@
     <div class="right article-show-category">类别：<a href="#/articles/category/<%= article.get("category_id") %>"><%= article.get("category_name") %></a></div>
   </div>
   <% if (article.get("cover_picture_imported")) { %>
-    <pre class="article-show-picture"><img src="<%= article.get("cover_picture_url").replace("/thumb/", "/medium/") %>" title="Cover Picture"></pre>
+    <pre class="article-show-picture-container"><img class="article-show-picture" src="<%= article.get("cover_picture_url").replace("/thumb/", "/medium/") %>" title="Cover Picture"></pre>
   <% } %>
   <%= contentJsonToHtml(article.get("content")) %>
   
