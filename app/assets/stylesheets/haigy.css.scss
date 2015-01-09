@@ -1,6 +1,30 @@
 @import "compass";
 @import "layout/setting";
 
+html{
+  .button{
+    text-align: center; 
+    padding: 8px 0px; 
+    border: none; 
+    
+    @include border-radius(3px);
+    
+    font: 18px Arial, Helvetica, sans-serif; 
+    font-weight: bold; 
+    color: #ffffff; 
+    background-color: #ffffff; 
+    
+    @include background-image(linear-gradient(top, #ffffff 0% ,#023961 100%));
+    
+    @include box-shadow(inset 0px 0px 1px #000000);
+  }
+ .button:active{ 
+    @include background-image(linear-gradient(top, #ffffff 0% ,#175a8a 100%));
+
+    @include box-shadow(0px 0px 3px #00345c, inset 0px 0px 3px #00345c);
+ }
+}
+
 
 body {
   min-width: $SUPPORT_VIEWPORT_MIN_WIDTH;
