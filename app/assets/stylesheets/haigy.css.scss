@@ -2,7 +2,7 @@
 @import "layout/setting";
 
 html{
-  .button{
+  button, .button, .button-default, .button-primary{
     text-align: center; 
     padding: 8px 0px; 
     border: none; 
