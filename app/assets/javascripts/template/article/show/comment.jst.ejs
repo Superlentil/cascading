@@ -1,19 +1,39 @@
-<div id="comments_list">
-<% if (comments) { %>
-  <% _.each(comments, function(comment) { %>
-    <div>
-      <img src="<%= comment.get("user_avatar_url") %>" />
-      <strong><em><%= comment.get("user_nickname") %></em></strong>:<br />
-      <p><%= comment.get("content") %></p>
-    </div> 
-  <% }); %>
-<% } %>
-</div>
+
+<div id="article-show-comment">
 
 <% if ($.cookie("user_id")) { %>
   <div>
-    <input id="comment_input" type="text" value="Your Comment ~" />
-    <input id="save_comment" type="button" value="Save" />
-    <input id="cancel_comment" type="button" value="Cancel" />
+    <fieldset id="article-show-comment-field">
+      <legend> Comments </legend>
+      <form id="article-show-comment-submit">
+        <textarea id="article-show-comment-draft" form="article-show-comment-submit" placeholder="Enter your comment here ..." rows="5" cols="50"required ></textarea>
+        <input id="save_comment" type="button" value="Submit" />
+        <input id="cancel_comment" type="button" value="Cancel" />
+      </form>
+    </fieldset>
   </div>
 <% } %>
+
+
+<div id="comments_list">
+<% if (comments) { %>
+  <table>
+  <% _.each(comments, function(comment) { %>
+    <tr class="article-show-comment-onepiece">
+      <td valign="top">
+          <img class="comment-author-icon-img" src="<%= comment.get("user_avatar_url") %>"  />
+      </td>
+      <td>
+        <div class="reviewer-info">
+            <strong><%= comment.get("user_nickname") %></strong><br />
+        </div>
+        <div class="comment-content">
+            <p><%= comment.get("content") %></p>
+        </div>
+      </td>
+  </tr>
+  <% }); %>
+</table>
+<% } %>
+</div>
+</div>

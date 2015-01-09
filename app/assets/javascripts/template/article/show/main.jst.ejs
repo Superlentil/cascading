@@ -26,13 +26,16 @@
   <% if (!preview) { %>
     <div id="article-show-recommend-regular" class="row"></div>
   <% } %>
+
+  <% if (!preview) { %>
+    <hr>
+    <br><br>
+    <div id="article_comments_container"></div>
+  <% } %>
+
 </div>
 
 <div id="article-show-recommend-cascade"></div>
 </div>
 
 
-<% if (!preview) { %>
-  <br><br>
-  <div id="article_comments_container"></div>
-<% } %>
