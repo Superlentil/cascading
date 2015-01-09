@@ -3,6 +3,7 @@ View.Article.Show.Main = Backbone.View.extend({
   initialize: function() {
     this.allSubviews = [];
     this.isGalleryOptionOn = false;
+    this.articleContentArray = [];
   },
   
   
@@ -89,13 +90,20 @@ View.Article.Show.Main = Backbone.View.extend({
   contentJsonToHtml: function(articleContent) {
     var contentObj = JSON.parse(articleContent);
     var contentHtml = "";
+    var articleContentArray = [];
+    var index = 0;
     _.each(contentObj, function(paragraph) {
       if (paragraph.type === "text") {
         contentHtml += "<pre class='article-show-text-container'>" + paragraph.src + "</pre>";
+        articleContentArray.push(paragraph.src);
+        ++index;
       } else if (paragraph.type === "picture") {
-        contentHtml += "<pre class='article-show-picture-container'><img src='" + paragraph.src.url + "' class='article-show-picture' /></pre>";
+        contentHtml += "<pre class='article-show-picture-container'><img class='article-show-picture' src='" + paragraph.src.url + "' data-array-index='" + index + "'></pre>";
+        articleContentArray.push("<img src='" + paragraph.src.url + "'>");
+        ++index;
       }
     });
+    this.articleContentArray = articleContentArray;
     return contentHtml;
   },
   
@@ -103,7 +111,9 @@ View.Article.Show.Main = Backbone.View.extend({
   events: {
     "click .article-show-picture": "openGallery",
     "click #article-show-gallery-img": "galleryOption",
-    "click #article-show-gallery-close": "closeGallery"
+    "click #article-show-gallery-close": "closeGallery",
+    "click #article-show-gallery-prev": "prevGalleryImage",
+    "click #article-show-gallery-next": "nextGalleryImage"
   },
   
   
@@ -113,8 +123,7 @@ View.Article.Show.Main = Backbone.View.extend({
     var galleryContainer = this.galleryContainer;
     if (galleryContainer.length > 0) {
       GlobalVariable.Layout.Header.Hide(0);
-      // galleryContainer.html("<img src='" + $(event.currentTarget).attr("src").replace("/medium/", "/original/") + "' />");
-      galleryContainer.html(this.galleryTemplate());
+      galleryContainer.html(this.galleryTemplate({imageSrc: $(event.currentTarget).attr("src").replace("/medium/", "/original/")}));
       galleryContainer.fadeIn("slow");
     }    
   },
@@ -123,10 +132,10 @@ View.Article.Show.Main = Backbone.View.extend({
   galleryOption: function(event) {
     if (this.isGalleryOptionOn) {
       this.isGalleryOptionOn = false;
-      $("#article-show-gallery-img").transition({y: 0});
+      $("#article-show-gallery-main").transition({y: 0});
     } else {
       this.isGalleryOptionOn = true;
-      $("#article-show-gallery-img").transition({y: "-30%"});
+      $("#article-show-gallery-main").transition({y: "-30%"});
     }
   },
   
@@ -137,6 +146,16 @@ View.Article.Show.Main = Backbone.View.extend({
     this.isGalleryOptionOn = false;
     GlobalVariable.Layout.Header.Show("slow");
     this.galleryContainer.fadeOut("slow");
+  },
+  
+  
+  prevGalleryImage: function(event) {
+    $(".article-show-gallery-img-wrapper").transition({x: "-100%"});
+  },
+  
+  
+  nextGalleryImage: function(event) {
+    $(".article-show-gallery-img-wrapper").transition({x: "100%"});
   },
   
   
