@@ -18,9 +18,10 @@ $BORDER_RADIUS: 5px;
 
 .article-cover-title {
   font-family: georgia, palatino, 'book antiqua', 'palatino linotype', serif;
-  font-size: 18px;
+  font-size: 20px;
   word-wrap: break-word; 
   padding: 15px 10px 10px 10px;
+  font-weight: bold;
 
   & > a {
     @include link-colors(#3F2423, blue, blue, #3F2423);
@@ -33,6 +34,7 @@ $BORDER_RADIUS: 5px;
   color: $COLOR;
   word-wrap: break-word;
   padding: 10px;
+  line-height: 130%;
 }
 
 .article-cover-horizontal-line {
