@@ -29,6 +29,7 @@ html {
 
 .row {
   width: 100%;
+  @include user-select(none);
 }
 
 
