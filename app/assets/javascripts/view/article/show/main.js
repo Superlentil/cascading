@@ -6,6 +6,8 @@ View.Article.Show.Main = Backbone.View.extend({
     this.isGalleryOptionOn = false;
     this.galleryCurrentParagraphIndex = 0;
     this.galleryCurrentParagraph = null;
+    
+    _.bindAll(this, "galleryKeyboardListener");
   },
   
   
@@ -127,8 +129,8 @@ View.Article.Show.Main = Backbone.View.extend({
     "click .article-show-picture": "openGallery",
     "click #article-show-gallery-content": "galleryOption",
     "click #article-show-gallery-close": "closeGallery",
-    "click #article-show-gallery-prev": "prevGalleryImage",
-    "click #article-show-gallery-next": "nextGalleryImage",
+    "click #article-show-gallery-prev": "prevGalleryParagraph",
+    "click #article-show-gallery-next": "nextGalleryParagraph",
     "click #article-show-gallery-details": "showGalleryDetails"
   },
   
@@ -139,9 +141,15 @@ View.Article.Show.Main = Backbone.View.extend({
     var galleryContainer = this.galleryContainer;
     if (galleryContainer.length > 0) {
       this.galleryCurrentParagraphIndex = parseInt($(event.currentTarget).data("paragraphIndex"));
+      
+      var that = this;
+      $(document).on("keyup", function(event) {
+        that.galleryKeyboardListener(event);
+      });
+      
       GlobalVariable.Layout.Header.Hide(0);
       galleryContainer.html(this.galleryTemplate({paragraph: this.galleryParagraph(this.galleryCurrentParagraphIndex)}));
-      this.galleryCurrentParagraph = $(".article-show-gallery-content-outer-wrapper");
+      this.galleryCurrentParagraph = $(".article-show-gallery-content-wrapper");
       galleryContainer.fadeIn("slow");
     }    
   },
@@ -163,7 +171,7 @@ View.Article.Show.Main = Backbone.View.extend({
     } else if (paragraphIndex === paragraphCount) {
       var recommendItems = this.viewRecommendCascade.getRegularRecommendItems();
       var itemCount = recommendItems.length;
-      var recommendContent = "";
+      var recommendContent = "<div class='article-show-gallery-recommend'><h2>You May Also Like:</h2><div class='row'>";
       for (var index = 0; index < itemCount; ++index) {
         var item = recommendItems[index];
         if (item) {
@@ -175,6 +183,7 @@ View.Article.Show.Main = Backbone.View.extend({
           + "</div>";
         }
       }
+      recommendContent += "</div></div>";
       return recommendContent;
     } else {
       return null;
@@ -194,57 +203,59 @@ View.Article.Show.Main = Backbone.View.extend({
   
   
   closeGallery: function(event) {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
     
     this.isGalleryOptionOn = false;
     this.galleryCurrentParagraph = null;
     GlobalVariable.Layout.Header.Show("slow");
     this.galleryContainer.fadeOut("slow");
+    
+    $(document).off("keyup");
   },
   
   
-  prevGalleryImage: function(event) {
+  prevGalleryParagraph: function(event) {
     var current = this.galleryCurrentParagraph;
     var prevParagraphIndex = this.galleryCurrentParagraphIndex - 1;
     var prevContent = this.galleryParagraph(prevParagraphIndex);
+    current.removeAttr("style");
     current.prevAll().remove();
     current.nextAll().remove();
     if (prevContent) {
       var prevParagraph = $(prevContent);
       prevParagraph.addClass("hide");
-      var prevInnerWrapper = $("<div class='article-show-gallery-content-inner-wrapper'></div>");
-      prevInnerWrapper.append(prevParagraph);
-      var prevOuterWrapper = $("<div class='article-show-gallery-content-outer-wrapper'></div>");
-      prevOuterWrapper.append(prevInnerWrapper);
+      var prev = $("<div class='article-show-gallery-content-wrapper'></div>");
+      prev.append(prevParagraph);
       this.galleryCurrentParagraphIndex = prevParagraphIndex;
-      current.before(prevOuterWrapper);
+      current.before(prev);
       current.transition({x: "100%", scale: 0}, 600);
       prevParagraph.fadeIn(600);
-      this.galleryCurrentParagraph = prevOuterWrapper;
+      this.galleryCurrentParagraph = prev;
     } else {
       current.transition({x: "30%"}, 400).transition({x: 0}, 400);
     }
   },
   
   
-  nextGalleryImage: function(event) {
+  nextGalleryParagraph: function(event) {
     var current = this.galleryCurrentParagraph;
     var nextParagraphIndex = this.galleryCurrentParagraphIndex + 1;
     var nextContent = this.galleryParagraph(nextParagraphIndex);
+    current.removeAttr("style");
     current.prevAll().remove();
     current.nextAll().remove();
     if (nextContent) {
       var nextParagraph = $(nextContent);
       nextParagraph.addClass("hide");
-      var nextInnerWrapper = $("<div class='article-show-gallery-content-inner-wrapper'></div>");
-      nextInnerWrapper.append(nextParagraph);
-      var nextOuterWrapper = $("<div class='article-show-gallery-content-outer-wrapper'></div>");
-      nextOuterWrapper.append(nextInnerWrapper);
+      var next = $("<div class='article-show-gallery-content-wrapper'></div>");
+      next.append(nextParagraph);
       this.galleryCurrentParagraphIndex = nextParagraphIndex;
-      current.after(nextOuterWrapper);
+      current.after(next);
       current.transition({x: "-100%", scale: 0}, 600);
       nextParagraph.fadeIn(600);
-      this.galleryCurrentParagraph = nextOuterWrapper;
+      this.galleryCurrentParagraph = next;
     } else {
       current.transition({x: "-30%"}, 400).transition({x: 0}, 400);
     }
@@ -257,9 +268,28 @@ View.Article.Show.Main = Backbone.View.extend({
     if (index >=0 && index < paragraphCount) {
       var paragraph = this.articleParagraph[index];
       if (paragraph.type === "picture") {
-        var container = this.galleryCurrentParagraph.find(".article-show-gallery-content-inner-wrapper");
+        $("#article-show-gallery-main").removeAttr("style");
+        this.isGalleryOptionOn = false;
+        var container = this.galleryCurrentParagraph;
         container.html("<img class='article-show-gallery-img' src='" + paragraph.src.url.replace("/medium/", "/original/") + "'>");
       }
+    }
+  },
+  
+  
+  galleryKeyboardListener: function(event) {
+    event.preventDefault();
+    
+    switch(event.keyCode) {
+      case 27:
+        this.closeGallery();
+        break;
+      case 37:
+        this.prevGalleryParagraph();
+        break;
+      case 39:
+        this.nextGalleryParagraph();
+        break;
     }
   },
   
@@ -272,6 +302,7 @@ View.Article.Show.Main = Backbone.View.extend({
   
   
   remove: function() {
+    $(document).off("keyup");
     $(".Delete_Article").off("click");
     $("#article-show").off("click");
     
