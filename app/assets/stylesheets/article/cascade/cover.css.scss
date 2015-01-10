@@ -1,8 +1,11 @@
 @import "compass";
 
-$FONT: normal normal 13px "Open Sans", sans-serif;
+
+$FONT_FAMILY: "Open Sans", sans-serif;
+$FONT_SIZE: 13px;
 $COLOR: #5A5A5A;
 $BORDER_RADIUS: 5px;
+
 
 #article-cover-cascade {
   margin: 10px 0 0 0;
@@ -18,10 +21,9 @@ $BORDER_RADIUS: 5px;
 
 .article-cover-title {
   font-family: georgia, palatino, 'book antiqua', 'palatino linotype', serif;
-  font-size: 20px;
+  font-size: 18px;
   word-wrap: break-word; 
   padding: 15px 10px 10px 10px;
-  font-weight: bold;
 
   & > a {
     @include link-colors(#3F2423, blue, blue, #3F2423);
@@ -30,11 +32,12 @@ $BORDER_RADIUS: 5px;
 
 
 .article-cover-abstract { 
-  font: $FONT;
+  font-size: $FONT_SIZE;
+  font-family: $FONT_FAMILY;
   color: $COLOR;
   word-wrap: break-word;
   padding: 10px;
-  line-height: 130%;
+  // line-height: 130%;
 }
 
 .article-cover-horizontal-line {
@@ -86,7 +89,8 @@ $BORDER_RADIUS: 5px;
 
 #article-cover-like-count,
 #article-cover-view-count {
-  font: $FONT;
+  font-size: $FONT_SIZE;
+  font-family: $FONT_FAMILY;
   color: $COLOR;
 }
 
