@@ -60,15 +60,25 @@
 }
 
 
-.article-show-gallery-content-wrapper {
+.article-show-gallery-content-outer-wrapper {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  display: table-cell !important;
+  display: table;
+  background-color: transparent;
+}
+
+
+.article-show-gallery-content-inner-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: table-cell;
   vertical-align: middle;
   text-align: center;
+  background-color: transparent;
 }
 
 
@@ -89,7 +99,7 @@
 }
 
 
-#article-show-gallery-img-origin  {
+#article-show-gallery-details  {
   position: absolute;
   top: 0;
   left: 0;

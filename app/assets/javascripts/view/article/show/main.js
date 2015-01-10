@@ -4,7 +4,7 @@ View.Article.Show.Main = Backbone.View.extend({
     this.allSubviews = [];
     this.articleParagraph = [];
     this.isGalleryOptionOn = false;
-    this.galleryParagraphIndex = 0;
+    this.galleryCurrentParagraphIndex = 0;
     this.galleryCurrentParagraph = null;
   },
   
@@ -128,7 +128,8 @@ View.Article.Show.Main = Backbone.View.extend({
     "click #article-show-gallery-content": "galleryOption",
     "click #article-show-gallery-close": "closeGallery",
     "click #article-show-gallery-prev": "prevGalleryImage",
-    "click #article-show-gallery-next": "nextGalleryImage"
+    "click #article-show-gallery-next": "nextGalleryImage",
+    "click #article-show-gallery-details": "showGalleryDetails"
   },
   
   
@@ -137,15 +138,10 @@ View.Article.Show.Main = Backbone.View.extend({
     
     var galleryContainer = this.galleryContainer;
     if (galleryContainer.length > 0) {
-      this.galleryParagraphIndex = parseInt($(event.currentTarget).data("paragraphIndex"));
-      this.galleryCurrentParagraph = $(
-        "<div class='article-show-gallery-content-wrapper'>"
-        + this.galleryParagraph(this.galleryParagraphIndex)
-        + "</div>"
-      );
+      this.galleryCurrentParagraphIndex = parseInt($(event.currentTarget).data("paragraphIndex"));
       GlobalVariable.Layout.Header.Hide(0);
-      galleryContainer.html(this.galleryTemplate());
-      $("#article-show-gallery-content").append(this.galleryCurrentParagraph);
+      galleryContainer.html(this.galleryTemplate({paragraph: this.galleryParagraph(this.galleryCurrentParagraphIndex)}));
+      this.galleryCurrentParagraph = $(".article-show-gallery-content-outer-wrapper");
       galleryContainer.fadeIn("slow");
     }    
   },
@@ -162,10 +158,24 @@ View.Article.Show.Main = Backbone.View.extend({
       if (paragraph.type === "text") {
         return "<div class='article-show-gallery-text'>" + paragraph.src + "</div>";
       } else if (paragraph.type === "picture") {
-        return "<img class='article-show-gallery-picture' src='" + paragraph.src.url + "'>";
+        return "<img class='article-show-gallery-img' src='" + paragraph.src.url + "'>";
       }
     } else if (paragraphIndex === paragraphCount) {
-      
+      var recommendItems = this.viewRecommendCascade.getRegularRecommendItems();
+      var itemCount = recommendItems.length;
+      var recommendContent = "";
+      for (var index = 0; index < itemCount; ++index) {
+        var item = recommendItems[index];
+        if (item) {
+          recommendContent += "<div class='col-xs-6 col-sm-3 article-show-recommend-regular-item'>"
+            + "<a class='article-show-recommend-regular-pic-link' href='#/article/" + item.id + "'>"
+            + "<div class='article-show-recommend-regular-pic' style=\"background: url('" + item.picUrl + "') no-repeat center center; background-size: 100% auto;\"></div>"
+            + "</a>"
+            + "<h5><a href='#/article/" + item.id + "'>" + item.title + "</a></h5>"
+          + "</div>";
+        }
+      }
+      return recommendContent;
     } else {
       return null;
     }
@@ -195,17 +205,22 @@ View.Article.Show.Main = Backbone.View.extend({
   
   prevGalleryImage: function(event) {
     var current = this.galleryCurrentParagraph;
-    var prevParagraphIndex = this.galleryParagraphIndex - 1;
+    var prevParagraphIndex = this.galleryCurrentParagraphIndex - 1;
     var prevContent = this.galleryParagraph(prevParagraphIndex);
     current.prevAll().remove();
     current.nextAll().remove();
     if (prevContent) {
-      this.galleryParagraphIndex = prevParagraphIndex;
-      var prev = $("<div class='hide article-show-gallery-content-wrapper'>" + prevContent + "</div>");
-      current.before(prev);
+      var prevParagraph = $(prevContent);
+      prevParagraph.addClass("hide");
+      var prevInnerWrapper = $("<div class='article-show-gallery-content-inner-wrapper'></div>");
+      prevInnerWrapper.append(prevParagraph);
+      var prevOuterWrapper = $("<div class='article-show-gallery-content-outer-wrapper'></div>");
+      prevOuterWrapper.append(prevInnerWrapper);
+      this.galleryCurrentParagraphIndex = prevParagraphIndex;
+      current.before(prevOuterWrapper);
       current.transition({x: "100%", scale: 0}, 600);
-      prev.fadeIn(600);
-      this.galleryCurrentParagraph = prev;
+      prevParagraph.fadeIn(600);
+      this.galleryCurrentParagraph = prevOuterWrapper;
     } else {
       current.transition({x: "30%"}, 400).transition({x: 0}, 400);
     }
@@ -214,19 +229,37 @@ View.Article.Show.Main = Backbone.View.extend({
   
   nextGalleryImage: function(event) {
     var current = this.galleryCurrentParagraph;
-    var nextParagraphIndex = this.galleryParagraphIndex + 1;
+    var nextParagraphIndex = this.galleryCurrentParagraphIndex + 1;
     var nextContent = this.galleryParagraph(nextParagraphIndex);
     current.prevAll().remove();
     current.nextAll().remove();
     if (nextContent) {
-      this.galleryParagraphIndex = nextParagraphIndex;
-      var next = $("<div class='hide article-show-gallery-content-wrapper'>" + nextContent + "</div>");
-      current.after(next);
+      var nextParagraph = $(nextContent);
+      nextParagraph.addClass("hide");
+      var nextInnerWrapper = $("<div class='article-show-gallery-content-inner-wrapper'></div>");
+      nextInnerWrapper.append(nextParagraph);
+      var nextOuterWrapper = $("<div class='article-show-gallery-content-outer-wrapper'></div>");
+      nextOuterWrapper.append(nextInnerWrapper);
+      this.galleryCurrentParagraphIndex = nextParagraphIndex;
+      current.after(nextOuterWrapper);
       current.transition({x: "-100%", scale: 0}, 600);
-      next.fadeIn(600);
-      this.galleryCurrentParagraph = next;
+      nextParagraph.fadeIn(600);
+      this.galleryCurrentParagraph = nextOuterWrapper;
     } else {
       current.transition({x: "-30%"}, 400).transition({x: 0}, 400);
+    }
+  },
+  
+  
+  showGalleryDetails: function(event) {
+    var paragraphCount = this.articleParagraph.length;
+    var index = this.galleryCurrentParagraphIndex;
+    if (index >=0 && index < paragraphCount) {
+      var paragraph = this.articleParagraph[index];
+      if (paragraph.type === "picture") {
+        var container = this.galleryCurrentParagraph.find(".article-show-gallery-content-inner-wrapper");
+        container.html("<img class='article-show-gallery-img' src='" + paragraph.src.url.replace("/medium/", "/original/") + "'>");
+      }
     }
   },
   

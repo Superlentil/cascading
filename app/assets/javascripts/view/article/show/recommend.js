@@ -20,6 +20,7 @@ View.Article.Show.Recommend = View.Cascade.Base.extend({
   
   initializeOtherConstants: function() {
     this.ITEM_PICTURE_WIDTH = 200.0;   // in the unit "px"
+    this.REGULAR_RECOMMEND_COUNT = 4;
   },
   
   
@@ -37,6 +38,7 @@ View.Article.Show.Recommend = View.Cascade.Base.extend({
     this.articleId = options.articleId;
     this.category = options.category;
     this.random = Math.random();
+    this.regularRecommendItems = [];
   },
   
   
@@ -66,7 +68,10 @@ View.Article.Show.Recommend = View.Cascade.Base.extend({
     if (!this.hasRenderedRegularRecommend) {
       this.hasRenderedRegularRecommend = true;
       this.cache.itemDataFetched = true;
-      this.regularRecommendContainer.html(this.regularRecommendTemplate({itemData: this.cache.itemData}));
+      for (var index = 0; index < this.REGULAR_RECOMMEND_COUNT; ++index) {
+        this.regularRecommendItems.push(this.cache.itemData[index]);
+      }
+      this.regularRecommendContainer.html(this.regularRecommendTemplate({recommendItems: this.regularRecommendItems}));
     }
   },
   
@@ -107,5 +112,10 @@ View.Article.Show.Recommend = View.Cascade.Base.extend({
       this.cache.firstVisibleBatch = -1;
       this.onScroll();
     }
+  },
+  
+  
+  getRegularRecommendItems: function() {
+    return this.regularRecommendItems;
   }
 });

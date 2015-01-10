@@ -1,7 +1,8 @@
 <h3 id="article-show-recommend-header">You May Also Like</h3>
 
-<% for (var index = 0; index < 4; ++index) { %>
-  <% var item = itemData[index] %>
+<% var itemCount = recommendItems.length %>
+<% for (var index = 0; index < itemCount; ++index) { %>
+  <% var item = recommendItems[index] %>
   <% if (item) { %>
 <div class="col-xs-6 col-sm-3 article-show-recommend-regular-item">
   <a class="article-show-recommend-regular-pic-link" href="#/article/<%= item.id %>">
