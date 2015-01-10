@@ -24,7 +24,7 @@
   max-width: 600px;
   
   font-size: 16px;
-  line-height: 200%;
+  line-height: 1.65;
   
   margin: 0 auto;
   padding: 10px 0;
@@ -35,7 +35,6 @@
 
 .article-show-title {
   text-align: center;
-  font-family: georgia, palatino, 'book antiqua', 'palatino linotype', serif;
 }
 
 
@@ -51,8 +50,8 @@
 
 
 .article-show-text, .article-show-picture {
+  padding: 10px 0;
   width: 100%;
-  line-height: 150%;
 }
 
 .article-show-text {
