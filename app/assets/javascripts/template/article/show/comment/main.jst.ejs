@@ -1,0 +1,24 @@
+<div id="article-show-comment">
+
+<% if ($.cookie("user_id")) { %>
+  <div>
+    <fieldset id="article-show-comment-field">
+      <legend> Comments </legend>
+      <form id="article-show-comment-submit">
+        <textarea id="article-show-comment-draft" form="article-show-comment-submit" placeholder="Enter your comment here ..." rows="5" cols="50"required ></textarea>
+        <input id="m-comment-save" type="button" value="Submit" />
+        <input id="m-comment-cancel" type="button" value="Cancel" />
+      </form>
+    </fieldset>
+  </div>
+<% } %>
+
+
+<% if (comments) { %>
+  <table id="article-show-comment-list">
+  <% _.each(comments, function(comment) { %>
+    <%= singleCommentTemplate({comment: comment}) %>
+  <% }); %>
+  </table>
+<% } %>
+</div>

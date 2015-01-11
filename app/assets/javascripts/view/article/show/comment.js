@@ -7,7 +7,8 @@ View.Article.Show.Comment = Backbone.View.extend({
   el: "div#article_comments_container",
   
   
-  template: JST["template/article/show/comment"],
+  template: JST["template/article/show/comment/main"],
+  singleCommentTemplate: JST["template/article/show/comment/single_comment"],
   
   
   render: function() {
@@ -16,7 +17,8 @@ View.Article.Show.Comment = Backbone.View.extend({
     var comments = new Collection.ArticleComment.All();
     comments.fetchForArticle(this.articleId, {
       success: function(fetchedComments) {
-        that.$el.html(that.template({comments: fetchedComments.models}));
+        that.$el.html(that.template({comments: fetchedComments.models, singleCommentTemplate: that.singleCommentTemplate}));
+        that.commentList = $("#article-show-comment-list");
       }
     });
   },
@@ -42,7 +44,8 @@ View.Article.Show.Comment = Backbone.View.extend({
       user_avatar_url: $.cookie("user_avatar_url")
     }, {
       success: function(savedComment) {
-        Backbone.history.loadUrl();
+        that.commentList.prepend(that.singleCommentTemplate({comment: savedComment}));
+        $("#article-show-comment-draft").val("");
       }
     });
   },
