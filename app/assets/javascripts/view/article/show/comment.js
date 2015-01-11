@@ -35,7 +35,7 @@ View.Article.Show.Comment = Backbone.View.extend({
     
     var comment = new Model.Comment();
     comment.save("comment", {
-      content: $("#comment_input").val(),
+      content: $("#article-show-comment-draft").val(),
       article_id: that.articleId,
       user_id: $.cookie("user_id"),
       user_nickname: $.cookie("user_nickname"),
@@ -50,6 +50,6 @@ View.Article.Show.Comment = Backbone.View.extend({
   
   cancelComment: function(event) {
     event.preventDefault();
-    $("#comment_input").val("");
+    $("#article-show-comment-draft").val("");
   }
 });

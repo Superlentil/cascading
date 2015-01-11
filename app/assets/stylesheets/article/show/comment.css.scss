@@ -1,0 +1,29 @@
+@import "compass";
+
+#article-show-comment-field {
+	width: 75%;
+}
+
+#article-show-comment-draft {
+	resize: none;
+}
+
+.article-show-comment-onepiece {
+	margin: 10px 10px;	
+	width: 100%;
+	max-width: 300px;
+}
+
+.comment-author-icon-img {
+	width: 40px;
+	margin-top: 10px;
+	@include border-radius(5px);
+}
+
+.reviewer-info {
+	margin-left: 10px;
+}
+
+.comment-content {
+	margin: 10px 0px 10px 10px;
+}
