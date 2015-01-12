@@ -263,17 +263,17 @@ View.Layout.Main = Backbone.View.extend({
   },
   
   
-  hideHeader: function() {
-    this.header.hide();
-    this.menuIcon.hide();
-    this.userAvatar.hide();
+  hideHeader: function(speed) {
+    this.header.fadeOut(speed);
+    this.menuIcon.fadeOut(speed);
+    this.userAvatar.fadeOut(speed);
   },
   
   
-  showHeader: function() {
-    this.header.show();
-    this.menuIcon.show();
-    this.userAvatar.show();
+  showHeader: function(speed) {
+    this.header.fadeIn(speed);
+    this.menuIcon.fadeIn(speed);
+    this.userAvatar.fadeIn(speed);
   },
 
   

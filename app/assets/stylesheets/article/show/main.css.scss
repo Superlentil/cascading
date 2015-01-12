@@ -49,19 +49,20 @@
 }
 
 
-.article-show-text, .article-show-picture {
+.article-show-text-container,
+.article-show-picture-container {
   padding: 10px 0;
-  width: 100%;
 }
 
-.article-show-text {
+
+.article-show-text-container {
   word-wrap: break-word;
+  text-align: center;
 }
+
 
 .article-show-picture {
-  text-align: center;
-  
-  img {
-    max-width: 100%;
-  }
+  width: 100%;
+  max-width: 100%;
+  cursor: pointer;
 }
