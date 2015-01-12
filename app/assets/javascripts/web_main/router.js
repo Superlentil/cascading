@@ -16,6 +16,7 @@ Router = Backbone.Router.extend({
     
     "articles/new": "articleNew",
     "article/:id": "articleShow",
+    "article/:id/gallery": "articleShowInGalleryMode",
     "article/:id/edit": "articleEdit",
     
     "categories": "categoriesAll",
@@ -135,8 +136,15 @@ Router = Backbone.Router.extend({
   
    
   articleShow: function(id) {
-    var viewShow = new View.Article.Show.Main();
-    viewShow.render({id: id});
+    var viewShow = new View.Article.Show.Main({id: id});
+    viewShow.render();
+    return viewShow;
+  },
+  
+  
+  articleShowInGalleryMode: function(id, paragraph) {
+    var viewShow = new View.Article.Show.Main({id: id, initialInGalleryMode: true});
+    viewShow.render();
     return viewShow;
   },
   

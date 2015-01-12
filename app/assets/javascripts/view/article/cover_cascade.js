@@ -51,10 +51,10 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
   
   
   getPageCacheKey: function() {
-    var hash = window.location.hash;
+    var hash = Backbone.history.getHash();
     var sortByType = GlobalConstant.Article.SortBy;
     if (hash.length === 0 || hash === "#") {
-      return "#/articles/sort_by/" + sortByType.PUBLISH_TIME_DESC;
+      return "/articles/sort_by/" + sortByType.PUBLISH_TIME_DESC;
     } else if (hash.search("/sort_by/") < 0) {
       return hash + "/sort_by/" + sortByType.PUBLISH_TIME_DESC;
     }
@@ -114,10 +114,15 @@ View.Article.CoverCascade = View.Cascade.Base.extend({
   onSortBy: function (event) {
     var sortByType = $(event.currentTarget).val();
     
-    var hash = window.location.hash;
+    var hash = Backbone.history.getHash();
     if (hash.length === 0 || hash === "#") {
       hash = "#/articles/sort_by/" + sortByType;
     } else {
+      if (hash.charAt(0) === "/") {
+        hash = "#" + hash;
+      } else if (hash.charAt(0) !== "#") {
+        hash = "#/" + hash;
+      }
       var index = hash.search("/sort_by/");
       if (index >= 0) {
         hash = hash.substring(0, index);

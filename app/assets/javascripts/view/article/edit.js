@@ -245,9 +245,9 @@ View.Article.Edit = Backbone.View.extend({
     
     that.previewContainer.empty();
     that.previewContainer.append("<div id='article-edit-preview-content' style='width:100%;'></div>");
-    var viewShow = new View.Article.Show.Main({el: "#article-edit-preview-content"});
+    var viewShow = new View.Article.Show.Main({id: savedArticle.get("id"), preview: true, el: "#article-edit-preview-content"});
     that.allSubviews.push(viewShow);   // prevent view memory leak
-    viewShow.render({id: savedArticle.get("id"), preview: true});
+    viewShow.render();
     
     var thisWindow = GlobalVariable.Browser.Window;
     that.flipContainer.addClass("m-flipped");

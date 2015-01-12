@@ -47,10 +47,7 @@ View.Cascade.Base = Backbone.View.extend({
   
   
   getPageCacheKey: function() {
-    var hash = window.location.hash;
-    if (hash.length === 0) {
-      hash = "#";
-    }
+    var hash = Backbone.history.getHash();
     return hash;
   },
   
@@ -147,6 +144,8 @@ View.Cascade.Base = Backbone.View.extend({
     
     this.readyToFetch = true;
     this.readyForWidthChange = false;
+    
+    this.initializeHelper(options);
 
     // Global Page Cache
     this.renderWithCache = false;
@@ -160,8 +159,6 @@ View.Cascade.Base = Backbone.View.extend({
       GlobalVariable.PageCache[pageCacheKey] = this.cache;
       this.resetCache();
     }
-    
-    this.initializeHelper(options);
   },
   
   
@@ -608,7 +605,6 @@ View.Cascade.Base = Backbone.View.extend({
     
     if (this.readyForWidthChange && this.cascadeContainer.is(":visible")) {   
       var maxWidth = this.getCascadeContainerWidth();
-      console.log(maxWidth);
       var newColumnCount = this.getColumnCount(maxWidth, cache.columnWidth, cache.verticalGap, false);
       
       if (newColumnCount !== cache.columnCount) {

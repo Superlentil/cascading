@@ -1,10 +1,15 @@
+@import "compass";
+@import "layout/setting";
+
+
 #article-show-gallery { 
   display: none;
   position: fixed;
   top: 0;
   left: 0;
   height: 100%;  
-  width: 100%; 
+  width: 100%;
+  min-width: $SUPPORT_VIEWPORT_MIN_WIDTH;
   z-index: 1000;
 }
 
@@ -25,11 +30,14 @@
   left: 0;
   width: 10%;
   height: 100%;
+  min-width: 30px;
   background-color: transparent;
+  @include opacity(0);
   z-index: 1000;
   
   &:hover, &:active {
-    background-color: #5fbafd;
+    @include background-image(linear-gradient(to bottom, rgba(255,255,255,0), #fff 35%, #fff 65%, rgba(255,255,255,0)));
+    @include opacity(0.5);
   }
 }
 
@@ -40,12 +48,25 @@
   right: 0;
   width: 10%;
   height: 100%;
+  min-width: 30px;
   background-color: transparent;
+  @include opacity(0);
   z-index: 1000;
   
   &:hover, &:active {
-    background-color: #5fbafd;
+    @include background-image(linear-gradient(to bottom, rgba(255,255,255,0), #fff 35%, #fff 65%, rgba(255,255,255,0)));
+    @include opacity(0.5);
   }
+}
+
+
+#article-show-gallery-prev-arrow,
+#article-show-gallery-next-arrow {
+  display: block;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0 auto;
 }
 
 
@@ -104,7 +125,7 @@
 }
 
 
-#article-show-gallery-details  {
+#article-show-gallery-options-left  {
   position: absolute;
   top: 0;
   left: 0;
@@ -115,7 +136,7 @@
 }
 
 
-#article-show-gallery-close {
+#article-show-gallery-options-right {
   position: absolute;
   top: 0;
   left: 50%;
@@ -123,4 +144,17 @@
   height: 100%;
   background-color: #f8ebb9;
   z-index: 1000;
+}
+
+
+#article-show-gallery-original-img,
+#article-show-gallery-close {
+  position: absolute;
+  display: block;
+  bottom: 0;
+  left: 50%;
+  width: 50%;
+  min-width: 120px;
+  transform: translateX(-50%);
+  margin-bottom: 50px;
 }

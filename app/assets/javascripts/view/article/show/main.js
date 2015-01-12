@@ -1,11 +1,21 @@
 // define the view Show
 View.Article.Show.Main = Backbone.View.extend({
-  initialize: function() {
-    this.allSubviews = [];
-    this.articleParagraph = [];
+  initialize: function(options) {
+    this.id = options.id;
+    this.isPreview = options.preview ? true : false;
+    
+    this.initialShowInGalleryMode = false;
     this.isGalleryOptionOn = false;
     this.galleryCurrentParagraphIndex = 0;
     this.galleryCurrentParagraph = null;
+    
+    if (options.initialInGalleryMode) {
+      this.initialShowInGalleryMode = options.initialInGalleryMode;
+      this.galleryCurrentParagraphIndex = 0;
+    }
+    
+    this.allSubviews = [];
+    this.articleParagraph = [];
     
     _.bindAll(this, "galleryKeyboardListener");
   },
@@ -20,56 +30,63 @@ View.Article.Show.Main = Backbone.View.extend({
   
   render: function(options) {
     var that = this;
-    var isPreview = options.preview;
+    var isPreview = that.isPreview;
     
-    if (options.id) {
-      var article = new Model.Article({id: options.id});
-      article.fetch({
-        success: function(fetchedArticle) {
-          that.$el.html(that.template({article: fetchedArticle, articleContent: that.parseArticleContent(fetchedArticle), preview: isPreview}));
+    var article = new Model.Article({id: that.id});
+    article.fetch({
+      success: function(fetchedArticle) {
+        that.$el.html(that.template({article: fetchedArticle, articleContent: that.parseArticleContent(fetchedArticle), preview: isPreview}));
+        
+        if (!isPreview) {
+          that.galleryContainer = $("#article-show-gallery");
+          var initialShowInGalleryMode = that.initialShowInGalleryMode;
+          if (initialShowInGalleryMode) {
+            that.galleryContainer.show();
+          }
           
-          if (!isPreview) {
-            $(".Delete_Article").one("click", function(event) {
-              that.deleteArticle(event);
-            });
-            
-            // header sub title
-            var id = fetchedArticle.get("id");
-            var title = fetchedArticle.get("title");
-            that.articleTitle = title;
-            var titleLink = "<a href='#/article/" + id + "' title = '" + title + "'>" + title + "</a>";
-            GlobalVariable.Layout.Header.UpdateSubTitle(titleLink);
-            
-            // browsing history
-            var historyArticle = {};
-            historyArticle.id = id;
-            historyArticle.title = title;
-            historyArticle.author = fetchedArticle.get("author");
-            historyArticle.authorUserId = fetchedArticle.get("user_id");
-            historyArticle.abstract = fetchedArticle.get("abstract");
-            GlobalVariable.BrowsingHistory.push(historyArticle);
-            
-            // recommend
-            var viewRecommendCascade = new View.Article.Show.Recommend({
-              articleContainer: $("#article-show-content"),
-              regularRecommendContainer: $("#article-show-recommend-regular"),
-              articleId: fetchedArticle.get("id"),
-              category: fetchedArticle.get("category_name")
-            });
-            that.allSubviews.push(viewRecommendCascade);
-            viewRecommendCascade.render();
-            that.viewRecommendCascade = viewRecommendCascade;
-            
-            // comment
-            var viewComment = new View.Article.Show.Comment({articleId: options.id});
-            that.allSubviews.push(viewComment);
-            viewComment.render();
-            
-            that.galleryContainer = $("#article-show-gallery");
+          $(".Delete_Article").one("click", function(event) {
+            that.deleteArticle(event);
+          });
+          
+          // header sub title
+          var id = fetchedArticle.get("id");
+          var title = fetchedArticle.get("title");
+          that.articleTitle = title;
+          var titleLink = "<a href='#/article/" + id + "' title = '" + title + "'>" + title + "</a>";
+          GlobalVariable.Layout.Header.UpdateSubTitle(titleLink);
+          
+          // browsing history
+          var historyArticle = {};
+          historyArticle.id = id;
+          historyArticle.title = title;
+          historyArticle.author = fetchedArticle.get("author");
+          historyArticle.authorUserId = fetchedArticle.get("user_id");
+          historyArticle.abstract = fetchedArticle.get("abstract");
+          GlobalVariable.BrowsingHistory.push(historyArticle);
+          
+          // recommend
+          var viewRecommendCascade = new View.Article.Show.Recommend({
+            articleContainer: $("#article-show-content"),
+            regularRecommendContainer: $("#article-show-recommend-regular"),
+            articleId: id,
+            category: fetchedArticle.get("category_name")
+          });
+          that.allSubviews.push(viewRecommendCascade);
+          viewRecommendCascade.render();
+          that.viewRecommendCascade = viewRecommendCascade;
+          
+          // comment
+          var viewComment = new View.Article.Show.Comment({articleId: id});
+          that.allSubviews.push(viewComment);
+          viewComment.render();
+          
+          if (initialShowInGalleryMode) {
+            that.openGallery();
+            that.initialShowInGalleryMode = false;   // set to default value to avoid unexpect errors 
           }
         }
-      });
-    }
+      }
+    });
        
     return that;
   },
@@ -94,7 +111,8 @@ View.Article.Show.Main = Backbone.View.extend({
   
   parseArticleContent: function(article) {
     var articleParagraph = [];
-    var index = 0;
+    articleParagraph.push("preserve for article title");
+    var index = 1;
     
     if (article.get("cover_picture_imported")) {
       articleParagraph.push({type: "picture", src: {url: article.get("cover_picture_url").replace("/thumb/", "/medium/")}});
@@ -127,20 +145,25 @@ View.Article.Show.Main = Backbone.View.extend({
   
   events: {
     "click .article-show-picture": "openGallery",
-    "click #article-show-gallery-content": "galleryOption",
-    "click #article-show-gallery-close": "closeGallery",
+    "click #article-show-gallery-content": "galleryOptions",
     "click #article-show-gallery-prev": "prevGalleryParagraph",
     "click #article-show-gallery-next": "nextGalleryParagraph",
-    "click #article-show-gallery-details": "showGalleryDetails"
+    "click #article-show-gallery-original-img": "showOriginalImage",
+    "click #article-show-gallery-close": "closeGallery"
   },
   
   
   openGallery: function(event) {
-    event.preventDefault();
+    var initialShowInGalleryMode = this.initialShowInGalleryMode;
+    if (!initialShowInGalleryMode) {
+      event.preventDefault();
+    }
     
     var galleryContainer = this.galleryContainer;
     if (galleryContainer.length > 0) {
-      this.galleryCurrentParagraphIndex = parseInt($(event.currentTarget).data("paragraphIndex"));
+      if (!initialShowInGalleryMode) {
+        this.galleryCurrentParagraphIndex = parseInt($(event.currentTarget).data("paragraphIndex"));
+      }
       
       var that = this;
       $(document).on("keyup", function(event) {
@@ -148,7 +171,8 @@ View.Article.Show.Main = Backbone.View.extend({
       });
       
       GlobalVariable.Layout.Header.Hide(0);
-      galleryContainer.html(this.galleryTemplate({paragraph: this.galleryParagraph(this.galleryCurrentParagraphIndex)}));
+      galleryContainer.html(this.galleryTemplate());
+      $(".article-show-gallery-content-wrapper").html(this.galleryParagraph(this.galleryCurrentParagraphIndex));
       this.galleryCurrentParagraph = $(".article-show-gallery-content-wrapper");
       galleryContainer.fadeIn("slow");
     }    
@@ -157,12 +181,13 @@ View.Article.Show.Main = Backbone.View.extend({
   
   galleryParagraph: function(paragraphIndex) {
     var paragraphCount = this.articleParagraph.length;
-    if (paragraphIndex < -1) {
+    if (paragraphIndex < 0) {
       return null;
-    } else if (paragraphIndex === -1) {
+    } else if (paragraphIndex === 0) {
       return "<div class='article-show-gallery-title'>" + this.articleTitle + "</div>";
     } else if (paragraphIndex < paragraphCount) {
       var paragraph = this.articleParagraph[paragraphIndex];
+      this.updateGalleryOptions(paragraph.type);
       if (paragraph.type === "text") {
         return "<div class='article-show-gallery-text'>" + paragraph.src + "</div>";
       } else if (paragraph.type === "picture") {
@@ -176,10 +201,10 @@ View.Article.Show.Main = Backbone.View.extend({
         var item = recommendItems[index];
         if (item) {
           recommendContent += "<div class='col-xs-6 col-sm-3 article-show-recommend-regular-item'>"
-            + "<a class='article-show-recommend-regular-pic-link' href='#/article/" + item.id + "'>"
+            + "<a class='article-show-recommend-regular-pic-link' href='#/article/" + item.id + "/gallery'>"
             + "<div class='article-show-recommend-regular-pic' style=\"background: url('" + item.picUrl + "') no-repeat center center; background-size: 100% auto;\"></div>"
             + "</a>"
-            + "<h5><a href='#/article/" + item.id + "'>" + item.title + "</a></h5>"
+            + "<h5><a href='#/article/" + item.id + "'/gallery>" + item.title + "</a></h5>"
           + "</div>";
         }
       }
@@ -191,13 +216,23 @@ View.Article.Show.Main = Backbone.View.extend({
   },
   
   
-  galleryOption: function(event) {
+  galleryOptions: function(event) {
     if (this.isGalleryOptionOn) {
       this.isGalleryOptionOn = false;
       $("#article-show-gallery-main").transition({y: 0});
     } else {
       this.isGalleryOptionOn = true;
-      $("#article-show-gallery-main").transition({y: "-30%"});
+      $("#article-show-gallery-main").transition({y: "-150px"});
+    }
+  },
+  
+  
+  updateGalleryOptions: function(paragraphType) {
+    var leftOptions = $("#article-show-gallery-options-left");
+    if (paragraphType === "picture") {
+      leftOptions.html("<button id='article-show-gallery-original-img'>Original Image</button>");
+    } else {
+      leftOptions.empty();
     }
   },
   
@@ -224,11 +259,11 @@ View.Article.Show.Main = Backbone.View.extend({
     current.prevAll().remove();
     current.nextAll().remove();
     if (prevContent) {
+      this.galleryCurrentParagraphIndex = prevParagraphIndex;
       var prevParagraph = $(prevContent);
       prevParagraph.addClass("hide");
       var prev = $("<div class='article-show-gallery-content-wrapper'></div>");
       prev.append(prevParagraph);
-      this.galleryCurrentParagraphIndex = prevParagraphIndex;
       current.before(prev);
       current.transition({x: "100%", scale: 0}, 600);
       prevParagraph.fadeIn(600);
@@ -247,11 +282,11 @@ View.Article.Show.Main = Backbone.View.extend({
     current.prevAll().remove();
     current.nextAll().remove();
     if (nextContent) {
+      this.galleryCurrentParagraphIndex = nextParagraphIndex;   
       var nextParagraph = $(nextContent);
       nextParagraph.addClass("hide");
       var next = $("<div class='article-show-gallery-content-wrapper'></div>");
       next.append(nextParagraph);
-      this.galleryCurrentParagraphIndex = nextParagraphIndex;
       current.after(next);
       current.transition({x: "-100%", scale: 0}, 600);
       nextParagraph.fadeIn(600);
@@ -262,7 +297,10 @@ View.Article.Show.Main = Backbone.View.extend({
   },
   
   
-  showGalleryDetails: function(event) {
+  showOriginalImage: function(event) {
+    if (event) {
+      event.preventDefault();
+    }    
     var paragraphCount = this.articleParagraph.length;
     var index = this.galleryCurrentParagraphIndex;
     if (index >=0 && index < paragraphCount) {

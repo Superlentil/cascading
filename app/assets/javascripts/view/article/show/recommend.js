@@ -48,7 +48,7 @@ View.Article.Show.Recommend = View.Cascade.Base.extend({
   
   
   getPageCacheKey: function() {
-    return window.location.hash + "-recommend";
+    return "/article/" + this.articleId + "-recommend";
   },
   
   
@@ -78,7 +78,7 @@ View.Article.Show.Recommend = View.Cascade.Base.extend({
   
   renderHelper: function() {
     if (this.cache.itemDataFetched) {
-      this.fetchDataSuccessHelper();
+      this.fetchDataSuccessHelperAfterAllActions();
     }
   },
   
