@@ -95,6 +95,11 @@ html {
 }
 
 
+.text-selectable {
+  @include user-select(text);
+}
+
+
 // .padding-small-left-right (has both left and right small padding)
 .padding-s-lr {
   padding-left: 6px;

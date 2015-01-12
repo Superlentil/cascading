@@ -19,9 +19,9 @@ $OPACITY_FOR_RECOMMEND_ARTICLE: 0.5;
   
   
   .article-show-title,
-  .article-show-info,
-  .article-show-text-container {
-    padding: 0;
+  .article-show-info {
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 
@@ -35,7 +35,8 @@ $OPACITY_FOR_RECOMMEND_ARTICLE: 0.5;
   .article-show-title,
   .article-show-info,
   .article-show-text-container {
-    padding: 0 2%;
+    padding-left: 2%;
+    padding-right: 2%;
   }
 }
 

@@ -24,7 +24,7 @@
   max-width: 600px;
   
   font-size: 16px;
-  line-height: 200%;
+  line-height: 1.65;
   
   margin: 0 auto;
   padding: 10px 0;
@@ -49,15 +49,20 @@
 }
 
 
-.article-show-text-container, .article-show-picture-container {
-  width: 100%;
-  line-height: 200%;
+.article-show-text-container,
+.article-show-picture-container {
+  padding: 10px 0;
+}
+
+
+.article-show-text-container {
   word-wrap: break-word;
   text-align: center;
 }
 
 
 .article-show-picture {
+  width: 100%;
   max-width: 100%;
   cursor: pointer;
 }
