@@ -17,14 +17,15 @@ View.Article.Show.Comment = Backbone.View.extend({
     comments.fetchForArticle(this.articleId, {
       success: function(fetchedComments) {
         that.$el.html(that.template({comments: fetchedComments.models}));
+        that.commentList = $("#article-show-comment-list");
       }
     });
   },
   
   
   events: {
-    "click #save_comment": "saveComment",
-    "click #cancel_comment": "cancelComment"
+    "click #m-comment-save": "saveComment",
+    "click #m-comment-cancel": "cancelComment"
   },
   
   
@@ -35,7 +36,7 @@ View.Article.Show.Comment = Backbone.View.extend({
     
     var comment = new Model.Comment();
     comment.save("comment", {
-      content: $("#comment_input").val(),
+      content: $("#article-show-comment-draft").val(),
       article_id: that.articleId,
       user_id: $.cookie("user_id"),
       user_nickname: $.cookie("user_nickname"),
@@ -50,6 +51,6 @@ View.Article.Show.Comment = Backbone.View.extend({
   
   cancelComment: function(event) {
     event.preventDefault();
-    $("#comment_input").val("");
+    $("#article-show-comment-draft").val("");
   }
 });
