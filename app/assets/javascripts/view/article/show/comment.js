@@ -17,7 +17,6 @@ View.Article.Show.Comment = Backbone.View.extend({
     comments.fetchForArticle(this.articleId, {
       success: function(fetchedComments) {
         that.$el.html(that.template({comments: fetchedComments.models}));
-        that.commentList = $("#article-show-comment-list");
       }
     });
   },
