@@ -26,26 +26,26 @@
 //= require web_main/_INDEXER_
 
 
-$(function() {
-  // initialize global variables
-  GlobalVariable.Browser.Window = $(window);
-  GlobalVariable.Browser.Document = $(document);
-  var thisWindow = GlobalVariable.Browser.Window;
-  GlobalVariable.Browser.WindowHeightInPx = thisWindow.height();
+// $(function() {
+//   // initialize global variables
+//   GlobalVariable.Browser.Window = $(window);
+//   GlobalVariable.Browser.Document = $(document);
+//   var thisWindow = GlobalVariable.Browser.Window;
+//   GlobalVariable.Browser.WindowHeightInPx = thisWindow.height();
   
-  // measure the width of the scroll bar of the web browser.
-  var widthWithoutScrollBar = thisWindow.width();
-  var divToMeasureScrollBarWidth = $("<div style='height: 200%'></div>");
-  $("body").append(divToMeasureScrollBarWidth);
-  GlobalVariable.Browser.ScrollBarWidthInPx = Math.ceil(widthWithoutScrollBar - thisWindow.width());
-  divToMeasureScrollBarWidth.detach();
-  divToMeasureScrollBarWidth.remove();
+//   // measure the width of the scroll bar of the web browser.
+//   var widthWithoutScrollBar = thisWindow.width();
+//   var divToMeasureScrollBarWidth = $("<div style='height: 200%'></div>");
+//   $("body").append(divToMeasureScrollBarWidth);
+//   GlobalVariable.Browser.ScrollBarWidthInPx = Math.ceil(widthWithoutScrollBar - thisWindow.width());
+//   divToMeasureScrollBarWidth.detach();
+//   divToMeasureScrollBarWidth.remove();
   
-  // backbone routes
-  new Router();
+//   // backbone routes
+//   new Router();
   
-  // backbone histories
-  if (!Backbone.History.started) {
-    Backbone.history.start();
-  }
-});
+//   // backbone histories
+//   if (!Backbone.History.started) {
+//     Backbone.history.start();
+//   }
+// });

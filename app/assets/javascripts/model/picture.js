@@ -1,6 +1,6 @@
 // define the model "Picture"
 Model.Picture = Backbone.Model.extend({
-  urlRoot: "pictures",
+  urlRoot: GlobalConstant.DOMAIN + "/pictures",
   
   
   save: ModelHelper.multipartFormSubmit

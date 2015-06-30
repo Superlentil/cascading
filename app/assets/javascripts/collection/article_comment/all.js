@@ -3,7 +3,7 @@ Collection.ArticleComment.All = Backbone.Collection.extend({
   
   
   url: function() {
-    return "/comments/?" + $.param({article_id: this.articleId});
+    return GlobalConstant.DOMAIN + "/comments.json/?" + $.param({article_id: this.articleId});
   },
   
   

@@ -12,7 +12,7 @@ Collection.Article.Recommend = Backbone.Collection.extend({
   
   
   url: function() {
-    return "/articles/recommend?" + $.param({
+    return GlobalConstant.DOMAIN + "/articles/recommend.json?" + $.param({
       fetch_sequence_number: this.fetchSequenceNumber,
       articles_per_fetch: this.articlesPerFetch,
       article_id: this.articleId,

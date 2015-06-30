@@ -1,5 +1,5 @@
 Model.User = Backbone.Model.extend({
-  urlRoot: "users",
+  urlRoot: GlobalConstant.DOMAIN + "/users",
   
   
   save: ModelHelper.multipartFormSubmit

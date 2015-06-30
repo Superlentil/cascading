@@ -1,3 +1,3 @@
 Model.Category = Backbone.Model.extend({
-  urlRoot: "/categories"
+  urlRoot: GlobalConstant.DOMAIN + "/categories"
 });

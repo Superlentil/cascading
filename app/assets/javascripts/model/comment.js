@@ -1,3 +1,3 @@
 Model.Comment = Backbone.Model.extend({
-  urlRoot: "comments"
+  urlRoot: GlobalConstant.DOMAIN + "/comments"
 });

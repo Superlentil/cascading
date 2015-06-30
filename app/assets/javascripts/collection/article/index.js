@@ -1,5 +1,5 @@
 Collection.Article.Index = Collection.Article.CoverCascade.extend({
   url: function() {
-    return "/articles/?" + $.param(this.urlParams);
+    return GlobalConstant.DOMAIN + "/articles.json/?" + $.param(this.urlParams);
   }
 });

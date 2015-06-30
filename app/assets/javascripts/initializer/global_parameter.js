@@ -4,7 +4,9 @@ var Collection = {};
 var View = {};
 
 
-var GlobalConstant = { 
+var GlobalConstant = {
+  DOMAIN: "http://haigy.com",
+
   Article: {
     Status: {   // If this enumeration needs to be modified, please modify the corresponding one in the "Ruby on Rails" code together.
       INITIAL_TEMPORARILY_CREATED: 0,

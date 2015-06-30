@@ -7,5 +7,5 @@ Model.Article = Backbone.Model.extend({
     "content": "{}"
   },
   
-  urlRoot: "articles"
+  urlRoot: GlobalConstant.DOMAIN + "/articles"
 });

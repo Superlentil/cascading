@@ -1,7 +1,7 @@
 var ModelHelper = {
   multipartFormSubmit: function(formData, callbacks, method, url) {
     method = method || "POST";
-    url = url || ("/" + this.urlRoot || "");
+    url = url || (GlobalConstant.DOMAIN + "/" + this.urlRoot || "");
     
     if (!callbacks) {
       callbacks = {

@@ -5,6 +5,6 @@ Collection.Article.InCategory = Collection.Article.CoverCascade.extend({
   
   
   url: function() {
-    return "/articles/inCategory?" + $.param(this.urlParams);
+    return GlobalConstant.DOMAIN + "/articles/inCategory.json?" + $.param(this.urlParams);
   }
 });

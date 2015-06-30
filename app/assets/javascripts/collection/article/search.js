@@ -8,7 +8,7 @@ Collection.Article.Search = Collection.Article.CoverCascade.extend({
   
   
   url: function() {
-    return "/articles/search?" + $.param({
+    return GlobalConstant.DOMAIN + "/articles/search.json?" + $.param({
       fetch_sequence_number: this.fetchSequenceNumber,
       articles_per_fetch: this.articlesPerFetch,
       keyword: this.keyword,

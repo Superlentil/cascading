@@ -8,6 +8,6 @@ Collection.Article.DraftByUser = Backbone.Collection.extend({
   
   
   url: function() {
-    return "/articles/draftByUser/?" + $.param({user_id: this.userId});
+    return GlobalConstant.DOMAIN + "/articles/draftByUser.json/?" + $.param({user_id: this.userId});
   }
 });

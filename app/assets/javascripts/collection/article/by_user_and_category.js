@@ -6,6 +6,6 @@ Collection.Article.ByUserAndCategory = Collection.Article.CoverCascade.extend({
 
 
   url: function() {
-    return "/articles/byUserAndCategory/?" + $.param(this.urlParams);
+    return GlobalConstant.DOMAIN + "/articles/byUserAndCategory.json/?" + $.param(this.urlParams);
   }
 });
