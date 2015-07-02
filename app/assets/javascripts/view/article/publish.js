@@ -47,7 +47,7 @@ View.Article.Publish = Backbone.View.extend({
       if (paragraph.type === "picture") {
         pictures.push({
           id: paragraph.src.id,
-          url: paragraph.src.url.replace("/medium/", "/thumb/")
+          url: GlobalUtilities.PathToUrl(paragraph.src.url.replace("/medium/", "/thumb/"))
         });
       }
     });

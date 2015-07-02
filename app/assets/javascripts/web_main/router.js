@@ -122,11 +122,11 @@ Router = Backbone.Router.extend({
   
   articleNew: function() {
     var now = $.now();
-    var lastNewArticleTime = parseInt($.cookie("last_new_article_timestamp")) || 0;
+    var lastNewArticleTime = parseInt(GlobalVariable.Cookie.LastNewArticleTimestamp) || 0;
     if (now - lastNewArticleTime > 100) {   // Prevent loading the "new" page too frequently.
       var viewEdit = new View.Article.Edit();
       viewEdit.newArticle();
-      $.cookie('last_new_article_timestamp', now, {expires: 1});
+      GlobalVariable.Cookie.LastNewArticleTimestamp = now;
       return viewEdit;
     } else {
       // TODO: need a better action for too frequent "new" page load.

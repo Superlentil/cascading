@@ -39,9 +39,9 @@ View.Article.Show.Comment = Backbone.View.extend({
     comment.save("comment", {
       content: $("#article-show-comment-draft").val(),
       article_id: that.articleId,
-      user_id: $.cookie("user_id"),
-      user_nickname: $.cookie("user_nickname"),
-      user_avatar_url: $.cookie("user_avatar_url")
+      user_id: GlobalVariable.Cookie.UserId,
+      user_nickname: GlobalVariable.Cookie.UserNickname,
+      user_avatar_url: GlobalVariable.Cookie.UserAvatarUrl
     }, {
       success: function(savedComment) {
         that.commentList.prepend(that.singleCommentTemplate({comment: savedComment}));

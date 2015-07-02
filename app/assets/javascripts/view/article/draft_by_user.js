@@ -13,7 +13,7 @@ View.Article.DraftByUser = Backbone.View.extend({
   render: function() {
     var that = this;
     
-    if (parseInt(that.userId) === parseInt($.cookie("user_id"))) {
+    if (parseInt(that.userId) === parseInt(GlobalVariable.Cookie.UserId)) {
       var draftsByUser = new Collection.Article.DraftByUser({userId: that.userId});
       draftsByUser.fetch({
         success: function(fetchedDrafts) {
@@ -62,7 +62,7 @@ View.Article.DraftByUser = Backbone.View.extend({
         pictureUrl = PrecompiledAsset.Picture.DefaultArticleDraftPicture;
       }
     }
-    return pictureUrl;
+    return GlobalUtilities.PathToUrl(pictureUrl);
   },
   
   

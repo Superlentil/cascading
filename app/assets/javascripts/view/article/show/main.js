@@ -115,7 +115,7 @@ View.Article.Show.Main = Backbone.View.extend({
     var index = 1;
     
     if (article.get("cover_picture_imported")) {
-      articleParagraph.push({type: "picture", src: {url: article.get("cover_picture_url").replace("/thumb/", "/medium/")}});
+      articleParagraph.push({type: "picture", src: {url: GlobalUtilities.PathToUrl(article.get("cover_picture_url").replace("/thumb/", "/medium/"))}});
       ++index;
     }
 
@@ -129,7 +129,7 @@ View.Article.Show.Main = Backbone.View.extend({
         ++index;
       } else if (paragraph.type === "picture") {
         contentHtml += "<pre class='article-show-picture-container'><img class='article-show-picture' src='"
-          + paragraph.src.url
+          + GlobalUtilities.PathToUrl(paragraph.src.url)
           + "' data-paragraph-index='"
           + index
           + "'></pre>";
@@ -191,7 +191,7 @@ View.Article.Show.Main = Backbone.View.extend({
       if (paragraph.type === "text") {
         return "<div class='article-show-gallery-text'>" + paragraph.src + "</div>";
       } else if (paragraph.type === "picture") {
-        return "<img class='article-show-gallery-img' src='" + paragraph.src.url + "'>";
+        return "<img class='article-show-gallery-img' src='" + GlobalUtilities.PathToUrl(paragraph.src.url) + "'>";
       }
     } else if (paragraphIndex === paragraphCount) {
       var recommendItems = this.viewRecommendCascade.getRegularRecommendItems();
@@ -309,7 +309,7 @@ View.Article.Show.Main = Backbone.View.extend({
         $("#article-show-gallery-main").removeAttr("style");
         this.isGalleryOptionOn = false;
         var container = this.galleryCurrentParagraph;
-        container.html("<img class='article-show-gallery-img' src='" + paragraph.src.url.replace("/medium/", "/original/") + "'>");
+        container.html("<img class='article-show-gallery-img' src='" + GlobalUtilities.PathToUrl(paragraph.src.url.replace("/medium/", "/original/")) + "'>");
       }
     }
   },

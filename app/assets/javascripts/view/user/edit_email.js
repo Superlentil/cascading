@@ -13,7 +13,7 @@ View.User.EditEmail = View.User.ModifyInputValidator.extend({
   
   render: function(options) {
     var userId = parseInt(options.userId);
-    if (userId === parseInt($.cookie("user_id"))) {
+    if (userId === parseInt(GlobalVariable.Cookie.UserId)) {
       var that = this;
       
       var user = new Model.User({id: userId});

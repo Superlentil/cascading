@@ -214,19 +214,17 @@ View.Layout.Main = Backbone.View.extend({
       this.viewHeader.render();
       this.viewRightNav.render();
       Backbone.history.loadUrl();
-      if (callbacks && $.cookie("user_id")) {
+      if (callbacks && GlobalVariable.Cookie.UserId) {
         callbacks.success();
       }
     } else {
       var that = this;
       var loginSession = new Model.LoginSession();
       loginSession.save("login_session", {"type": "log in", "email": email, "password": password}, {
-        success: function() {
-          that.renderUserAvatar();
-          that.viewHeader.render();
-          that.viewRightNav.render();
+        success: function(model, response) {
+          GlobalVariable.Cookie.SetUserInfo(response.user_id, response.user_nickname, response.user_avatar_url);
           Backbone.history.loadUrl();
-          if (callbacks && $.cookie("user_id")) {
+          if (callbacks && GlobalVariable.Cookie.UserId) {
             callbacks.success();
           }
         },
@@ -248,6 +246,7 @@ View.Layout.Main = Backbone.View.extend({
     var loginSession = new Model.LoginSession();
     loginSession.save("login_session", {"type": "log out"}, {
       success: function() {
+        GlobalVariable.Cookie.ClearUserInfo();
         that.renderUserAvatar();
         if (that.userAvatar.is(":hidden")) {
           that.closeNav(null, true);
@@ -261,9 +260,9 @@ View.Layout.Main = Backbone.View.extend({
   
   
   renderUserAvatar: function() {
-    if ($.cookie("user_id")) {
+    if (GlobalVariable.Cookie.UserId) {
       this.userAvatar.show();
-      this.userAvatar.html("<img id='layout-userAvatar-img' src='" + $.cookie("user_avatar_url") +"'>");
+      this.userAvatar.html("<img id='layout-userAvatar-img' src='" + GlobalUtilities.PathToUrl(GlobalVariable.Cookie.UserAvatarUrl) +"'>");
     } else {
       this.userAvatar.hide();
     }

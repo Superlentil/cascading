@@ -1,6 +1,6 @@
 <div class="user-header">
     <% var userId = user.get("id") %>
-    <% var userName = (parseInt(userId) === parseInt($.cookie("user_id"))) ? "My" : user.get("nickname") + "'s" %>
+    <% var userName = (parseInt(userId) === parseInt(GlobalVariable.Cookie.UserId)) ? "My" : user.get("nickname") + "'s" %>
     <div class="row">
       <div class="left"><img src="<%= user.get("avatar_url") %>"></div>
       <div class="left user-header-nickname">
