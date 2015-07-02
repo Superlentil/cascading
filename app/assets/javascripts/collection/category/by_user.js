@@ -8,6 +8,6 @@ Collection.Category.ByUser = Backbone.Collection.extend({
   
   
   url: function() {
-    return GlobalConstant.DOMAIN + "/categories/byUser.json/?" + $.param({user_id: this.userId});
+    return GlobalUtilities.PathToUrl("/categories/byUser?" + $.param({user_id: this.userId}));
   }
 });

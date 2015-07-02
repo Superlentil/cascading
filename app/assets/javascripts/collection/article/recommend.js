@@ -12,12 +12,12 @@ Collection.Article.Recommend = Backbone.Collection.extend({
   
   
   url: function() {
-    return GlobalConstant.DOMAIN + "/articles/recommend.json?" + $.param({
+    return GlobalUtilities.PathToUrl("/articles/recommend?" + $.param({
       fetch_sequence_number: this.fetchSequenceNumber,
       articles_per_fetch: this.articlesPerFetch,
       article_id: this.articleId,
       category: this.category,
       random: this.random
-    });
+    }));
   }
 });

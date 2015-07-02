@@ -8,11 +8,11 @@ Collection.Article.Search = Collection.Article.CoverCascade.extend({
   
   
   url: function() {
-    return GlobalConstant.DOMAIN + "/articles/search.json?" + $.param({
+    return GlobalUtilities.PathToUrl("/articles/search?" + $.param({
       fetch_sequence_number: this.fetchSequenceNumber,
       articles_per_fetch: this.articlesPerFetch,
       keyword: this.keyword,
       page_load_time: this.pageLoadTime
-    });
+    }));
   }
 });

@@ -5,6 +5,6 @@ Model.UserPublicInfo = Backbone.Model.extend({
   
   
   url: function() {
-    return GlobalConstant.DOMAIN + "/users/" + this.userId + "/publicInfo";
+    return GlobalUtilities.PathToUrl("/users/" + this.userId + "/publicInfo");
   }
 });

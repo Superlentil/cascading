@@ -3,6 +3,6 @@ Collection.Category.All = Backbone.Collection.extend({
   
   
   url: function() {
-  	return GlobalConstant.DOMAIN + "/categories.json";
+  	return GlobalUtilities.PathToUrl("/categories");
   }
 });

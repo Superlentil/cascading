@@ -5,7 +5,7 @@ var View = {};
 
 
 var GlobalConstant = {
-  DOMAIN: "http://haigy.com",
+  DOMAIN: "http://cascading.pigrider.com",
 
   Article: {
     Status: {   // If this enumeration needs to be modified, please modify the corresponding one in the "Ruby on Rails" code together.
@@ -48,6 +48,9 @@ var GlobalConstant = {
 
 
 var GlobalVariable = {
+  InCordova: !!(window.cordova),   // check if it's in Cordova (PhoneGap)
+
+
   Browser: {
     Window: null,
     Document: null,
@@ -89,3 +92,9 @@ var GlobalVariable = {
   BrowsingHistory: []
 };
 
+
+var GlobalUtilities = {
+  PathToUrl: function(path) {
+    return [GlobalConstant.DOMAIN, path].join("");
+  }
+};

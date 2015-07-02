@@ -50,7 +50,7 @@ View.Article.DraftByUser = Backbone.View.extend({
   
   
   getPictureUrl: function(articleDraft) {
-    var pictureUrl = articleDraft.get("cover_picture_url") || "";
+    var pictureUrl = GlobalUtilities.PathToUrl(articleDraft.get("cover_picture_url")) || "";
     if (pictureUrl.length === 0) {
       var contentObj = JSON.parse(articleDraft.get("content"));
       pictureUrl = _.find(contentObj, function(paragraph) {

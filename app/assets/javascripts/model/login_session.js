@@ -1,3 +1,3 @@
 Model.LoginSession = Backbone.Model.extend({
-  urlRoot: GlobalConstant.DOMAIN + "/login_sessions"
+  urlRoot: GlobalUtilities.PathToUrl("/login_sessions")
 });

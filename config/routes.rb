@@ -15,8 +15,8 @@ Rails.application.routes.draw do
 
   # Example resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
-  resources :tiers
-  resources :users do
+  resources :tiers, defaults: {format: :json}
+  resources :users, defaults: {format: :json} do
     collection do
       get "emailAvailable"
       post "retrievePassword"
@@ -29,7 +29,7 @@ Rails.application.routes.draw do
     end
   end
   
-  resources :articles do
+  resources :articles, defaults: {format: :json} do
     collection do
       get "draftByUser"
       get "inCategory"
@@ -40,16 +40,16 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :categories do
+  resources :categories, defaults: {format: :json} do
     collection do
       get "predefined"
       get "byUser"
     end
   end
 
-  resources :pictures
-  resources :comments
-  resources :login_sessions, only: [:create]
+  resources :pictures, defaults: {format: :json}
+  resources :comments, defaults: {format: :json}
+  resources :login_sessions, defaults: {format: :json}, only: [:create]
 
   # Example resource route with options:
   #   resources :products do

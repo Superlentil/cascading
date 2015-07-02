@@ -5,6 +5,6 @@ Collection.Article.ByUser = Collection.Article.CoverCascade.extend({
   
   
   url: function() {
-    return GlobalConstant.DOMAIN + "/articles/byUser.json/?" + $.param(this.urlParams);
+    return GlobalUtilities.PathToUrl("/articles/byUser?" + $.param(this.urlParams));
   }
 });

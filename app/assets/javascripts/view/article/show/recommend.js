@@ -92,7 +92,7 @@ View.Article.Show.Recommend = View.Cascade.Base.extend({
     var itemData = {
       id: fetchedItem.get("id"),
       title: fetchedItem.get("title"),
-      picUrl: fetchedItem.get("cover_picture_url"),
+      picUrl: GlobalUtilities.PathToUrl(fetchedItem.get("cover_picture_url")),
       picHeight: fetchedItem.get("cover_picture_height"),
       picWidth: this.ITEM_PICTURE_WIDTH,
       width: this.cache.itemWidth
