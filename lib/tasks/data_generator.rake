@@ -195,7 +195,7 @@ namespace :data_generator do
     articleContentJson.each do |paragraph|
       if paragraph["type"] == "text"
         abstractLength = abstract.length
-        text = paragraph["src"]
+        text = paragraph["src"] || " "
         if abstractLength + text.length > ARTICLE_ABSTRACT_LENGTH
           abstract << text.slice(0, ARTICLE_ABSTRACT_LENGTH - abstractLength) + " ..."
           break

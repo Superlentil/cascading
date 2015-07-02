@@ -12,7 +12,8 @@ class User < ActiveRecord::Base
     :convert_options => {:thumb => "-gravity center -extent 49x49"},
     :default_url => "/images/:style/missing.png",
     :path => ":rails_root/public/system/:class/:attachment/:id_partition/:style/:id.:extension",
-    :url => "/system/:class/:attachment/:id_partition/:style/:id.:extension"
+    :url => "/system/:class/:attachment/:id_partition/:style/:id.:extension",
+    :use_timestamp => false
   
   
   validates_attachment_content_type :avatar, :content_type => /\Aimage\/.*\Z/
