@@ -229,6 +229,13 @@ View.Layout.Main = Backbone.View.extend({
           if (callbacks && $.cookie("user_id")) {
             callbacks.success();
           }
+        },
+
+        error: function(model, response, options) {
+          console.log("Sign In Error!");
+          console.log(model);
+          console.log(response);
+          console.log(options);
         }
       });
     }
