@@ -14,7 +14,7 @@
   </div>
 <% } %>
 
-<% if (!GlobalVariable.Cookie.UserId) { %>
+<% if (!$.cookie("user_id")) { %>
 <img class="right hidden-sm-and-smaller layout-header-signinup" src="<%= PrecompiledAsset.Picture.SignInUpLarge %>">
 <img class="right hidden-md-and-larger layout-header-signinup" src="<%= PrecompiledAsset.Picture.SignInUpSmall %>">
 <% } else { %>

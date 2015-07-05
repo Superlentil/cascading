@@ -76,11 +76,11 @@ View.Article.Edit = Backbone.View.extend({
   newArticle: function() {
     var that = this;
       
-    if (GlobalVariable.Cookie.UserId) {  
+    if ($.cookie("user_id")) {  
       var article = new Model.Article();
       article.set({
-        "author": GlobalVariable.Cookie.UserNickname,
-        "user_id": GlobalVariable.Cookie.UserId,
+        "author": $.cookie("user_nickname"),
+        "user_id": $.cookie("user_id"),
         "content": "[]"
       });
       

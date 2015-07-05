@@ -1,74 +1,74 @@
 View.Layout.Main = Backbone.View.extend({
   initialize: function(options) {
     var that = this;
-    
+
     _.bindAll(that, "onWidthChange");
     _.bindAll(that, "signIn");
     _.bindAll(that, "signOut");
     _.bindAll(that, "closeNav");
     _.bindAll(that, "hideHeader");
     _.bindAll(that, "showHeader");
-    
+
     GlobalVariable.Layout.SignInHandler = that.signIn;
     GlobalVariable.Layout.SignOutHandler = that.signOut;
     GlobalVariable.Layout.CloseNavHandler = that.closeNav;
     GlobalVariable.Layout.Header.Hide = that.hideHeader;
     GlobalVariable.Layout.Header.Show = that.showHeader;
-    
+
     that.leftNavOn = false;
     that.rightNavOn = false;
     that.leftNavWidthInPx = 0;
     that.rightNavWidthInPx = 0;
-    
+
     that.widthChangeThreshold = GlobalVariable.Browser.ScrollBarWidthInPx > 6 ? GlobalVariable.Browser.ScrollBarWidthInPx : 6;
-    
+
     var thisWindow = GlobalVariable.Browser.Window;
     that.windowWidth = thisWindow.outerWidth();
-    
+
     thisWindow.on("resize", function() {
       clearTimeout(that.widthChangeTimeout);
       that.widthChangeTimeout = setTimeout(that.onWidthChange, 300);
     });
   },
-  
-  
+
+
   tagName: "div",
   id: "layout-main",
-  
-  
+
+
   menuIconTemplate: JST["template/layout/menuIcon"],
   userAvatarTemplate: JST["template/layout/userAvatar"],
   headerTemplate: JST["template/layout/header"],
-  
-  
+
+
   render: function() {
     var that = this;
-    
+
     var container = that.$el;
     container.empty();
-    
+
     that.viewLeftNav = new View.Layout.LeftNav();
     that.leftNav = that.viewLeftNav.render().$el;
     that.viewRightNav = new View.Layout.RightNav();
     that.rightNav = that.viewRightNav.render().$el;
 
     that.adjustSideNavWidth();
-    
+
     that.menuIcon = $(that.menuIconTemplate());
     that.userAvatar = $("<div id='layout-userAvatar'></div>");
     that.renderUserAvatar();
 
     that.viewHeader = new View.Layout.Header();
     that.header = that.viewHeader.render().$el;
-    
+
     that.mainBody = $("<div id='layout-mainBody'></div>");
     that.mainBody.append("<div id='layout-mainBody-clickListener'></div>");
     that.mainBody.append(that.header);
-    that.mainBody.append("<div id='layout-content' class='container'></div>");  
-    
+    that.mainBody.append("<div id='layout-content' class='container'></div>");
+
     that.viewPopup = new View.Layout.Popup();
     GlobalVariable.Layout.ViewPopup = that.viewPopup;
-    
+
     container.append(that.viewPopup.render().$el);
     container.append(that.leftNav);
     container.append(that.rightNav);
@@ -76,23 +76,23 @@ View.Layout.Main = Backbone.View.extend({
     container.append(that.userAvatar);
     container.append(that.popup);
     container.append(that.mainBody);
-    
+
     return that;
   },
-  
-  
+
+
   refresh: function() {
     this.viewContent.remove();
     this.viewHeader.updateSubTitle();
     this.mainBody.append("<div id='layout-content' class='container'></div>");
     return this;
   },
-  
-  
+
+
   onWidthChange: function(event) {
     var thisWindow = GlobalVariable.Browser.Window;
     GlobalVariable.Browser.WindowHeightInPx = thisWindow.height();
-    
+
     var windowWidth = thisWindow.outerWidth();
     if (Math.abs(this.windowWidth - windowWidth) > this.widthChangeThreshold) {   // Width change is expensive. Filter out only height change and very small width change.
       this.windowWidth = windowWidth;
@@ -103,19 +103,19 @@ View.Layout.Main = Backbone.View.extend({
       }
     }
   },
-  
-  
-  adjustSideNavWidth: function() {  
+
+
+  adjustSideNavWidth: function() {
     var navWidth = $("body").width() * 0.75;
     if (navWidth > 360) {
       navWidth = 360;
     }
-    
+
     if (navWidth !== this.leftNavWidthInPx) {
       var navContentWidth = navWidth - GlobalConstant.SideNav.BORDER_SHADOW_WIDTH_IN_PX;
       this.leftNavWidthInPx = navWidth;
       this.rightNavWidthInPx = navWidth;
-            
+
       navWidth = ["-", navWidth, "px"].join("");
       navContentWidth = [navContentWidth, "px"].join("");
       this.leftNav.css({
@@ -126,7 +126,7 @@ View.Layout.Main = Backbone.View.extend({
         "right": navWidth,
         "width": navContentWidth
       });
-      
+
       if (this.leftNavOn) {
         this.leftNav.transition({x: this.leftNavWidthInPx}, 0);
       }
@@ -135,18 +135,18 @@ View.Layout.Main = Backbone.View.extend({
       }
     }
   },
-  
-  
+
+
   events: {
     "click #layout-menuIcon": "openLeftNav",
     "click #layout-userAvatar": "openRightNav"
   },
-  
-  
-  openLeftNav: function(event) {  
+
+
+  openLeftNav: function(event) {
     event.preventDefault();
     event.stopPropagation();
-    
+
     var leftNavOn = this.leftNavOn;
     this.closeNav();
     if (!leftNavOn) {
@@ -158,12 +158,12 @@ View.Layout.Main = Backbone.View.extend({
       this.menuIcon.transition({rotate: "360deg"}, 500, "ease");
     }
   },
-  
-  
+
+
   openRightNav: function(event) {
     event.preventDefault();
     event.stopPropagation();
-    
+
     var rightNavOn = this.rightNavOn;
     this.closeNav();
     if (!rightNavOn) {
@@ -175,8 +175,8 @@ View.Layout.Main = Backbone.View.extend({
       this.userAvatar.transition({rotate: "-360deg"}, 500, "ease");
     }
   },
-  
-  
+
+
   closeNav: function(event, immediateClose) {
     if (this.leftNavOn || this.rightNavOn) {
       if (event) {
@@ -188,43 +188,45 @@ View.Layout.Main = Backbone.View.extend({
       if (immediateClose === true) {
         speed = 0;
       }
-      
+
       if (this.leftNavOn) {
         this.leftNavOn = false;
         this.leftNav.transition({x: 0}, speed, "ease");
         this.menuIcon.transition({rotate: 0}, speed, "ease");
       }
-      
+
       if (this.rightNavOn) {
         this.rightNavOn = false;
         this.rightNav.transition({x: 0}, speed, "ease");
         this.userAvatar.transition({rotate: 0}, speed, "ease");
       }
-      
+
       this.mainBody.off("click");
       this.viewHeader.delegateEvents();
       this.viewContent.delegateEvents();
     }
   },
-  
-  
+
+
   signIn: function(email, password, alreadyHasLoginSession, callbacks) {
     if (alreadyHasLoginSession) {
       this.renderUserAvatar();
       this.viewHeader.render();
       this.viewRightNav.render();
       Backbone.history.loadUrl();
-      if (callbacks && GlobalVariable.Cookie.UserId) {
+      if (callbacks && $.cookie("user_id")) {
         callbacks.success();
       }
     } else {
       var that = this;
       var loginSession = new Model.LoginSession();
       loginSession.save("login_session", {"type": "log in", "email": email, "password": password}, {
-        success: function(model, response) {
-          GlobalVariable.Cookie.SetUserInfo(response.user_id, response.user_nickname, response.user_avatar_url);
+        success: function() {
+          that.renderUserAvatar();
+          that.viewHeader.render();
+          that.viewRightNav.render();
           Backbone.history.loadUrl();
-          if (callbacks && GlobalVariable.Cookie.UserId) {
+          if (callbacks && $.cookie("user_id")) {
             callbacks.success();
           }
         },
@@ -238,68 +240,67 @@ View.Layout.Main = Backbone.View.extend({
       });
     }
   },
-  
-  
+
+
   signOut: function() {
     var that = this;
-    
+
     var loginSession = new Model.LoginSession();
     loginSession.save("login_session", {"type": "log out"}, {
       success: function() {
-        GlobalVariable.Cookie.ClearUserInfo();
         that.renderUserAvatar();
         if (that.userAvatar.is(":hidden")) {
           that.closeNav(null, true);
-        }        
+        }
         that.viewHeader.render();
         that.viewRightNav.render();
         Backbone.history.navigate("#", {trigger: true});
       }
     });
   },
-  
-  
+
+
   renderUserAvatar: function() {
-    if (GlobalVariable.Cookie.UserId) {
+    if ($.cookie("user_id")) {
       this.userAvatar.show();
-      this.userAvatar.html("<img id='layout-userAvatar-img' src='" + GlobalUtilities.PathToUrl(GlobalVariable.Cookie.UserAvatarUrl) +"'>");
+      this.userAvatar.html("<img id='layout-userAvatar-img' src='" + GlobalUtilities.PathToUrl($.cookie("user_avatar_url")) +"'>");
     } else {
       this.userAvatar.hide();
     }
   },
-  
-  
+
+
   hideHeader: function(speed) {
     this.header.fadeOut(speed);
     this.menuIcon.fadeOut(speed);
     this.userAvatar.fadeOut(speed);
   },
-  
-  
+
+
   showHeader: function(speed) {
     this.header.fadeIn(speed);
     this.menuIcon.fadeIn(speed);
     this.userAvatar.fadeIn(speed);
   },
 
-  
+
   remove: function() {
     GlobalVariable.Browser.Window.off("resize");
     this.mainBody.off("click");
-    
+
     this.viewPopup.remove();
     this.viewLeftNav.remove();
     this.viewRightNav.remove();
     this.viewHeader.remove();
     this.viewContent.remove();
-    
+
     this.leftNav = null;
     this.rightNav = null;
     this.menuIcon = null;
     this.userAvatar = null;
     this.header = null;
     this.mainBody = null;
-    
+
     Backbone.View.prototype.remove.call(this);
   }
 });

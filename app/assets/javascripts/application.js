@@ -14,6 +14,7 @@
 //= require jquery_ujs
 //= require underscore
 //= require backbone
+//= require jquery_cookie
 //= require jquery_transit
 
 //= require initializer/_INDEXER_

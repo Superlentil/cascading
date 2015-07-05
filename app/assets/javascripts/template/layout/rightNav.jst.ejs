@@ -2,16 +2,16 @@
   
 <br><br><br><br>
 
-<% if (GlobalVariable.Cookie.UserId) { %>
+<% if ($.cookie("user_id")) { %>
   <div id="layout-rightNav-user-menu" class="row">
     <div class="row">
-      Welcome <%= GlobalVariable.Cookie.UserNickname %>!
+      Welcome <%= $.cookie("user_nickname") %>!
     </div>
     <div class="row">
-      <a class="m-close-nav" href="#/user/<%= GlobalVariable.Cookie.UserId %>">My Account</a>
+      <a class="m-close-nav" href="#/user/<%= $.cookie("user_id") %>">My Account</a>
     </div>
     <div class="row">
-      <a class="m-close-nav" href="#/articles/user/<%= GlobalVariable.Cookie.UserId %>">All My Articles</a>
+      <a class="m-close-nav" href="#/articles/user/<%= $.cookie("user_id") %>">All My Articles</a>
     </div>
     <div class="row">
       <a class="m-close-nav" href="#/articles/new">Write a new Article</a>

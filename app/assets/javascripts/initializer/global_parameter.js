@@ -89,26 +89,6 @@ var GlobalVariable = {
   UserCache: {},
 
 
-  Cookie: {
-    UserId: null,
-    UserNickname: null,
-    UserAvatarUrl: null,
-    LastNewArticleTimestamp: null,
-
-    SetUserInfo: function(userId, userNickname, userAvatarUrl) {
-      this.UserId = userId;
-      this.UserNickname = userNickname;
-      this.UserAvatarUrl = userAvatarUrl;
-    },
-
-    ClearUserInfo: function() {
-      this.UserId = null;
-      this.UserNickname = null;
-      this.UserAvatarUrl = null;
-    }
-  },
-
-
   BrowsingHistory: []
 };
 

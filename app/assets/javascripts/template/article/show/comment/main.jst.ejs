@@ -1,6 +1,6 @@
 <div id="article-show-comment">
 
-<% if (GlobalVariable.Cookie.UserId) { %>
+<% if ($.cookie("user_id")) { %>
   <div>
     <fieldset id="article-show-comment-field">
       <legend> Comments </legend>

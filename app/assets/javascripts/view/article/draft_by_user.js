@@ -2,23 +2,23 @@ View.Article.DraftByUser = Backbone.View.extend({
   initialize: function(options) {
     this.userId = options.userId;
   },
-  
-  
+
+
   el: "#layout-content",
-  
-  
+
+
   template: JST["template/article/draft_by_user"],
-  
-  
+
+
   render: function() {
     var that = this;
-    
-    if (parseInt(that.userId) === parseInt(GlobalVariable.Cookie.UserId)) {
+
+    if (parseInt(that.userId) === parseInt($.cookie("user_id"))) {
       var draftsByUser = new Collection.Article.DraftByUser({userId: that.userId});
       draftsByUser.fetch({
         success: function(fetchedDrafts) {
           that.$el.html(that.template({allDrafts: fetchedDrafts.models, getPictureUrl: that.getPictureUrl, getText: that.getText}));
-          
+
           $(".article-draft-delete").one("click", function(event) {
             that.deleteArticle(event);
           });
@@ -30,11 +30,11 @@ View.Article.DraftByUser = Backbone.View.extend({
 
     return that;
   },
-  
-  
+
+
   deleteArticle: function(event) {
     event.preventDefault();
-    
+
     var id = $(event.currentTarget).data("articleId");
     var article = new Model.Article({id: id});
     article.destroy({
@@ -47,10 +47,10 @@ View.Article.DraftByUser = Backbone.View.extend({
       }
     });
   },
-  
-  
+
+
   getPictureUrl: function(articleDraft) {
-    var pictureUrl = GlobalUtilities.PathToUrl(articleDraft.get("cover_picture_url")) || "";
+    var pictureUrl = articleDraft.get("cover_picture_url") || "";
     if (pictureUrl.length === 0) {
       var contentObj = JSON.parse(articleDraft.get("content"));
       pictureUrl = _.find(contentObj, function(paragraph) {
@@ -64,8 +64,8 @@ View.Article.DraftByUser = Backbone.View.extend({
     }
     return GlobalUtilities.PathToUrl(pictureUrl);
   },
-  
-  
+
+
   getText: function(articleDraft) {
     var contentObj = JSON.parse(articleDraft.get("content"));
     text = _.find(contentObj, function(paragraph) {
@@ -83,11 +83,11 @@ View.Article.DraftByUser = Backbone.View.extend({
     }
     return text;
   },
-  
-  
+
+
   remove: function() {
     $(".article-draft-delete").off("click");
-    
+
     Backbone.View.prototype.remove.call(this);
   }
 });

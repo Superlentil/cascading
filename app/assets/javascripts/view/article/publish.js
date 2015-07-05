@@ -5,24 +5,24 @@ View.Article.Publish = Backbone.View.extend({
     this.mode = "unknown";
     this.resetCoverPicture();
   },
-  
-  
+
+
   resetCoverPicture: function() {
     this.coverPictureId = -1;
     this.coverPictureUrl = "";
     this.coverPictureImported = false;
   },
-  
-  
+
+
   el: "#layout-content",
-  
-  
+
+
   template: JST["template/article/publish"],
-  
-  
+
+
   render: function() {
     var that = this;
-    
+
     var allContentPictures = this.getAllContentPictures();
     this.$el.html(this.template({
       coverPictureId: this.article.get("cover_picture_id"),
@@ -30,7 +30,7 @@ View.Article.Publish = Backbone.View.extend({
       coverPictureImported: (this.article.get("cover_picture_imported") ? "yes" : "no"),
       contentPictures: allContentPictures
     }));
-    
+
     $("#confirm_button").one("click", function() {
       that.publish({"hasCoverPicture": true});
     });
@@ -38,8 +38,8 @@ View.Article.Publish = Backbone.View.extend({
       that.publish();
     });
   },
-  
-  
+
+
   getAllContentPictures: function() {
     var pictures = [];
     articleContent = JSON.parse(this.article.get("content"));
@@ -53,8 +53,8 @@ View.Article.Publish = Backbone.View.extend({
     });
     return pictures;
   },
-  
-  
+
+
   publish: function(options) {
     var hasCoverPicture = false;
     if (options) {
@@ -76,7 +76,7 @@ View.Article.Publish = Backbone.View.extend({
         success: function(savedArticle) {
           Backbone.history.navigate("#/article/" + savedArticle.get("id"), {trigger: true});
         },
-        
+
         error: function(unsavedArticle) {
           alert("Publish failed. Please try it again. Thanks!");
           Backbone.history.loadUrl("#/article/" + unsavedArticle.get("id") + "/edit");
@@ -84,29 +84,29 @@ View.Article.Publish = Backbone.View.extend({
       });
     }
   },
-  
-  
+
+
   events: {
     "click #choose_cover_picture_container": "chooseCoverPictureMode",
     "click #upload_cover_picture_container": "uploadCoverPictureMode",
 
-    "click .article-publish-thumb-picture": "chooseCover",    
+    "click .article-publish-thumb-picture": "chooseCover",
     "click #upload_picture_button": "uploadCover",
     "click #cancel_button": "cancelPublish"
   },
-  
-  
+
+
   chooseCoverPictureMode: function(event) {
     $("#choose_cover_picture_container").css({"opacity": "1.0"});
     $("#upload_preview").hide();
     $("#new_cover_picture").val("");
     $("#upload_cover_picture_container").css({"opacity": "0.3"});
     if (this.mode !== "choose") {
-      this.resetCoverPicture();  
+      this.resetCoverPicture();
     }
   },
-  
-  
+
+
   uploadCoverPictureMode: function(event) {
     $("#upload_preview").show();
     $("#upload_cover_picture_container").css({"opacity": "1.0"});
@@ -125,12 +125,12 @@ View.Article.Publish = Backbone.View.extend({
       this.resetCoverPicture();
     }
   },
-  
-  
+
+
   chooseCover: function(event) {
     event.preventDefault();
     var that = this;
-    
+
     var picture = $(event.currentTarget);
     that.coverPictureUrl = picture.attr("src");
     that.coverPictureId = picture.data("pictureId");
@@ -142,21 +142,21 @@ View.Article.Publish = Backbone.View.extend({
       "border-width": "5px"
     });
   },
-  
-  
+
+
   uploadCover: function(event) {
     console.log("starting upload cover");
     event.preventDefault();
-    var that = this;    
-   
+    var that = this;
+
     var formData = new FormData();
     formData.append("picture[article_id]", that.article.get("id"));
     formData.append("picture[src]", $("#new_cover_picture").get(0).files[0]);
-    
+
     var picture = new Model.Picture();
     var progressBar = $("<progress></progress>");
     var uploadPreviewContainer = $("#upload_preview");
-    
+
     picture.save(formData, {
       progress: function(event) {
         if (event.lengthComputable) {
@@ -166,12 +166,12 @@ View.Article.Publish = Backbone.View.extend({
           });
         }
       },
-      
+
       beforeSend: function() {
         uploadPreviewContainer.empty();
         uploadPreviewContainer.append(progressBar);
       },
-      
+
       success: function(savedPicture) {
         uploadPreviewContainer.empty();
         uploadPreviewContainer.append("<img src='" + savedPicture.thumb_url
@@ -183,23 +183,23 @@ View.Article.Publish = Backbone.View.extend({
         that.coverPictureImported = true;
         that.mode = "upload";
       },
-      
+
       error: function(jqXHR, textStatus, errorThrown) {},
-      
+
       complete: function(jqXHR, textStatus ) {}
     });
   },
-  
-  
+
+
   cancelPublish: function() {
     Backbone.history.loadUrl("#/article/" + this.article.get("id") + "/edit");
   },
-  
-  
+
+
   remove: function() {
     $("#confirm_button").off("click");
     $("#skip_button").off("click");
-    
+
     Backbone.View.prototype.remove.call(this);
   }
 });

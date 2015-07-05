@@ -3,58 +3,58 @@ View.Article.Show.Main = Backbone.View.extend({
   initialize: function(options) {
     this.id = options.id;
     this.isPreview = options.preview ? true : false;
-    
+
     this.initialShowInGalleryMode = false;
     this.isGalleryOptionOn = false;
     this.galleryCurrentParagraphIndex = 0;
     this.galleryCurrentParagraph = null;
-    
+
     if (options.initialInGalleryMode) {
       this.initialShowInGalleryMode = options.initialInGalleryMode;
       this.galleryCurrentParagraphIndex = 0;
     }
-    
+
     this.allSubviews = [];
     this.articleParagraph = [];
-    
+
     _.bindAll(this, "galleryKeyboardListener");
   },
-  
-  
+
+
   el: "#layout-content",
-  
-  
+
+
   template: JST["template/article/show/main"],
   galleryTemplate: JST["template/article/show/gallery"],
-  
-  
+
+
   render: function(options) {
     var that = this;
     var isPreview = that.isPreview;
-    
+
     var article = new Model.Article({id: that.id});
     article.fetch({
       success: function(fetchedArticle) {
         that.$el.html(that.template({article: fetchedArticle, articleContent: that.parseArticleContent(fetchedArticle), preview: isPreview}));
-        
+
         if (!isPreview) {
           that.galleryContainer = $("#article-show-gallery");
           var initialShowInGalleryMode = that.initialShowInGalleryMode;
           if (initialShowInGalleryMode) {
             that.galleryContainer.show();
           }
-          
+
           $(".Delete_Article").one("click", function(event) {
             that.deleteArticle(event);
           });
-          
+
           // header sub title
           var id = fetchedArticle.get("id");
           var title = fetchedArticle.get("title");
           that.articleTitle = title;
           var titleLink = "<a href='#/article/" + id + "' title = '" + title + "'>" + title + "</a>";
           GlobalVariable.Layout.Header.UpdateSubTitle(titleLink);
-          
+
           // browsing history
           var historyArticle = {};
           historyArticle.id = id;
@@ -63,7 +63,7 @@ View.Article.Show.Main = Backbone.View.extend({
           historyArticle.authorUserId = fetchedArticle.get("user_id");
           historyArticle.abstract = fetchedArticle.get("abstract");
           GlobalVariable.BrowsingHistory.push(historyArticle);
-          
+
           // recommend
           var viewRecommendCascade = new View.Article.Show.Recommend({
             articleContainer: $("#article-show-content"),
@@ -74,27 +74,27 @@ View.Article.Show.Main = Backbone.View.extend({
           that.allSubviews.push(viewRecommendCascade);
           viewRecommendCascade.render();
           that.viewRecommendCascade = viewRecommendCascade;
-          
+
           // comment
           var viewComment = new View.Article.Show.Comment({articleId: id});
           that.allSubviews.push(viewComment);
           viewComment.render();
-          
+
           if (initialShowInGalleryMode) {
             that.openGallery();
-            that.initialShowInGalleryMode = false;   // set to default value to avoid unexpect errors 
+            that.initialShowInGalleryMode = false;   // set to default value to avoid unexpect errors
           }
         }
       }
     });
-       
+
     return that;
   },
-  
-  
+
+
   deleteArticle: function(event) {
     event.preventDefault();
-    
+
     var id = $(event.currentTarget).data("articleId");
     var article = new Model.Article({id: id});
     article.destroy({
@@ -107,21 +107,21 @@ View.Article.Show.Main = Backbone.View.extend({
       }
     });
   },
-  
-  
+
+
   parseArticleContent: function(article) {
     var articleParagraph = [];
     articleParagraph.push("preserve for article title");
     var index = 1;
-    
+
     if (article.get("cover_picture_imported")) {
-      articleParagraph.push({type: "picture", src: {url: GlobalUtilities.PathToUrl(article.get("cover_picture_url").replace("/thumb/", "/medium/"))}});
+      articleParagraph.push({type: "picture", src: {url: article.get("cover_picture_url").replace("/thumb/", "/medium/")}});
       ++index;
     }
 
     var contentObj = JSON.parse(article.get("content"));
     var contentHtml = "";
-        
+
     _.each(contentObj, function(paragraph) {
       articleParagraph.push(paragraph);
       if (paragraph.type === "text") {
@@ -133,16 +133,16 @@ View.Article.Show.Main = Backbone.View.extend({
           + "' data-paragraph-index='"
           + index
           + "'></pre>";
-          
+
         ++index;
       }
     });
-    
+
     this.articleParagraph = articleParagraph;
     return contentHtml;
   },
-  
-  
+
+
   events: {
     "click .article-show-picture": "openGallery",
     "click #article-show-gallery-content": "galleryOptions",
@@ -151,34 +151,34 @@ View.Article.Show.Main = Backbone.View.extend({
     "click #article-show-gallery-original-img": "showOriginalImage",
     "click #article-show-gallery-close": "closeGallery"
   },
-  
-  
+
+
   openGallery: function(event) {
     var initialShowInGalleryMode = this.initialShowInGalleryMode;
     if (!initialShowInGalleryMode) {
       event.preventDefault();
     }
-    
+
     var galleryContainer = this.galleryContainer;
     if (galleryContainer.length > 0) {
       if (!initialShowInGalleryMode) {
         this.galleryCurrentParagraphIndex = parseInt($(event.currentTarget).data("paragraphIndex"));
       }
-      
+
       var that = this;
       $(document).on("keyup", function(event) {
         that.galleryKeyboardListener(event);
       });
-      
+
       GlobalVariable.Layout.Header.Hide(0);
       galleryContainer.html(this.galleryTemplate());
       $(".article-show-gallery-content-wrapper").html(this.galleryParagraph(this.galleryCurrentParagraphIndex));
       this.galleryCurrentParagraph = $(".article-show-gallery-content-wrapper");
       galleryContainer.fadeIn("slow");
-    }    
+    }
   },
-  
-  
+
+
   galleryParagraph: function(paragraphIndex) {
     var paragraphCount = this.articleParagraph.length;
     if (paragraphIndex < 0) {
@@ -214,8 +214,8 @@ View.Article.Show.Main = Backbone.View.extend({
       return null;
     }
   },
-  
-  
+
+
   galleryOptions: function(event) {
     if (this.isGalleryOptionOn) {
       this.isGalleryOptionOn = false;
@@ -225,8 +225,8 @@ View.Article.Show.Main = Backbone.View.extend({
       $("#article-show-gallery-main").transition({y: "-150px"});
     }
   },
-  
-  
+
+
   updateGalleryOptions: function(paragraphType) {
     var leftOptions = $("#article-show-gallery-options-left");
     if (paragraphType === "picture") {
@@ -235,22 +235,22 @@ View.Article.Show.Main = Backbone.View.extend({
       leftOptions.empty();
     }
   },
-  
-  
+
+
   closeGallery: function(event) {
     if (event) {
       event.preventDefault();
     }
-    
+
     this.isGalleryOptionOn = false;
     this.galleryCurrentParagraph = null;
     GlobalVariable.Layout.Header.Show("slow");
     this.galleryContainer.fadeOut("slow");
-    
+
     $(document).off("keyup");
   },
-  
-  
+
+
   prevGalleryParagraph: function(event) {
     var current = this.galleryCurrentParagraph;
     var prevParagraphIndex = this.galleryCurrentParagraphIndex - 1;
@@ -272,8 +272,8 @@ View.Article.Show.Main = Backbone.View.extend({
       current.transition({x: "30%"}, 400).transition({x: 0}, 400);
     }
   },
-  
-  
+
+
   nextGalleryParagraph: function(event) {
     var current = this.galleryCurrentParagraph;
     var nextParagraphIndex = this.galleryCurrentParagraphIndex + 1;
@@ -282,7 +282,7 @@ View.Article.Show.Main = Backbone.View.extend({
     current.prevAll().remove();
     current.nextAll().remove();
     if (nextContent) {
-      this.galleryCurrentParagraphIndex = nextParagraphIndex;   
+      this.galleryCurrentParagraphIndex = nextParagraphIndex;
       var nextParagraph = $(nextContent);
       nextParagraph.addClass("hide");
       var next = $("<div class='article-show-gallery-content-wrapper'></div>");
@@ -295,12 +295,12 @@ View.Article.Show.Main = Backbone.View.extend({
       current.transition({x: "-30%"}, 400).transition({x: 0}, 400);
     }
   },
-  
-  
+
+
   showOriginalImage: function(event) {
     if (event) {
       event.preventDefault();
-    }    
+    }
     var paragraphCount = this.articleParagraph.length;
     var index = this.galleryCurrentParagraphIndex;
     if (index >=0 && index < paragraphCount) {
@@ -313,11 +313,11 @@ View.Article.Show.Main = Backbone.View.extend({
       }
     }
   },
-  
-  
+
+
   galleryKeyboardListener: function(event) {
     event.preventDefault();
-    
+
     switch(event.keyCode) {
       case 27:
         this.closeGallery();
@@ -330,20 +330,20 @@ View.Article.Show.Main = Backbone.View.extend({
         break;
     }
   },
-  
-  
+
+
   onWidthChange: function() {
     if (this.viewRecommendCascade) {
       this.viewRecommendCascade.onWidthChange();
     }
   },
-  
-  
+
+
   remove: function() {
     $(document).off("keyup");
     $(".Delete_Article").off("click");
     $("#article-show").off("click");
-    
+
     var subview;
     while (this.allSubviews.length > 0) {
       subview = this.allSubviews.pop();
@@ -351,7 +351,7 @@ View.Article.Show.Main = Backbone.View.extend({
         subview.remove();
       }
     }
-    
+
     Backbone.View.prototype.remove.call(this);
   }
 });
