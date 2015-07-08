@@ -5,7 +5,7 @@ var View = {};
 
 
 var GlobalConstant = {
-  DOMAIN: "https://cascading.pigrider.com",
+  DOMAIN: "http://cascading.pigrider.com",
 
   Article: {
     Status: {   // If this enumeration needs to be modified, please modify the corresponding one in the "Ruby on Rails" code together.
