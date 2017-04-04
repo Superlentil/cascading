@@ -10,9 +10,9 @@
   left: $CONTAINER_LEFT_PADDING;
   width: $LAYOUT_MENU_ICON_WIDTH;
   z-index: $LAYOUT_MENU_ICON_Z_INDEX;
-  
+
   padding: (($LAYOUT_HEADER_HEIGHT - $LAYOUT_MENU_ICON_HEIGHT) / 2) 0;
-  
+
   background-color: transparent;
 }
 
@@ -21,12 +21,12 @@
   height: $LAYOUT_MENU_ICON_HEIGHT;
   width: $LAYOUT_MENU_ICON_WIDTH;
   padding: 8px 10px;
-  
+
   @include border-radius(4px);
-  
+
   background-color: #dfdfdf;
-  @include background-image(linear-gradient(to bottom, #f2f2f2 0%, #dfdfdf 100%));
-  
+  @include background-image(linear-gradient(bottom, #f2f2f2 0%, #dfdfdf 100%));
+
   &:hover {
     cursor: pointer;
   }

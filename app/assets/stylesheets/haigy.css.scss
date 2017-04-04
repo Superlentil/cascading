@@ -3,24 +3,24 @@
 @import "layout/setting";
 
 
-html{ 
+html{
   button, .button{
-    text-align: center; 
-    padding: 8px 0px; 
-    border: none; 
-    
+    text-align: center;
+    padding: 8px 0px;
+    border: none;
+
     @include border-radius(3px);
-    
-    font: 18px Arial, Helvetica, sans-serif; 
-    font-weight: bold; 
-    color: #ffffff; 
-    background-color: #ffffff; 
-    
+
+    font: 18px Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #ffffff;
+
     @include background-image(linear-gradient(top, #ffffff 0% ,#023961 100%));
-    
+
     @include box-shadow(inset 0px 0px 1px #000000);
   }
-  button:active, .button:active{ 
+  button:active, .button:active{
     @include background-image(linear-gradient(top, #ffffff 0% ,#175a8a 100%));
 
     @include box-shadow(0px 0px 3px #00345c, inset 0px 0px 3px #00345c);
@@ -30,11 +30,11 @@ html{
 
 body {
   @include user-select(none);
-  
+
   font-family: $FONT_FAMILY;
-  
+
   min-width: $SUPPORT_VIEWPORT_MIN_WIDTH;
-  
+
   // background-color: #cfebff;
   // @include background-image(linear-gradient(325deg, #cfebff 48%, #000075));
   // @include background-image(linear-gradient(315deg, #cfebff 35%, #7282c1 69%, #cfebff 98%));
@@ -46,7 +46,7 @@ body {
   // @include background-image(linear-gradient(to bottom, #284ebd, #8faee5 88%, #afe833 94%, #a4dc31));
   // @include background-image(linear-gradient(to bottom, #6885da, #b7cef8 88%, #a4dc31));
   // @include background-image(linear-gradient(to bottom, #b7d3e8, #dae3ea 88%, #c1e96f));
-  
+
   // Candidate
   // @include background-image(linear-gradient(to bottom, #27465d, #e8f0f6 88%, #d3ee9a));
   // @include background-image(linear-gradient(to bottom, #f8efbe, #fff 88%, #d3ee9a));
@@ -56,8 +56,8 @@ body {
   // @include background-image(linear-gradient(to bottom, #000, #cad2d7));
   // @include background-image(linear-gradient(to bottom, #27465d, #fff));
   // @include background-image(linear-gradient(to right, #27465d, #748897 30%, #748897 70%, #27465d));
-  
-  @include background-image(linear-gradient(to right, #546d7f, #a7b4bd 30%, #a7b4bd 70%, #546d7f));
+
+  @include background-image(linear-gradient(right, #546d7f, #a7b4bd 30%, #a7b4bd 70%, #546d7f));
   background-size: 100% 150%;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -74,11 +74,11 @@ a {
 .haigy-logo {
   display: inline-block;
   max-width: 80px;
-  
+
   line-height: 100%;
   vertical-align: middle;
-  
+
   @include link-colors(#5e5e5e, red, red, #5e5e5e);
-  
+
   font: italic normal 800 25px arial, sans-serif;
 }

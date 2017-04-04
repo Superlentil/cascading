@@ -34,11 +34,11 @@
   margin: 0 auto;
   padding: $SUPPORT_VIEWPORT_MIN_WIDTH / 10;
   max-width: 600px;
-  
+
   @include transform(scale(0.05));
   @include transition-timing-function(ease-in-out);
   @include transition(0.4s);
-  
+
   z-index: 1000;
 }
 
@@ -74,7 +74,7 @@
   line-height: 30px;
   text-align: center;
   cursor: pointer;
-  @include background-image(linear-gradient(to right, rgba(255,255,255,0), rgba(67,155,241,.7) 35%, #439bf1 50%, rgba(67,155,241,.7) 65%, rgba(255,255,255,0))); 
+  @include background-image(linear-gradient(right, rgba(255,255,255,0), rgba(67,155,241,.7) 35%, #439bf1 50%, rgba(67,155,241,.7) 65%, rgba(255,255,255,0)));
   @include border-radius(8px);
 }
 

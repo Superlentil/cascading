@@ -4,10 +4,10 @@
 #article-show-preview {
   width: 100%;
   max-width: 700px;
-  
+
   font-size: 16px;
   line-height: 200%;
-  
+
   margin: 0 auto;
 }
 
@@ -22,10 +22,10 @@
 #article-show-content {
   width: 100%;
   max-width: 600px;
-  
+
   font-size: 16px;
   line-height: 1.65;
-  
+
   margin: 0 auto;
   padding: 10px 0;
 
@@ -56,8 +56,9 @@
 
 
 .article-show-text-container {
-  word-wrap: break-word;
   text-align: center;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 

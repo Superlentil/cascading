@@ -3,23 +3,23 @@
 
 .user-header {
   width: 100%;
-  @include background-image(linear-gradient(to bottom, #e8f7ff 5%, #fff 100%));
-  
+  @include background-image(linear-gradient(bottom, #e8f7ff 5%, #fff 100%));
+
   padding: 10px;
-    
-  
+
+
   img {
     width: 30px;
     height: 30px;
   }
-  
-  
+
+
   .user-header-nickname {
     padding-left: 10px;
     line-height: 30px;
   }
-  
-  
+
+
   .user-header-link {
     padding-top: 5px;
   }
